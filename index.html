@@ -1,0 +1,1224 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>渡辺花屋 在庫</title>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@600;700;800&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink:    #1a1410;
+  --ink2:   #4a3f35;
+  --ink3:   #8a7b6f;
+  --paper:  #faf7f2;
+  --paper2: #f2ede4;
+  --paper3: #e8e0d4;
+  --moss:   #3d5a3e;
+  --moss2:  #5a7d5b;
+  --moss4:  #eaf3ea;
+  --sakura: #d4607a;
+  --sakura3:#fde8ee;
+  --kin:    #b8860b;
+  --kin3:   #fdf6d8;
+  --r: 12px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:'Noto Sans JP',sans-serif;background:var(--paper);color:var(--ink);min-height:100dvh;overflow-x:hidden}
+
+/* ヘッダー（極コンパクト） */
+.app-header{position:sticky;top:0;z-index:50;background:var(--moss)}
+.header-inner{display:flex;align-items:center;gap:8px;padding:7px 12px}
+.header-logo{font-size:14px;flex-shrink:0;opacity:.85}
+.header-text{flex:1;display:flex;align-items:baseline;gap:6px}
+.header-title{font-family:'Shippori Mincho B1',serif;font-size:14px;font-weight:700;color:#fff;letter-spacing:2px;line-height:1}
+.header-sub{display:none}
+.mic-btn{width:32px;height:32px;border-radius:50%;border:none;background:rgba(255,255,255,.18);color:#fff;font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.2s;flex-shrink:0}
+.mic-btn.on{background:var(--sakura);animation:mpulse 1.2s infinite}
+@keyframes mpulse{0%,100%{box-shadow:0 0 0 0 rgba(212,96,122,.5)}50%{box-shadow:0 0 0 8px rgba(212,96,122,0)}}
+
+/* 統計バー（数字小さく・横並び1行） */
+.stats-bar{background:var(--moss2);padding:4px 12px;display:flex;gap:0}
+.stat-item{flex:1;display:flex;align-items:center;justify-content:center;gap:4px;color:rgba(255,255,255,.85);font-size:10px;border-right:1px solid rgba(255,255,255,.15);padding:0 4px}
+.stat-item:last-child{border-right:none}
+.stat-num{font-family:'Shippori Mincho B1',serif;font-size:14px;font-weight:700;color:#fff;line-height:1}
+.stat-item.warn .stat-num{color:#e8c84a}
+.stat-item.danger .stat-num{color:#ffb3c1}
+
+/* タブ */
+.tab-bar{background:var(--paper2);display:flex;overflow-x:auto;border-bottom:1px solid var(--paper3);-webkit-overflow-scrolling:touch;scrollbar-width:none;position:sticky;top:52px;z-index:40}
+.tab-bar::-webkit-scrollbar{display:none}
+.tab-btn{flex-shrink:0;padding:8px 13px;font-family:'Noto Sans JP',sans-serif;font-size:12px;font-weight:500;color:var(--ink3);border:none;background:none;cursor:pointer;white-space:nowrap;border-bottom:2.5px solid transparent;margin-bottom:-1px;transition:.2s;letter-spacing:.5px}
+.tab-btn.active{color:var(--moss);border-bottom-color:var(--moss);font-weight:700}
+
+/* 検索 */
+.search-area{padding:7px 12px;background:var(--paper);display:flex;gap:7px;border-bottom:1px solid var(--paper3)}
+.search-wrap{flex:1;position:relative}
+.search-wrap::before{content:'🔍';position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:12px;pointer-events:none}
+.search-input{width:100%;padding:7px 10px 7px 30px;border:1.5px solid var(--paper3);border-radius:20px;font-family:'Noto Sans JP',sans-serif;font-size:13px;background:white;outline:none;color:var(--ink);-webkit-appearance:none;transition:.2s}
+.search-input:focus{border-color:var(--moss2)}
+.filter-pill{flex-shrink:0;padding:7px 13px;border:1.5px solid var(--paper3);border-radius:18px;font-family:'Noto Sans JP',sans-serif;font-size:11px;background:white;cursor:pointer;color:var(--ink2);white-space:nowrap;transition:.2s;-webkit-appearance:none}
+.filter-pill.on{background:var(--moss4);border-color:var(--moss2);color:var(--moss);font-weight:700}
+
+/* メイン */
+.main{position:relative;z-index:1}
+.page{display:none}
+.page.active{display:block}
+.inventory-wrap{padding:4px 8px 100px;max-width:560px;margin:0 auto}
+
+/* カテゴリカラー定義 */
+.cat-kiku   {--cc:#7b9e4a;--cl:#f0f6e8;--cl2:#e4f0d6}
+.cat-ran    {--cc:#b5607a;--cl:#fdeef3;--cl2:#fae0e8}
+.cat-yuri   {--cc:#7a6fbb;--cl:#f0eefa;--cl2:#e4e0f5}
+.cat-hoka   {--cc:#c07830;--cl:#fef5ea;--cl2:#fdecd6}
+.cat-green  {--cc:#3d7a5a;--cl:#eaf6f0;--cl2:#d8eee5}
+.cat-custom {--cc:#888;--cl:#f5f5f5;--cl2:#ebebeb}
+
+/* カテゴリヘッダー */
+.cat-section{margin-bottom:8px;border-radius:8px;overflow:hidden}
+.cat-header{
+  display:flex;align-items:center;gap:6px;
+  padding:5px 8px;
+  background:var(--cc);
+  margin-bottom:0;
+}
+.cat-line{display:none}
+.cat-label{
+  font-family:'Shippori Mincho B1',serif;
+  font-size:11px;font-weight:700;
+  color:white;letter-spacing:1.5px;white-space:nowrap;
+}
+.cat-count{
+  font-size:10px;color:rgba(255,255,255,.75);
+  background:rgba(0,0,0,.15);
+  padding:1px 6px;border-radius:8px;
+  margin-left:auto;
+}
+
+/* 花カード ── 超コンパクト1行 */
+.flower-card{
+  background:var(--cl);
+  border-radius:0;
+  margin-bottom:0;
+  display:flex;
+  align-items:center;
+  padding:6px 8px;
+  gap:6px;
+  border-left:3px solid var(--cc);
+  border-bottom:1px solid rgba(0,0,0,.04);
+  transition:background .15s;
+}
+.flower-card:last-of-type{border-bottom:none;}
+.flower-card:nth-child(even){background:var(--cl2);}
+.flower-card.low  {border-left-color:var(--kin)!important;background:#fffae8!important;}
+.flower-card.zero {border-left-color:var(--sakura)!important;background:#fff0f3!important;opacity:.8;}
+
+/* アイコン非表示（スペース節約） */
+.flower-icon{display:none}
+
+.flower-body{
+  flex:1;min-width:0;
+  display:flex;
+  align-items:center;
+  gap:5px;
+  flex-wrap:nowrap;
+  overflow:hidden;
+}
+.flower-name{
+  font-size:13px;
+  font-weight:500;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  color:var(--ink);
+  flex-shrink:1;
+  min-width:0;
+}
+/* ステータス色を花名の色で表現（バッジ非表示） */
+.flower-card.low  .flower-name{color:var(--kin);}
+.flower-card.zero .flower-name{color:var(--sakura);}
+
+.flower-tags{display:none} /* バッジ非表示 */
+
+/* ＋追加ボタン：極小・名前の右に */
+.card-add-btn{
+  display:inline-flex;
+  align-items:center;
+  padding:1px 5px;
+  border-radius:8px;
+  border:1px dashed #d4720a;
+  background:#fff4ec;
+  color:#d4720a;
+  font-family:'Noto Sans JP',sans-serif;
+  font-size:9px;
+  font-weight:700;
+  cursor:pointer;
+  white-space:nowrap;
+  flex-shrink:0;
+  transition:background .15s;
+  line-height:1.6;
+}
+.card-add-btn:active{background:#ffe0c4;}
+
+/* 数量コントロール */
+.qty-area{
+  display:flex;
+  align-items:center;
+  gap:1px;
+  flex-shrink:0;
+}
+.qty-btn{
+  width:30px;
+  height:30px;
+  border:none;
+  border-radius:50%;
+  font-size:18px;
+  font-weight:700;
+  line-height:1;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  transition:transform .1s;
+  flex-shrink:0;
+  -webkit-user-select:none;
+  user-select:none;
+}
+.qty-btn:active{transform:scale(.82);}
+.qty-btn.m{background:var(--sakura3);color:var(--sakura);}
+.qty-btn.p{background:var(--moss4);color:var(--moss2);}
+
+.qty-num{
+  font-family:'Shippori Mincho B1',serif;
+  font-size:18px;
+  font-weight:700;
+  width:34px;
+  text-align:center;
+  color:var(--ink);
+  font-variant-numeric:tabular-nums;
+  flex-shrink:0;
+}
+.flower-card.low  .qty-num{color:var(--kin);}
+.flower-card.zero .qty-num{color:var(--sakura);}
+
+.qty-unit{
+  font-size:10px;
+  font-weight:700;
+  color:var(--moss2);
+  background:var(--moss4);
+  border:1px solid var(--moss3);
+  border-radius:8px;
+  padding:2px 5px;
+  min-width:26px;
+  text-align:center;
+  cursor:pointer;
+  white-space:nowrap;
+  transition:background .15s, transform .1s;
+  -webkit-user-select:none;
+  user-select:none;
+  flex-shrink:0;
+  line-height:1.6;
+}
+.qty-unit:active{background:var(--moss3);transform:scale(.93);}
+
+/* 音声パネル */
+.voice-panel{position:fixed;bottom:0;left:0;right:0;background:white;border-radius:24px 24px 0 0;padding:18px 20px calc(env(safe-area-inset-bottom,0px) + 18px);box-shadow:0 -4px 32px rgba(0,0,0,.15);z-index:200;transform:translateY(100%);transition:transform .35s cubic-bezier(.34,1.56,.64,1);border-top:3px solid var(--sakura);max-width:600px;margin:0 auto}
+.voice-panel.show{transform:translateY(0)}
+.voice-drag{width:36px;height:4px;background:var(--paper3);border-radius:2px;margin:0 auto 14px}
+.voice-title{font-family:'Shippori Mincho B1',serif;font-size:15px;font-weight:700;color:var(--sakura);margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.voice-waveform{height:36px;display:flex;align-items:center;justify-content:center;gap:3px;margin-bottom:10px}
+.wave-bar{width:4px;border-radius:2px;background:rgba(212,96,122,.5);animation:wave 1s ease-in-out infinite}
+.wave-bar:nth-child(1){height:12px;animation-delay:0s}
+.wave-bar:nth-child(2){height:28px;animation-delay:.1s}
+.wave-bar:nth-child(3){height:20px;animation-delay:.2s}
+.wave-bar:nth-child(4){height:36px;animation-delay:.3s}
+.wave-bar:nth-child(5){height:16px;animation-delay:.4s}
+.wave-bar:nth-child(6){height:30px;animation-delay:.3s}
+.wave-bar:nth-child(7){height:22px;animation-delay:.2s}
+.wave-bar:nth-child(8){height:14px;animation-delay:.1s}
+@keyframes wave{0%,100%{transform:scaleY(1);opacity:.6}50%{transform:scaleY(1.6);opacity:1}}
+.voice-text{background:var(--paper);border-radius:10px;padding:10px 13px;font-size:16px;font-weight:500;color:var(--ink);min-height:42px;margin-bottom:9px;line-height:1.4}
+.voice-hint{font-size:11px;color:var(--ink3);line-height:1.7;text-align:center}
+.voice-hint strong{color:var(--moss2)}
+
+/* FAB */
+.fab-area{position:fixed;bottom:calc(env(safe-area-inset-bottom,0px) + 16px);right:16px;display:flex;flex-direction:column;gap:10px;z-index:60}
+.fab{width:50px;height:50px;border-radius:50%;border:none;display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,.18);transition:.2s}
+.fab:active{transform:scale(.9)}
+.fab-line{background:#06C755;color:white}
+.fab-copy{background:var(--moss);color:white;font-size:15px}
+
+/* 履歴 */
+.history-wrap{padding:12px 14px 100px;max-width:560px;margin:0 auto}
+.history-date-label{font-size:11px;color:var(--ink3);letter-spacing:1px;font-weight:600;margin:12px 0 5px;padding-left:4px}
+.history-card{background:white;border-radius:var(--r);padding:11px 13px;margin-bottom:5px;display:flex;align-items:center;gap:11px;box-shadow:0 1px 4px rgba(0,0,0,.05)}
+.history-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.history-dot.p{background:var(--moss2)}
+.history-dot.m{background:var(--sakura)}
+.history-info{flex:1;min-width:0}
+.history-name{font-size:14px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.history-meta{font-size:11px;color:var(--ink3);margin-top:2px}
+.history-delta{font-family:'Shippori Mincho B1',serif;font-size:17px;font-weight:700;flex-shrink:0}
+.history-delta.p{color:var(--moss2)}
+.history-delta.m{color:var(--sakura)}
+.history-after{font-size:10px;color:var(--ink3);text-align:right}
+
+/* トースト */
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(14px);background:var(--ink);color:white;padding:9px 20px;border-radius:22px;font-size:13px;font-weight:500;white-space:nowrap;pointer-events:none;opacity:0;transition:.25s;z-index:400;max-width:calc(100vw - 32px)}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+.empty-msg{text-align:center;padding:48px 20px;color:var(--ink3);font-size:14px;line-height:2}
+
+/* ── カード内 追加・削除ボタン ── */
+.card-add-btn{
+  display:inline-flex;
+  align-items:center;
+  gap:2px;
+  padding:3px 9px;
+  border-radius:20px;
+  border:1.5px dashed #d4720a;
+  background:#fff4ec;
+  color:#d4720a;
+  font-family:'Noto Sans JP',sans-serif;
+  font-size:10px;
+  font-weight:700;
+  letter-spacing:.3px;
+  cursor:pointer;
+  flex-shrink:0;
+  white-space:nowrap;
+  transition:background .15s,transform .1s;
+}
+.card-add-btn:active{background:#ffe0c4;transform:scale(.95);}
+
+.delete-btn{
+  width:20px;height:20px;
+  border-radius:50%;
+  border:none;
+  background:var(--sakura3);
+  color:var(--sakura);
+  font-size:11px;
+  line-height:1;
+  cursor:pointer;
+  flex-shrink:0;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  transition:.15s;
+}
+.delete-btn:active{transform:scale(.85);}
+.flower-card[data-custom="1"] .delete-btn{display:flex;}
+
+/* 追加シート（ボトムシート） */
+/* ── 追加画面（フルスクリーン） ── */
+.add-screen{
+  position:fixed;
+  inset:0;
+  background:var(--paper);
+  z-index:300;
+  display:flex;
+  flex-direction:column;
+  transform:translateX(100%);
+  transition:transform .3s cubic-bezier(.25,.8,.25,1);
+  overflow:hidden;
+}
+.add-screen.show{transform:translateX(0);}
+
+.add-screen-header{
+  background:var(--moss);
+  padding:calc(env(safe-area-inset-top,0px) + 14px) 16px 14px;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  flex-shrink:0;
+}
+.add-back-btn{
+  width:36px;height:36px;
+  border-radius:50%;
+  border:none;
+  background:rgba(255,255,255,.18);
+  color:white;
+  font-size:20px;
+  cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+}
+.add-screen-title{
+  font-family:'Shippori Mincho B1',serif;
+  font-size:17px;
+  font-weight:700;
+  color:white;
+  letter-spacing:1px;
+  flex:1;
+}
+
+.add-screen-body{
+  flex:1;
+  overflow-y:auto;
+  padding:28px 20px 20px;
+  display:flex;
+  flex-direction:column;
+  gap:28px;
+  max-width:480px;
+  margin:0 auto;
+  width:100%;
+}
+
+/* 花名入力 */
+.add-section-label{
+  font-size:11px;
+  font-weight:700;
+  color:var(--ink3);
+  letter-spacing:2px;
+  text-transform:uppercase;
+  margin-bottom:10px;
+}
+.add-name-input{
+  width:100%;
+  padding:16px 18px;
+  font-family:'Noto Sans JP',sans-serif;
+  font-size:20px;
+  font-weight:500;
+  border:none;
+  border-bottom:3px solid var(--paper3);
+  background:transparent;
+  outline:none;
+  color:var(--ink);
+  -webkit-appearance:none;
+  transition:border-color .2s;
+  border-radius:0;
+}
+.add-name-input:focus{border-bottom-color:var(--moss2);}
+.add-name-input::placeholder{color:var(--paper3);font-weight:300;}
+
+/* 単位タイル */
+.unit-tiles{
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:10px;
+}
+.unit-tile{
+  padding:18px 10px;
+  border:2px solid var(--paper3);
+  border-radius:16px;
+  background:white;
+  font-family:'Shippori Mincho B1',serif;
+  font-size:22px;
+  font-weight:700;
+  color:var(--ink2);
+  cursor:pointer;
+  text-align:center;
+  transition:all .15s;
+  -webkit-appearance:none;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:4px;
+}
+.unit-tile .tile-sub{
+  font-family:'Noto Sans JP',sans-serif;
+  font-size:10px;
+  font-weight:400;
+  color:var(--ink3);
+}
+.unit-tile:active{transform:scale(.96);}
+.unit-tile.sel{
+  border-color:var(--moss2);
+  background:var(--moss4);
+  color:var(--moss);
+}
+.unit-tile.sel .tile-sub{color:var(--moss2);}
+
+/* 登録ボタン */
+.add-screen-footer{
+  padding:16px 20px calc(env(safe-area-inset-bottom,0px) + 16px);
+  background:var(--paper);
+  border-top:1px solid var(--paper3);
+  flex-shrink:0;
+  max-width:480px;
+  margin:0 auto;
+  width:100%;
+}
+.add-submit-btn{
+  width:100%;
+  padding:17px;
+  background:var(--moss);
+  color:white;
+  border:none;
+  border-radius:16px;
+  font-family:'Noto Sans JP',sans-serif;
+  font-size:17px;
+  font-weight:700;
+  cursor:pointer;
+  letter-spacing:1px;
+  transition:opacity .2s,transform .15s;
+}
+.add-submit-btn:active{transform:scale(.98);opacity:.9;}
+.add-submit-btn:disabled{opacity:.4;pointer-events:none;}
+
+/* ── 全体メモブロック ── */
+.global-memo-block{
+  background:white;
+  border-radius:8px;
+  margin-top:6px;
+  padding:8px 10px;
+  box-shadow:0 1px 4px rgba(0,0,0,.06);
+  border-left:3px solid var(--moss2);
+}
+.global-memo-label{
+  font-size:10px;
+  font-weight:700;
+  color:var(--moss2);
+  letter-spacing:1px;
+  margin-bottom:5px;
+}
+.global-memo-text{
+  width:100%;
+  min-height:72px;
+  padding:7px 9px;
+  font-family:'Noto Sans JP',sans-serif;
+  font-size:13px;
+  color:var(--ink);
+  background:var(--paper);
+  border:1.5px solid var(--paper3);
+  border-radius:6px;
+  resize:vertical;
+  outline:none;
+  line-height:1.6;
+  -webkit-appearance:none;
+  box-sizing:border-box;
+  transition:border-color .2s;
+}
+.global-memo-text:focus{border-color:var(--moss2);}
+</style>
+</head>
+<body>
+
+<div class="toast" id="toast"></div>
+
+<!-- ヘッダー -->
+<header class="app-header">
+  <div class="header-inner">
+    <div class="header-logo">🌸</div>
+    <div class="header-text">
+      <div class="header-title">渡辺花屋</div>
+      <div class="header-sub">在庫管理</div>
+    </div>
+    <div class="header-actions">
+      <button class="mic-btn" id="micBtn">🎙</button>
+    </div>
+  </div>
+  <div class="stats-bar">
+    <div class="stat-item"><span class="stat-num" id="sTot">0</span>&nbsp;品目</div>
+    <div class="stat-item warn"><span class="stat-num" id="sLow">0</span>&nbsp;残少</div>
+    <div class="stat-item danger"><span class="stat-num" id="sZero">0</span>&nbsp;欠品</div>
+    <div class="stat-item"><span class="stat-num" id="sTime">―</span>&nbsp;更新</div>
+  </div>
+</header>
+
+<!-- タブ -->
+<div class="tab-bar" id="tabBar">
+  <button class="tab-btn active" data-tab="all">すべて</button>
+  <button class="tab-btn" data-tab="kiku">菊</button>
+  <button class="tab-btn" data-tab="ran">ラン</button>
+  <button class="tab-btn" data-tab="yuri">ユリ</button>
+  <button class="tab-btn" data-tab="hoka">その他</button>
+  <button class="tab-btn" data-tab="green">グリーン</button>
+  <button class="tab-btn" data-tab="history">履歴</button>
+</div>
+
+<!-- 検索 -->
+<div class="search-area" id="searchArea">
+  <div class="search-wrap">
+    <input class="search-input" id="searchInput" type="search" placeholder="花の名前で検索…" autocomplete="off">
+  </div>
+  <button class="filter-pill" id="filterZero">ゼロ非表示</button>
+</div>
+
+<!-- メイン -->
+<main class="main">
+  <div class="page active" id="page-inventory">
+    <div class="inventory-wrap" id="inventoryWrap"></div>
+  </div>
+  <div class="page" id="page-history">
+    <div class="history-wrap" id="historyWrap">
+      <p class="empty-msg">まだ変更履歴がありません</p>
+    </div>
+  </div>
+</main>
+
+<!-- 音声パネル -->
+<div class="voice-panel" id="voicePanel">
+  <div class="voice-drag"></div>
+  <div class="voice-title">🎙 音声で在庫を入力</div>
+  <div class="voice-waveform">
+    <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
+    <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
+    <div class="wave-bar"></div><div class="wave-bar"></div>
+  </div>
+  <div class="voice-text" id="voiceText">話してください…</div>
+  <div class="voice-hint">
+    <strong>入荷・仕入れ・追加</strong> → ＋加算 ／ <strong>出荷・使用・売った</strong> → −減算<br>
+    例：「白ユリ 5束 入荷」「カーネーション白 3本 使った」
+  </div>
+</div>
+
+
+<!-- 追加画面（フルスクリーン） -->
+<div class="add-screen" id="addScreen">
+  <div class="add-screen-header">
+    <button class="add-back-btn" id="addBackBtn">←</button>
+    <div class="add-screen-title" id="addScreenTitle">花を追加</div>
+  </div>
+  <div class="add-screen-body">
+    <div>
+      <div class="add-section-label">花の名前</div>
+      <input class="add-name-input" id="addName" type="text"
+        placeholder="例：グラジオラス 緑"
+        autocomplete="off" autocorrect="off" spellcheck="false">
+    </div>
+    <div>
+      <div class="add-section-label">単位</div>
+      <div class="unit-tiles" id="unitTiles">
+        <button class="unit-tile sel" data-unit="本">本<span class="tile-sub">菊・カーネーション</span></button>
+        <button class="unit-tile" data-unit="束">束<span class="tile-sub">ユリ・かすみそう</span></button>
+        <button class="unit-tile" data-unit="オケ">オケ<span class="tile-sub">アレカヤシ・ロベ</span></button>
+      </div>
+    </div>
+  </div>
+  <div class="add-screen-footer">
+    <button class="add-submit-btn" id="addSubmitBtn" disabled>登録する</button>
+  </div>
+</div>
+
+<!-- FAB -->
+<div class="fab-area">
+  <button class="fab fab-line" id="lineShareBtn" title="LINEで共有">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="white">
+      <path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63h2.386c.346 0 .627.285.627.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.104.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63.346 0 .628.285.628.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.282.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314"/>
+    </svg>
+  </button>
+  <button class="fab fab-copy" id="copyBtn" title="テキストをコピー">📋</button>
+</div>
+
+<script>
+// ═══════════════════════════════════════════
+// 花データ定義
+// unit: 各花に適切な単位を設定
+// ═══════════════════════════════════════════
+const FLOWERS = {
+  "菊": [
+    {id:"kM-L",  name:"菊 L",         emoji:"🌼", unit:"本",  tab:"kiku"},
+    {id:"kM-M",  name:"菊 M",         emoji:"🌼", unit:"本",  tab:"kiku"},
+    {id:"kM-2L", name:"菊 2L",        emoji:"🌼", unit:"本",  tab:"kiku"},
+    {id:"kM-ki", name:"黄菊",         emoji:"🌼", unit:"本",  tab:"kiku"},
+    {id:"sp-w",  name:"SPマム 白",    emoji:"🌸", unit:"束",  tab:"kiku"},
+    {id:"sp-y",  name:"SPマム 黄",    emoji:"🌸", unit:"束",  tab:"kiku"},
+    {id:"sp-p",  name:"SPマム ピンク",emoji:"🌸", unit:"束",  tab:"kiku"},
+    {id:"sa-0",  name:"祭壇マム",     emoji:"🌸", unit:"本",  tab:"kiku"},
+    {id:"sa-p",  name:"祭壇マムp",    emoji:"🌸", unit:"本",  tab:"kiku"},
+  ],
+  "ラン": [
+    {id:"r-ko", name:"胡蝶蘭",        emoji:"🌺", unit:"鉢",  tab:"ran"},
+    {id:"r-on", name:"オンシジューム", emoji:"🌺", unit:"束",  tab:"ran"},
+    {id:"r-dp", name:"デンファレ P",  emoji:"🌺", unit:"本",  tab:"ran"},
+    {id:"r-dw", name:"デンファレ W",  emoji:"🌺", unit:"本",  tab:"ran"},
+    {id:"r-st", name:"ストレチア",    emoji:"🦜", unit:"本",  tab:"ran"},
+  ],
+  "ユリ": [
+    {id:"y-w",  name:"ユリ 白",       emoji:"💮", unit:"束",  tab:"yuri"},
+    {id:"y-p",  name:"ユリ ピンク",   emoji:"🌸", unit:"束",  tab:"yuri"},
+    {id:"y-ca", name:"カサブランカ",  emoji:"💮", unit:"束",  tab:"yuri"},
+    {id:"y-sy", name:"スカシユリ 黄", emoji:"🌻", unit:"束",  tab:"yuri"},
+    {id:"y-so", name:"スカシユリ OR", emoji:"🌻", unit:"束",  tab:"yuri"},
+    {id:"y-tp", name:"てっぽうゆり",  emoji:"💮", unit:"束",  tab:"yuri"},
+    {id:"y-hk", name:"ハクビ",        emoji:"🌷", unit:"本",  tab:"yuri"},
+    {id:"y-ka", name:"カラー",        emoji:"🤍", unit:"本",  tab:"yuri"},
+    {id:"y-de", name:"デルフィー",    emoji:"💜", unit:"本",  tab:"yuri"},
+    {id:"y-bl", name:"ブルーsp",      emoji:"💙", unit:"本",  tab:"yuri"},
+    {id:"y-mn", name:"モンス",        emoji:"🌿", unit:"本",  tab:"yuri"},
+    {id:"y-go", name:"ゴット",        emoji:"🌿", unit:"本",  tab:"yuri"},
+    {id:"y-ok", name:"オクラレル",    emoji:"🌿", unit:"本",  tab:"yuri"},
+    {id:"y-ta", name:"タニワタリ",    emoji:"🌿", unit:"本",  tab:"yuri"},
+  ],
+  "その他の花": [
+    {id:"o-kas", name:"かすみそう",      emoji:"🤍", unit:"束",  tab:"hoka"},
+    {id:"o-sol", name:"ソリダコ",        emoji:"💛", unit:"束",  tab:"hoka"},
+    {id:"o-kuj", name:"くじゃく草",      emoji:"💜", unit:"束",  tab:"hoka"},
+    {id:"o-stp", name:"スターチス 紫",   emoji:"💜", unit:"束",  tab:"hoka"},
+    {id:"o-sty", name:"スターチス 黄",   emoji:"💛", unit:"束",  tab:"hoka"},
+    {id:"c-w",   name:"カーネーション W",emoji:"🤍", unit:"本",  tab:"hoka"},
+    {id:"c-p",   name:"カーネーション P",emoji:"🌸", unit:"本",  tab:"hoka"},
+    {id:"c-y",   name:"カーネーション Y",emoji:"💛", unit:"本",  tab:"hoka"},
+    {id:"c-or",  name:"カーネーション OR",emoji:"🧡",unit:"本",  tab:"hoka"},
+    {id:"c-g",   name:"カーネーション G",emoji:"🌿", unit:"本",  tab:"hoka"},
+    {id:"sc-w",  name:"spカーネ W",      emoji:"🤍", unit:"本",  tab:"hoka"},
+    {id:"sc-p",  name:"spカーネ P",      emoji:"🌸", unit:"本",  tab:"hoka"},
+    {id:"sc-y",  name:"spカーネ Y",      emoji:"💛", unit:"本",  tab:"hoka"},
+    {id:"g-p",   name:"グラ p",          emoji:"🌸", unit:"本",  tab:"hoka"},
+    {id:"g-w",   name:"グラ w",          emoji:"🤍", unit:"本",  tab:"hoka"},
+    {id:"g-y",   name:"グラ Y",          emoji:"💛", unit:"本",  tab:"hoka"},
+    {id:"o-kin", name:"金魚草",           emoji:"🐠", unit:"本",  tab:"hoka"},
+    {id:"o-rin", name:"リンドウ",         emoji:"💜", unit:"本",  tab:"hoka"},
+    {id:"t-p",   name:"トルコ ピンク",   emoji:"🌸", unit:"本",  tab:"hoka"},
+    {id:"t-w",   name:"トルコ 白",       emoji:"🤍", unit:"本",  tab:"hoka"},
+    {id:"t-y",   name:"トルコ 黄色",     emoji:"💛", unit:"本",  tab:"hoka"},
+    {id:"t-mu",  name:"トルコ 紫",       emoji:"💜", unit:"本",  tab:"hoka"},
+    {id:"t-fu",  name:"トルコ 複紫",     emoji:"💜", unit:"本",  tab:"hoka"},
+    {id:"t-gr",  name:"トルコ 緑",       emoji:"💚", unit:"本",  tab:"hoka"},
+    {id:"t-nm",  name:"トルコ 濃紫",     emoji:"💜", unit:"本",  tab:"hoka"},
+    {id:"t-ch",  name:"トルコ 茶",       emoji:"🤎", unit:"本",  tab:"hoka"},
+    {id:"al-y",  name:"アルストロ 黄色",    emoji:"💛", unit:"本",  tab:"hoka"},
+    {id:"al-or", name:"アルストロ オレンジ",emoji:"🧡", unit:"本",  tab:"hoka"},
+    {id:"al-p",  name:"アルストロ ピンク",  emoji:"🌸", unit:"本",  tab:"hoka"},
+    {id:"al-r",  name:"アルストロ 赤",      emoji:"🌹", unit:"本",  tab:"hoka"},
+    {id:"al-w",  name:"アルストロ 白",      emoji:"🤍", unit:"本",  tab:"hoka"},
+    {id:"al-b",  name:"アルストロ ベージュ",emoji:"🌾", unit:"本",  tab:"hoka"},
+  ],
+  "グリーンなど": [
+    {id:"gr-ar", name:"アレカヤシ",   emoji:"🌴", unit:"オケ", tab:"green"},
+    {id:"gr-ro", name:"ロベ",         emoji:"🌿", unit:"オケ", tab:"green"},
+    {id:"gr-lf", name:"レザーファン", emoji:"🌿", unit:"本",   tab:"green"},
+    {id:"gr-ha", name:"ハラン",       emoji:"🌿", unit:"本",   tab:"green"},
+    {id:"gr-dr", name:"ドラセナ",     emoji:"🌿", unit:"本",   tab:"green"},
+    {id:"gr-rd", name:"赤ドラ",       emoji:"🌿", unit:"本",   tab:"green"},
+    {id:"gr-le", name:"レモンリーフ", emoji:"🍋", unit:"束",   tab:"green"},
+    {id:"gr-sk", name:"しきみ",       emoji:"🌿", unit:"束",   tab:"green"},
+    {id:"gr-sa", name:"榊",           emoji:"⛩️",unit:"束",   tab:"green"},
+    {id:"gr-as", name:"馬酔木",       emoji:"🌸", unit:"束",   tab:"green"},
+  ]
+};
+
+const ALL = Object.values(FLOWERS).flat();
+function byId(id){
+  // まずビルトイン、次にカスタムを探す
+  const f = ALL.find(f=>f.id===id);
+  if(f) return f;
+  const cf = customFlowers.find(f=>f.id===id);
+  return cf||null;
+}
+
+// カスタム花（追加・削除可能）
+let customFlowers = [];
+
+// 全カテゴリ+カスタムをまとめて返す（insertAfterIdの直後に挿入）
+function getAllFlowers(){
+  const result = Object.entries(FLOWERS).map(([cat,flowers])=>[cat,[...flowers]]);
+  customFlowers.forEach(cf=>{
+    let catEntry = result.find(([cat])=>cat===cf.cat);
+    if(!catEntry){ catEntry=[cf.cat,[]]; result.push(catEntry); }
+    const flowers = catEntry[1];
+    if(cf.insertAfterId){
+      const idx = flowers.findIndex(f=>f.id===cf.insertAfterId);
+      if(idx>=0){ flowers.splice(idx+1,0,cf); return; }
+    }
+    flowers.push(cf);
+  });
+  return result;
+}
+
+// ─── State ───
+let stocks = {};
+let unitStocks = {};   // 花ごとの単位上書き
+let memos = {};        // 花ごとのメモ
+let globalMemo = "";   // 全体メモ
+let history = [];
+let hideZero = false;
+let currentTab = "all";
+let lastUpdateTime = null;
+let recognition = null;
+let isListening = false;
+
+function saveUnits(){
+  localStorage.setItem("wh_units_v4",JSON.stringify(unitStocks));
+}
+function saveMemos(){
+  localStorage.setItem("wh_memos_v4",JSON.stringify(memos));
+}
+function saveGlobalMemo(){
+  localStorage.setItem("wh_gmemo_v4", globalMemo);
+}
+
+function load(){
+  try{
+    const s=localStorage.getItem("wh_s_v4");
+    const h=localStorage.getItem("wh_h_v4");
+    const t=localStorage.getItem("wh_t_v4");
+    const c=localStorage.getItem("wh_custom_v4");
+    const u=localStorage.getItem("wh_units_v4");
+    const m=localStorage.getItem("wh_memos_v4");
+    const gm=localStorage.getItem("wh_gmemo_v4");
+    if(s) stocks=JSON.parse(s);
+    if(h) history=JSON.parse(h);
+    if(t) lastUpdateTime=t;
+    if(c) customFlowers=JSON.parse(c);
+    if(u) unitStocks=JSON.parse(u);
+    if(m) memos=JSON.parse(m);
+    if(gm) globalMemo=gm;
+  }catch(e){}
+  ALL.forEach(f=>{ if(stocks[f.id]==null) stocks[f.id]=0; });
+  customFlowers.forEach(f=>{ if(stocks[f.id]==null) stocks[f.id]=0; });
+}
+
+function save(){
+  lastUpdateTime = new Date().toLocaleTimeString("ja-JP",{hour:"2-digit",minute:"2-digit"});
+  localStorage.setItem("wh_s_v4",JSON.stringify(stocks));
+  localStorage.setItem("wh_h_v4",JSON.stringify(history));
+  localStorage.setItem("wh_t_v4",lastUpdateTime);
+  localStorage.setItem("wh_custom_v4",JSON.stringify(customFlowers));
+  saveUnits();
+  document.getElementById("sTime").textContent = lastUpdateTime;
+}
+
+// 単位表示ラベル
+const UNITS = ["本","束","オケ"];
+function unitLabel(u){ return u || "本"; }
+
+// 単位をサイクル切り替えして保存
+function cycleUnit(id, btn){
+  const f = byId(id);
+  if(!f) return;
+  const cur = unitStocks[id] || f.unit;
+  const idx = UNITS.indexOf(cur);
+  const next = UNITS[(idx+1) % UNITS.length];
+  unitStocks[id] = next;
+  btn.textContent = next;
+  // flower-tags の単位バッジも更新
+  const card = document.querySelector(`.flower-card[data-id="${id}"]`);
+  if(card){
+    const tagUnit = card.querySelector(".tag-unit");
+    if(tagUnit) tagUnit.textContent = next;
+  }
+  saveUnits();
+  toast(`単位を「${next}」に変更しました`);
+}
+
+function setStock(id, val, silent){
+  const prev = stocks[id]||0;
+  const delta = val - prev;
+  stocks[id] = val;
+  const f = byId(id);
+  history.unshift({id,delta,after:val,name:f.name,unit:f.unit,ts:Date.now()});
+  if(history.length>300) history.pop();
+  save();
+  renderStats();
+  refreshCard(id);
+  if(!silent) toast(`${f.name}：${val}${f.unit}`);
+}
+
+// ─── カード更新 ───
+function refreshCard(id){
+  const el = document.querySelector(`.flower-card[data-id="${id}"]`);
+  if(!el) return;
+  const f = byId(id);
+  const q = stocks[id]||0;
+  el.className = "flower-card"+(q===0?" zero":q<=3?" low":"");
+
+  // 数字表示を更新
+  const numEl = el.querySelector(".qty-num");
+  if(numEl) numEl.textContent = q;
+
+  // タグ
+  const tags = el.querySelector(".flower-tags");
+  const badge = q===0
+    ? `<span class="flower-tag tag-zero">欠品</span>`
+    : q<=3
+      ? `<span class="flower-tag tag-low">残り少</span>`
+      : `<span class="flower-tag tag-ok">在庫あり</span>`;
+  const curUnit = unitStocks[f.id]||f.unit;
+  tags.innerHTML = badge + `<span class="flower-tag tag-unit">${curUnit}</span>`;
+  const qtyUnitBtn = el.querySelector(".qty-unit");
+  if(qtyUnitBtn) qtyUnitBtn.textContent = curUnit;
+}
+
+// ─── 統計 ───
+function renderStats(){
+  let tot=0,low=0,zero=0;
+  getAllFlowers().forEach(([,fl])=>fl.forEach(f=>{ const q=stocks[f.id]||0; tot++; if(q===0)zero++; else if(q<=3)low++; }));
+  document.getElementById("sTot").textContent = tot;
+  document.getElementById("sLow").textContent = low;
+  document.getElementById("sZero").textContent = zero;
+  if(lastUpdateTime) document.getElementById("sTime").textContent = lastUpdateTime;
+}
+
+// ─── 全体レンダリング ───
+function render(){
+  const q = document.getElementById("searchInput").value.trim().toLowerCase();
+  const wrap = document.getElementById("inventoryWrap");
+  wrap.innerHTML = "";
+
+  getAllFlowers().forEach(([cat, flowers])=>{
+    const list = flowers.filter(f=>{
+      if(currentTab!=="all" && f.tab!==currentTab) return false;
+      if(q && !f.name.toLowerCase().includes(q)) return false;
+      if(hideZero && (stocks[f.id]||0)===0) return false;
+      return true;
+    });
+    if(!list.length) return;
+
+    const catColorMap = {"菊":"cat-kiku","ラン":"cat-ran","ユリ":"cat-yuri","その他の花":"cat-hoka","グリーンなど":"cat-green"};
+    const catCls = catColorMap[cat] || "cat-custom";
+    const sec = document.createElement("div");
+    sec.className = "cat-section " + catCls;
+    sec.innerHTML = `<div class="cat-header">
+      <div class="cat-label">≪${cat}≫</div>
+      <div class="cat-count">${list.length}種</div>
+    </div>`;
+    list.forEach(f=> sec.appendChild(buildCard(f)));
+    // グリーンカテゴリ（馬酔木が最後）の下に全体メモを追加
+    if(cat === "グリーンなど" && (currentTab==="all" || currentTab==="green")){
+      const memoBlock = document.createElement("div");
+      memoBlock.className = "global-memo-block";
+      memoBlock.innerHTML = `
+        <div class="global-memo-label">📝 メモ</div>
+        <textarea class="global-memo-text" id="globalMemoText" placeholder="仕入れ情報・連絡事項など自由にメモ…">${globalMemo}</textarea>
+      `;
+      memoBlock.querySelector(".global-memo-text").addEventListener("input", function(){
+        globalMemo = this.value;
+        saveGlobalMemo();
+      });
+      sec.appendChild(memoBlock);
+    }
+    wrap.appendChild(sec);
+  });
+
+  if(!wrap.children.length){
+    wrap.innerHTML = `<div class="empty-msg">🔍 該当する花が見つかりません</div>`;
+  }
+  renderStats();
+}
+
+function buildCard(f){
+  const q = stocks[f.id]||0;
+  const cls = q===0?"zero":q<=3?"low":"";
+  const badge = q===0
+    ?`<span class="flower-tag tag-zero">欠品</span>`
+    :q<=3
+      ?`<span class="flower-tag tag-low">残り少</span>`
+      :`<span class="flower-tag tag-ok">在庫あり</span>`;
+
+  const div = document.createElement("div");
+  div.className = "flower-card"+(cls?" "+cls:"");
+  div.dataset.id = f.id;
+  div.innerHTML = `
+    <div class="flower-body">
+      <div class="flower-name">${f.name}</div>
+      <button class="card-add-btn" data-id="${f.id}" data-cat="${f.cat||''}">＋</button>
+    </div>
+    <div class="qty-area">
+      <button class="qty-btn m" data-id="${f.id}" data-d="-1">−</button>
+      <div class="qty-num">${q}</div>
+      <button class="qty-btn p" data-id="${f.id}" data-d="1">＋</button>
+      <button class="qty-unit" data-id="${f.id}">${unitLabel(unitStocks[f.id]||f.unit)}</button>
+    </div>
+    <button class="delete-btn" data-id="${f.id}" title="削除">×</button>
+  `;
+  div.dataset.custom = f.id.startsWith("custom_") ? "1" : "0";
+
+  div.querySelector(".qty-btn.m").addEventListener("click", e=>{
+    e.stopPropagation();
+    const id = e.currentTarget.dataset.id;
+    setStock(id, Math.max(0,(stocks[id]||0)-1));
+  });
+  div.querySelector(".qty-btn.p").addEventListener("click", e=>{
+    e.stopPropagation();
+    const id = e.currentTarget.dataset.id;
+    setStock(id, (stocks[id]||0)+1);
+  });
+
+  div.querySelector(".qty-unit").addEventListener("click", e=>{
+    e.stopPropagation();
+    const id = e.currentTarget.dataset.id;
+    cycleUnit(id, e.currentTarget);
+  });
+
+  return div;
+}
+
+// ─── 履歴 ───
+function renderHistory(){
+  const wrap = document.getElementById("historyWrap");
+  if(!history.length){ wrap.innerHTML=`<div class="empty-msg">まだ変更履歴がありません</div>`; return; }
+  const groups={};
+  history.slice(0,100).forEach(h=>{
+    const d=new Date(h.ts).toLocaleDateString("ja-JP",{month:"long",day:"numeric",weekday:"short"});
+    if(!groups[d]) groups[d]=[];
+    groups[d].push(h);
+  });
+  wrap.innerHTML = Object.entries(groups).map(([date,items])=>`
+    <div class="history-date-label">${date}</div>
+    ${items.map(h=>{
+      const t=new Date(h.ts).toLocaleTimeString("ja-JP",{hour:"2-digit",minute:"2-digit"});
+      const pos=h.delta>=0;
+      return `<div class="history-card">
+        <div class="history-dot ${pos?"p":"m"}"></div>
+        <div class="history-info">
+          <div class="history-name">${h.name}</div>
+          <div class="history-meta">${t}</div>
+        </div>
+        <div>
+          <div class="history-delta ${pos?"p":"m"}">${pos?"＋":""}${h.delta}${h.unit}</div>
+          <div class="history-after">→ ${h.after}${h.unit}</div>
+        </div>
+      </div>`;
+    }).join("")}
+  `).join("");
+}
+
+// ─── トースト ───
+let _tt;
+function toast(msg){
+  const el=document.getElementById("toast");
+  el.textContent=msg; el.classList.add("show");
+  clearTimeout(_tt); _tt=setTimeout(()=>el.classList.remove("show"),2000);
+}
+
+// ─── 音声入力 ───
+function initVoice(){
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){ document.getElementById("micBtn").style.opacity=".4"; return; }
+  recognition=new SR();
+  recognition.lang="ja-JP"; recognition.continuous=false; recognition.interimResults=true;
+  recognition.onresult=e=>{
+    const txt=Array.from(e.results).map(r=>r[0].transcript).join("");
+    document.getElementById("voiceText").textContent=txt||"話してください…";
+    if(e.results[e.results.length-1].isFinal) voiceProcess(txt);
+  };
+  recognition.onend=stopVoice;
+  recognition.onerror=e=>{ stopVoice(); toast("認識エラー: "+e.error); };
+}
+function toggleVoice(){ isListening?stopVoice():startVoice(); }
+function startVoice(){
+  if(!recognition){ toast("音声入力非対応です"); return; }
+  isListening=true;
+  document.getElementById("micBtn").classList.add("on");
+  document.getElementById("micBtn").textContent="⏹";
+  document.getElementById("voicePanel").classList.add("show");
+  document.getElementById("voiceText").textContent="話してください…";
+  recognition.start();
+}
+function stopVoice(){
+  isListening=false;
+  document.getElementById("micBtn").classList.remove("on");
+  document.getElementById("micBtn").textContent="🎙";
+  setTimeout(()=>document.getElementById("voicePanel").classList.remove("show"),1500);
+  try{ recognition.stop(); }catch(e){}
+}
+function voiceProcess(text){
+  const t=text.replace(/\s/g,"");
+  let num=null;
+  const nm=t.match(/(\d+)/); if(nm) num=parseInt(nm[1]);
+  const kanji={"一":1,"二":2,"三":3,"四":4,"五":5,"六":6,"七":7,"八":8,"九":9,"十":10,"十五":15,"二十":20,"三十":30};
+  if(num==null) for(const[k,v] of Object.entries(kanji)) if(t.includes(k)){num=v;break;}
+  if(num==null) num=1;
+  const isOut=/出荷|使用|使っ|売っ|出し|減/.test(t);
+  const isSet=/在庫|セット|数量/.test(t);
+  let best=null,bestLen=0;
+  getAllFlowers().forEach(([,fl])=>fl.forEach(f=>{ const n=f.name.replace(/\s/g,"").toLowerCase(); if(t.toLowerCase().includes(n)&&n.length>bestLen){best=f;bestLen=n.length;} }));
+  if(!best){ toast(`「${text}」：花名が認識できませんでした`); return; }
+  if(isSet) setStock(best.id,num);
+  else if(isOut) setStock(best.id,Math.max(0,(stocks[best.id]||0)-num));
+  else setStock(best.id,(stocks[best.id]||0)+num);
+}
+
+// ─── 共有（ゼロのみ❌） ───
+function buildShareText(){
+  const now=new Date().toLocaleString("ja-JP",{month:"numeric",day:"numeric",hour:"2-digit",minute:"2-digit"});
+  let lines=[`🌸 渡辺花屋 在庫レポート（${now}）\n`];
+  getAllFlowers().forEach(([cat,flowers])=>{
+    if(!flowers.length) return;
+    lines.push(`【${cat}】`);
+    flowers.forEach(f=>{
+      const q=stocks[f.id]||0;
+      const mk=q===0?"❌ ":"";
+      lines.push(`${mk}${f.name}：${q}${unitStocks[f.id]||f.unit}`);
+    });
+    lines.push("");
+  });
+  if(globalMemo && globalMemo.trim()){
+    lines.push("📝 メモ");
+    lines.push(globalMemo.trim());
+  }
+  return lines.join("\n");
+}
+document.getElementById("lineShareBtn").addEventListener("click",()=>{
+  const url=`https://line.me/R/share?text=${encodeURIComponent(buildShareText())}`;
+  window.open(url,"_blank");
+});
+document.getElementById("copyBtn").addEventListener("click",()=>{
+  const text=buildShareText();
+  if(navigator.clipboard) navigator.clipboard.writeText(text).then(()=>toast("📋 コピーしました"));
+  else{ const ta=document.createElement("textarea"); ta.value=text; document.body.appendChild(ta); ta.select(); document.execCommand("copy"); document.body.removeChild(ta); toast("📋 コピーしました"); }
+});
+
+// ─── タブ・フィルター・検索 ───
+document.getElementById("tabBar").addEventListener("click",e=>{
+  const btn=e.target.closest(".tab-btn"); if(!btn) return;
+  const tab=btn.dataset.tab;
+  document.querySelectorAll(".tab-btn").forEach(b=>b.classList.remove("active"));
+  btn.classList.add("active");
+  if(tab==="history"){
+    document.getElementById("page-inventory").classList.remove("active");
+    document.getElementById("page-history").classList.add("active");
+    document.getElementById("searchArea").style.display="none";
+    renderHistory();
+  } else {
+    document.getElementById("page-history").classList.remove("active");
+    document.getElementById("page-inventory").classList.add("active");
+    document.getElementById("searchArea").style.display="";
+    currentTab=tab; render();
+  }
+});
+document.getElementById("searchInput").addEventListener("input",render);
+document.getElementById("filterZero").addEventListener("click",function(){
+  hideZero=!hideZero; this.classList.toggle("on",hideZero); render();
+});
+document.getElementById("micBtn").addEventListener("click",toggleVoice);
+
+
+// ─── カード内「＋」ボタン → 追加シートを開く ───
+let addTargetId = null;   // この花の直後に挿入
+let addTargetCat = null;
+let selectedUnit = "本";
+
+document.getElementById("inventoryWrap").addEventListener("click", e=>{
+  const addBtn = e.target.closest(".card-add-btn");
+  if(!addBtn) return;
+  e.stopPropagation();
+  addTargetId  = addBtn.dataset.id;
+  addTargetCat = addBtn.dataset.cat || getCatById(addTargetId);
+  document.getElementById("addScreenTitle").textContent = `🌿 追加`;
+  document.getElementById("addName").value = "";
+  openAddSheet();
+});
+
+function getCatById(id){
+  for(const [cat,flowers] of Object.entries(FLOWERS)){
+    if(flowers.find(f=>f.id===id)) return cat;
+  }
+  const cf = customFlowers.find(f=>f.id===id);
+  return cf ? cf.cat : "その他の花";
+}
+
+// ─── 削除ボタンクリック（1回目→確認表示、2回目→削除） ───
+document.getElementById("inventoryWrap").addEventListener("click", e=>{
+  const delBtn = e.target.closest(".delete-btn");
+  if(!delBtn) return;
+  e.stopPropagation();
+  const id = delBtn.dataset.id;
+
+  // すでに確認中なら削除実行
+  if(delBtn.dataset.confirming === "1"){
+    const f = byId(id);
+    customFlowers = customFlowers.filter(cf=>cf.id!==id);
+    delete stocks[id];
+    save();
+    render();
+    toast(`🗑 ${f ? f.name : ""} を削除しました`);
+    return;
+  }
+
+  // 1回目：確認モードに変える
+  delBtn.dataset.confirming = "1";
+  delBtn.textContent = "削除?";
+  delBtn.style.width = "48px";
+  delBtn.style.borderRadius = "12px";
+  delBtn.style.fontSize = "11px";
+  delBtn.style.fontWeight = "700";
+  delBtn.style.background = "var(--sakura)";
+  delBtn.style.color = "white";
+
+  // 2秒後に自動でリセット
+  setTimeout(()=>{
+    if(delBtn.dataset.confirming === "1"){
+      delBtn.dataset.confirming = "0";
+      delBtn.textContent = "×";
+      delBtn.style.cssText = "";
+    }
+  }, 2000);
+});
+
+// ─── 追加シート ───
+function openAddSheet(){
+  selectedUnit = "本";
+  document.querySelectorAll(".unit-tile").forEach(t=>{
+    t.classList.toggle("sel", t.dataset.unit==="本");
+  });
+  const nameEl = document.getElementById("addName");
+  nameEl.value = "";
+  document.getElementById("addSubmitBtn").disabled = true;
+  document.getElementById("addScreen").classList.add("show");
+  setTimeout(()=>nameEl.focus(), 400);
+}
+function closeAddSheet(){
+  document.getElementById("addScreen").classList.remove("show");
+  document.getElementById("addName").value = "";
+}
+
+document.getElementById("addBackBtn").addEventListener("click", closeAddSheet);
+
+// 花名入力で登録ボタンの活性化
+document.getElementById("addName").addEventListener("input", function(){
+  document.getElementById("addSubmitBtn").disabled = this.value.trim() === "";
+});
+
+// 単位タイル選択
+document.getElementById("unitTiles").addEventListener("click", e=>{
+  const tile = e.target.closest(".unit-tile");
+  if(!tile) return;
+  selectedUnit = tile.dataset.unit;
+  document.querySelectorAll(".unit-tile").forEach(t=>t.classList.toggle("sel", t===tile));
+});
+
+// 登録実行
+document.getElementById("addSubmitBtn").addEventListener("click", ()=>{
+  const name = document.getElementById("addName").value.trim();
+  if(!name){ toast("花の名前を入力してください"); return; }
+  const id = "custom_" + Date.now();
+  const cat = addTargetCat || "その他の花";
+  const tabMap = {"菊":"kiku","ラン":"ran","ユリ":"yuri","その他の花":"hoka","グリーンなど":"green"};
+  const tab = tabMap[cat] || "hoka";
+  const emoji = guessEmoji(name, selectedUnit);
+  const newFlower = {id, name, emoji, unit:selectedUnit, tab, cat, insertAfterId: addTargetId};
+  // insertAfterIdの位置に挿入
+  if(addTargetId){
+    const idx = customFlowers.findIndex(f=>f.id===addTargetId);
+    if(idx>=0){ customFlowers.splice(idx+1,0,newFlower); }
+    else { customFlowers.push(newFlower); }
+  } else {
+    customFlowers.push(newFlower);
+  }
+  stocks[id] = 0;
+  save();
+  render();
+  closeAddSheet();
+  toast(`✅ 「${name}」を追加しました`);
+});
+
+function guessEmoji(name, unit){
+  if(/グラ|グラジオラス/.test(name)) return "🌷";
+  if(/バラ|薔薇/.test(name)) return "🌹";
+  if(/菊|マム/.test(name)) return "🌼";
+  if(/ユリ|百合|カサブランカ/.test(name)) return "💮";
+  if(/カーネーション/.test(name)) return "🌸";
+  if(/トルコ/.test(name)) return "🌸";
+  if(/ひまわり|向日葵/.test(name)) return "🌻";
+  if(/緑|グリーン|葉|リーフ|ドラ|ハラン|榊|しきみ/.test(name)) return "🌿";
+  if(/ラン|蘭|胡蝶/.test(name)) return "🌺";
+  if(/桜|サクラ/.test(name)) return "🌸";
+  if(/紫|パープル/.test(name)) return "💜";
+  if(/黄|イエロー/.test(name)) return "💛";
+  if(/白|ホワイト/.test(name)) return "🤍";
+  if(/ピンク|桃/.test(name)) return "🌸";
+  if(/オレンジ/.test(name)) return "🧡";
+  if(unit==="鉢") return "🪴";
+  if(unit==="オケ") return "🌴";
+  return "🌷";
+}
+
+// ─── 起動 ───
+load();
+initVoice();
+render();
+</script>
+</body>
+</html>
