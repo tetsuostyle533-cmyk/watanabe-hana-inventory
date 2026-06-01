@@ -633,7 +633,8 @@ const LANGUAGE_PACKS = {
       noResults: "🔍 該当する花が見つかりません"
     },
     inventory: {
-      categoryCountSuffix: "種"
+      categoryCountSuffix: "種",
+      stockChanged: "{name}：{quantity}{unit}"
     },
     status: {
       zero: "欠品",
@@ -930,7 +931,7 @@ function setStock(id, val, silent){
   save();
   renderStats();
   refreshCard(id);
-  if(!silent) toast(`${f.name}：${val}${f.unit}`);
+  if(!silent) toast(formatText(LANG.inventory.stockChanged,{name:f.name,quantity:val,unit:unitStocks[id]||f.unit}));
 }
 
 // ─── カード更新 ───
