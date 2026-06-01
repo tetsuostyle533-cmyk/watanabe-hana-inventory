@@ -948,13 +948,15 @@ function refreshCard(id){
 
   // タグ
   const tags = el.querySelector(".flower-tags");
-  const badge = q===0
-    ? `<span class="flower-tag tag-zero">${LANG.status.zero}</span>`
-    : q<=3
-      ? `<span class="flower-tag tag-low">${LANG.status.low}</span>`
-      : `<span class="flower-tag tag-ok">${LANG.status.ok}</span>`;
   const curUnit = unitStocks[f.id]||f.unit;
-  tags.innerHTML = badge + `<span class="flower-tag tag-unit">${curUnit}</span>`;
+  if(tags){
+    const badge = q===0
+      ? `<span class="flower-tag tag-zero">${LANG.status.zero}</span>`
+      : q<=3
+        ? `<span class="flower-tag tag-low">${LANG.status.low}</span>`
+        : `<span class="flower-tag tag-ok">${LANG.status.ok}</span>`;
+    tags.innerHTML = badge + `<span class="flower-tag tag-unit">${curUnit}</span>`;
+  }
   const qtyUnitBtn = el.querySelector(".qty-unit");
   if(qtyUnitBtn) qtyUnitBtn.textContent = curUnit;
 }
