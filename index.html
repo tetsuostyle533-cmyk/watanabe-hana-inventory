@@ -602,6 +602,134 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--paper);color:var(--i
 
 <script>
 // ═══════════════════════════════════════════
+// 言語パック
+// 静的HTMLとして直接開けるよう、翻訳データは同梱する。
+// ═══════════════════════════════════════════
+const LANGUAGE_PACKS = {
+  ja: {
+    htmlLang: "ja",
+    locale: "ja-JP",
+    appTitle: "渡辺花屋 在庫",
+    brand: "渡辺花屋",
+    subtitle: "在庫管理",
+    tabs: {
+      all: "すべて",
+      kiku: "菊",
+      ran: "ラン",
+      yuri: "ユリ",
+      hoka: "その他",
+      green: "グリーン",
+      history: "履歴"
+    },
+    stats: {
+      total: "品目",
+      low: "残少",
+      zero: "欠品",
+      updated: "更新"
+    },
+    search: {
+      placeholder: "花の名前で検索…",
+      hideZero: "ゼロ非表示",
+      noResults: "🔍 該当する花が見つかりません"
+    },
+    inventory: {
+      categoryCountSuffix: "種"
+    },
+    status: {
+      zero: "欠品",
+      low: "残り少",
+      ok: "在庫あり"
+    },
+    memo: {
+      label: "📝 メモ",
+      placeholder: "仕入れ情報・連絡事項など自由にメモ…"
+    },
+    history: {
+      empty: "まだ変更履歴がありません"
+    },
+    voice: {
+      title: "🎙 音声で在庫を入力",
+      prompt: "話してください…",
+      hintHtml: "<strong>入荷・仕入れ・追加</strong> → ＋加算 ／ <strong>出荷・使用・売った</strong> → −減算<br>例：「白ユリ 5束 入荷」「カーネーション白 3本 使った」",
+      unsupported: "音声入力非対応です",
+      errorPrefix: "認識エラー: ",
+      nameNotRecognized: "「{text}」：花名が認識できませんでした"
+    },
+    addFlower: {
+      title: "花を追加",
+      quickTitle: "🌿 追加",
+      nameLabel: "花の名前",
+      namePlaceholder: "例：グラジオラス 緑",
+      unitLabel: "単位",
+      submit: "登録する",
+      nameRequired: "花の名前を入力してください",
+      added: "✅ 「{name}」を追加しました",
+      deleted: "🗑 {name} を削除しました",
+      deleteConfirm: "削除?"
+    },
+    units: {
+      labels: {"本": "本", "束": "束", "オケ": "オケ"},
+      help: {"本": "菊・カーネーション", "束": "ユリ・かすみそう", "オケ": "アレカヤシ・ロベ"},
+      changed: "単位を「{unit}」に変更しました"
+    },
+    share: {
+      lineTitle: "LINEで共有",
+      copyTitle: "テキストをコピー",
+      reportTitle: "🌸 渡辺花屋 在庫レポート（{date}）\n",
+      zeroMarker: "❌ ",
+      memoLabel: "📝 メモ",
+      copied: "📋 コピーしました"
+    }
+  }
+};
+const ACTIVE_LANGUAGE = "ja";
+const LANG = LANGUAGE_PACKS[ACTIVE_LANGUAGE];
+
+function formatText(template, values){
+  return template.replace(/\{(\w+)\}/g, (_, key)=>values?.[key] ?? "");
+}
+
+function setText(id, text){
+  const el = document.getElementById(id);
+  if(el) el.textContent = text;
+}
+
+function applyLanguagePack(){
+  document.documentElement.lang = LANG.htmlLang;
+  document.title = LANG.appTitle;
+  document.querySelector(".header-title").textContent = LANG.brand;
+  document.querySelector(".header-sub").textContent = LANG.subtitle;
+  Object.entries(LANG.tabs).forEach(([tab,label])=>{
+    const btn = document.querySelector(`.tab-btn[data-tab="${tab}"]`);
+    if(btn) btn.textContent = label;
+  });
+  document.querySelector(".stat-item:nth-child(1)").innerHTML = `<span class="stat-num" id="sTot">0</span>&nbsp;${LANG.stats.total}`;
+  document.querySelector(".stat-item:nth-child(2)").innerHTML = `<span class="stat-num" id="sLow">0</span>&nbsp;${LANG.stats.low}`;
+  document.querySelector(".stat-item:nth-child(3)").innerHTML = `<span class="stat-num" id="sZero">0</span>&nbsp;${LANG.stats.zero}`;
+  document.querySelector(".stat-item:nth-child(4)").innerHTML = `<span class="stat-num" id="sTime">―</span>&nbsp;${LANG.stats.updated}`;
+  document.getElementById("searchInput").placeholder = LANG.search.placeholder;
+  setText("filterZero", LANG.search.hideZero);
+  setText("addScreenTitle", LANG.addFlower.title);
+  document.getElementById("addName").placeholder = LANG.addFlower.namePlaceholder;
+  setText("addSubmitBtn", LANG.addFlower.submit);
+  setText("voiceText", LANG.voice.prompt);
+  document.querySelector(".voice-title").textContent = LANG.voice.title;
+  document.querySelector(".voice-hint").innerHTML = LANG.voice.hintHtml;
+  document.querySelectorAll(".add-section-label")[0].textContent = LANG.addFlower.nameLabel;
+  document.querySelectorAll(".add-section-label")[1].textContent = LANG.addFlower.unitLabel;
+  document.getElementById("lineShareBtn").title = LANG.share.lineTitle;
+  document.getElementById("copyBtn").title = LANG.share.copyTitle;
+  document.querySelectorAll(".unit-tile").forEach(tile=>{
+    const unit = tile.dataset.unit;
+    tile.textContent = LANG.units.labels[unit] || unit;
+    const sub = document.createElement("span");
+    sub.className = "tile-sub";
+    sub.textContent = LANG.units.help[unit] || "";
+    tile.appendChild(sub);
+  });
+}
+
+// ═══════════════════════════════════════════
 // 花データ定義
 // unit: 各花に適切な単位を設定
 // ═══════════════════════════════════════════
@@ -760,7 +888,7 @@ function load(){
 }
 
 function save(){
-  lastUpdateTime = new Date().toLocaleTimeString("ja-JP",{hour:"2-digit",minute:"2-digit"});
+  lastUpdateTime = new Date().toLocaleTimeString(LANG.locale,{hour:"2-digit",minute:"2-digit"});
   localStorage.setItem("wh_s_v4",JSON.stringify(stocks));
   localStorage.setItem("wh_h_v4",JSON.stringify(history));
   localStorage.setItem("wh_t_v4",lastUpdateTime);
@@ -789,7 +917,7 @@ function cycleUnit(id, btn){
     if(tagUnit) tagUnit.textContent = next;
   }
   saveUnits();
-  toast(`単位を「${next}」に変更しました`);
+  toast(formatText(LANG.units.changed,{unit:next}));
 }
 
 function setStock(id, val, silent){
@@ -820,10 +948,10 @@ function refreshCard(id){
   // タグ
   const tags = el.querySelector(".flower-tags");
   const badge = q===0
-    ? `<span class="flower-tag tag-zero">欠品</span>`
+    ? `<span class="flower-tag tag-zero">${LANG.status.zero}</span>`
     : q<=3
-      ? `<span class="flower-tag tag-low">残り少</span>`
-      : `<span class="flower-tag tag-ok">在庫あり</span>`;
+      ? `<span class="flower-tag tag-low">${LANG.status.low}</span>`
+      : `<span class="flower-tag tag-ok">${LANG.status.ok}</span>`;
   const curUnit = unitStocks[f.id]||f.unit;
   tags.innerHTML = badge + `<span class="flower-tag tag-unit">${curUnit}</span>`;
   const qtyUnitBtn = el.querySelector(".qty-unit");
@@ -861,7 +989,7 @@ function render(){
     sec.className = "cat-section " + catCls;
     sec.innerHTML = `<div class="cat-header">
       <div class="cat-label">≪${cat}≫</div>
-      <div class="cat-count">${list.length}種</div>
+      <div class="cat-count">${list.length}${LANG.inventory.categoryCountSuffix}</div>
     </div>`;
     list.forEach(f=> sec.appendChild(buildCard(f)));
     // グリーンカテゴリ（馬酔木が最後）の下に全体メモを追加
@@ -869,8 +997,8 @@ function render(){
       const memoBlock = document.createElement("div");
       memoBlock.className = "global-memo-block";
       memoBlock.innerHTML = `
-        <div class="global-memo-label">📝 メモ</div>
-        <textarea class="global-memo-text" id="globalMemoText" placeholder="仕入れ情報・連絡事項など自由にメモ…">${globalMemo}</textarea>
+        <div class="global-memo-label">${LANG.memo.label}</div>
+        <textarea class="global-memo-text" id="globalMemoText" placeholder="${LANG.memo.placeholder}">${globalMemo}</textarea>
       `;
       memoBlock.querySelector(".global-memo-text").addEventListener("input", function(){
         globalMemo = this.value;
@@ -882,7 +1010,7 @@ function render(){
   });
 
   if(!wrap.children.length){
-    wrap.innerHTML = `<div class="empty-msg">🔍 該当する花が見つかりません</div>`;
+    wrap.innerHTML = `<div class="empty-msg">${LANG.search.noResults}</div>`;
   }
   renderStats();
 }
@@ -891,10 +1019,10 @@ function buildCard(f){
   const q = stocks[f.id]||0;
   const cls = q===0?"zero":q<=3?"low":"";
   const badge = q===0
-    ?`<span class="flower-tag tag-zero">欠品</span>`
+    ?`<span class="flower-tag tag-zero">${LANG.status.zero}</span>`
     :q<=3
-      ?`<span class="flower-tag tag-low">残り少</span>`
-      :`<span class="flower-tag tag-ok">在庫あり</span>`;
+      ?`<span class="flower-tag tag-low">${LANG.status.low}</span>`
+      :`<span class="flower-tag tag-ok">${LANG.status.ok}</span>`;
 
   const div = document.createElement("div");
   div.className = "flower-card"+(cls?" "+cls:"");
@@ -937,17 +1065,17 @@ function buildCard(f){
 // ─── 履歴 ───
 function renderHistory(){
   const wrap = document.getElementById("historyWrap");
-  if(!history.length){ wrap.innerHTML=`<div class="empty-msg">まだ変更履歴がありません</div>`; return; }
+  if(!history.length){ wrap.innerHTML=`<div class="empty-msg">${LANG.history.empty}</div>`; return; }
   const groups={};
   history.slice(0,100).forEach(h=>{
-    const d=new Date(h.ts).toLocaleDateString("ja-JP",{month:"long",day:"numeric",weekday:"short"});
+    const d=new Date(h.ts).toLocaleDateString(LANG.locale,{month:"long",day:"numeric",weekday:"short"});
     if(!groups[d]) groups[d]=[];
     groups[d].push(h);
   });
   wrap.innerHTML = Object.entries(groups).map(([date,items])=>`
     <div class="history-date-label">${date}</div>
     ${items.map(h=>{
-      const t=new Date(h.ts).toLocaleTimeString("ja-JP",{hour:"2-digit",minute:"2-digit"});
+      const t=new Date(h.ts).toLocaleTimeString(LANG.locale,{hour:"2-digit",minute:"2-digit"});
       const pos=h.delta>=0;
       return `<div class="history-card">
         <div class="history-dot ${pos?"p":"m"}"></div>
@@ -977,23 +1105,23 @@ function initVoice(){
   const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
   if(!SR){ document.getElementById("micBtn").style.opacity=".4"; return; }
   recognition=new SR();
-  recognition.lang="ja-JP"; recognition.continuous=false; recognition.interimResults=true;
+  recognition.lang=LANG.locale; recognition.continuous=false; recognition.interimResults=true;
   recognition.onresult=e=>{
     const txt=Array.from(e.results).map(r=>r[0].transcript).join("");
-    document.getElementById("voiceText").textContent=txt||"話してください…";
+    document.getElementById("voiceText").textContent=txt||LANG.voice.prompt;
     if(e.results[e.results.length-1].isFinal) voiceProcess(txt);
   };
   recognition.onend=stopVoice;
-  recognition.onerror=e=>{ stopVoice(); toast("認識エラー: "+e.error); };
+  recognition.onerror=e=>{ stopVoice(); toast(LANG.voice.errorPrefix+e.error); };
 }
 function toggleVoice(){ isListening?stopVoice():startVoice(); }
 function startVoice(){
-  if(!recognition){ toast("音声入力非対応です"); return; }
+  if(!recognition){ toast(LANG.voice.unsupported); return; }
   isListening=true;
   document.getElementById("micBtn").classList.add("on");
   document.getElementById("micBtn").textContent="⏹";
   document.getElementById("voicePanel").classList.add("show");
-  document.getElementById("voiceText").textContent="話してください…";
+  document.getElementById("voiceText").textContent=LANG.voice.prompt;
   recognition.start();
 }
 function stopVoice(){
@@ -1014,7 +1142,7 @@ function voiceProcess(text){
   const isSet=/在庫|セット|数量/.test(t);
   let best=null,bestLen=0;
   getAllFlowers().forEach(([,fl])=>fl.forEach(f=>{ const n=f.name.replace(/\s/g,"").toLowerCase(); if(t.toLowerCase().includes(n)&&n.length>bestLen){best=f;bestLen=n.length;} }));
-  if(!best){ toast(`「${text}」：花名が認識できませんでした`); return; }
+  if(!best){ toast(formatText(LANG.voice.nameNotRecognized,{text})); return; }
   if(isSet) setStock(best.id,num);
   else if(isOut) setStock(best.id,Math.max(0,(stocks[best.id]||0)-num));
   else setStock(best.id,(stocks[best.id]||0)+num);
@@ -1022,20 +1150,20 @@ function voiceProcess(text){
 
 // ─── 共有（ゼロのみ❌） ───
 function buildShareText(){
-  const now=new Date().toLocaleString("ja-JP",{month:"numeric",day:"numeric",hour:"2-digit",minute:"2-digit"});
-  let lines=[`🌸 渡辺花屋 在庫レポート（${now}）\n`];
+  const now=new Date().toLocaleString(LANG.locale,{month:"numeric",day:"numeric",hour:"2-digit",minute:"2-digit"});
+  let lines=[formatText(LANG.share.reportTitle,{date:now})];
   getAllFlowers().forEach(([cat,flowers])=>{
     if(!flowers.length) return;
     lines.push(`【${cat}】`);
     flowers.forEach(f=>{
       const q=stocks[f.id]||0;
-      const mk=q===0?"❌ ":"";
+      const mk=q===0?LANG.share.zeroMarker:"";
       lines.push(`${mk}${f.name}：${q}${unitStocks[f.id]||f.unit}`);
     });
     lines.push("");
   });
   if(globalMemo && globalMemo.trim()){
-    lines.push("📝 メモ");
+    lines.push(LANG.share.memoLabel);
     lines.push(globalMemo.trim());
   }
   return lines.join("\n");
@@ -1046,8 +1174,8 @@ document.getElementById("lineShareBtn").addEventListener("click",()=>{
 });
 document.getElementById("copyBtn").addEventListener("click",()=>{
   const text=buildShareText();
-  if(navigator.clipboard) navigator.clipboard.writeText(text).then(()=>toast("📋 コピーしました"));
-  else{ const ta=document.createElement("textarea"); ta.value=text; document.body.appendChild(ta); ta.select(); document.execCommand("copy"); document.body.removeChild(ta); toast("📋 コピーしました"); }
+  if(navigator.clipboard) navigator.clipboard.writeText(text).then(()=>toast(LANG.share.copied));
+  else{ const ta=document.createElement("textarea"); ta.value=text; document.body.appendChild(ta); ta.select(); document.execCommand("copy"); document.body.removeChild(ta); toast(LANG.share.copied); }
 });
 
 // ─── タブ・フィルター・検索 ───
@@ -1086,7 +1214,7 @@ document.getElementById("inventoryWrap").addEventListener("click", e=>{
   e.stopPropagation();
   addTargetId  = addBtn.dataset.id;
   addTargetCat = addBtn.dataset.cat || getCatById(addTargetId);
-  document.getElementById("addScreenTitle").textContent = `🌿 追加`;
+  document.getElementById("addScreenTitle").textContent = LANG.addFlower.quickTitle;
   document.getElementById("addName").value = "";
   openAddSheet();
 });
@@ -1113,13 +1241,13 @@ document.getElementById("inventoryWrap").addEventListener("click", e=>{
     delete stocks[id];
     save();
     render();
-    toast(`🗑 ${f ? f.name : ""} を削除しました`);
+    toast(formatText(LANG.addFlower.deleted,{name:f ? f.name : ""}));
     return;
   }
 
   // 1回目：確認モードに変える
   delBtn.dataset.confirming = "1";
-  delBtn.textContent = "削除?";
+  delBtn.textContent = LANG.addFlower.deleteConfirm;
   delBtn.style.width = "48px";
   delBtn.style.borderRadius = "12px";
   delBtn.style.fontSize = "11px";
@@ -1172,7 +1300,7 @@ document.getElementById("unitTiles").addEventListener("click", e=>{
 // 登録実行
 document.getElementById("addSubmitBtn").addEventListener("click", ()=>{
   const name = document.getElementById("addName").value.trim();
-  if(!name){ toast("花の名前を入力してください"); return; }
+  if(!name){ toast(LANG.addFlower.nameRequired); return; }
   const id = "custom_" + Date.now();
   const cat = addTargetCat || "その他の花";
   const tabMap = {"菊":"kiku","ラン":"ran","ユリ":"yuri","その他の花":"hoka","グリーンなど":"green"};
@@ -1191,7 +1319,7 @@ document.getElementById("addSubmitBtn").addEventListener("click", ()=>{
   save();
   render();
   closeAddSheet();
-  toast(`✅ 「${name}」を追加しました`);
+  toast(formatText(LANG.addFlower.added,{name}));
 });
 
 function guessEmoji(name, unit){
@@ -1216,6 +1344,7 @@ function guessEmoji(name, unit){
 }
 
 // ─── 起動 ───
+applyLanguagePack();
 load();
 initVoice();
 render();
