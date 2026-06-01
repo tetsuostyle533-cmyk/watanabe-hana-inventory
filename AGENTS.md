@@ -32,3 +32,13 @@ There are **no** in-repo lint, test, or build scripts (`package.json`, `Makefile
 
 - Google Fonts (CDN) when online
 - LINE share and Web Speech API are browser features; no local services to start
+
+### Sharing inventory with others
+
+The app has no backend. Sharing is via the **共有** FAB:
+
+- **Link copy** — encodes stock snapshot in URL hash `#d=...`; recipient confirms import on open
+- **JSON backup** — export/import `.json` files
+- **LINE / text** — report text (link appended when it fits)
+
+GitHub Pages deploys on push to `main` via `.github/workflows/pages.yml`.

@@ -247,6 +247,56 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--paper);color:var(--i
 .fab:active{transform:scale(.9)}
 .fab-line{background:#06C755;color:white}
 .fab-copy{background:var(--moss);color:white;font-size:15px}
+.fab-share{background:var(--moss2);color:white;font-size:12px;font-weight:700;letter-spacing:.5px}
+
+/* 共有シート */
+.share-sheet{position:fixed;inset:0;z-index:350;pointer-events:none;visibility:hidden;transition:visibility .25s}
+.share-sheet.show{pointer-events:auto;visibility:visible}
+.share-sheet-backdrop{position:absolute;inset:0;background:rgba(26,20,16,.45);opacity:0;transition:opacity .25s}
+.share-sheet.show .share-sheet-backdrop{opacity:1}
+.share-sheet-panel{
+  position:absolute;left:0;right:0;bottom:0;
+  background:var(--paper);border-radius:18px 18px 0 0;
+  padding:12px 14px calc(env(safe-area-inset-bottom,0px) + 16px);
+  transform:translateY(100%);transition:transform .28s cubic-bezier(.25,.8,.25,1);
+  max-width:560px;margin:0 auto;
+}
+.share-sheet.show .share-sheet-panel{transform:translateY(0)}
+.share-sheet-title{font-family:'Shippori Mincho B1',serif;font-size:16px;font-weight:700;text-align:center;margin-bottom:4px;color:var(--ink)}
+.share-sheet-hint{font-size:11px;color:var(--ink3);text-align:center;margin-bottom:12px;line-height:1.5}
+.share-option{
+  width:100%;display:flex;align-items:center;gap:10px;
+  padding:12px 14px;margin-bottom:6px;
+  border:1.5px solid var(--paper3);border-radius:12px;
+  background:white;font-family:'Noto Sans JP',sans-serif;
+  font-size:14px;font-weight:500;color:var(--ink);cursor:pointer;text-align:left;
+}
+.share-option:active{background:var(--paper2)}
+.share-option.primary{border-color:var(--moss2);background:var(--moss4);font-weight:700}
+.share-option .share-opt-icon{font-size:18px;width:24px;text-align:center;flex-shrink:0}
+.share-sheet-close{
+  width:100%;margin-top:4px;padding:11px;border:none;border-radius:12px;
+  background:var(--paper2);color:var(--ink2);font-family:'Noto Sans JP',sans-serif;
+  font-size:13px;font-weight:600;cursor:pointer;
+}
+
+.share-import-overlay{
+  position:fixed;inset:0;z-index:500;background:rgba(26,20,16,.5);
+  display:none;align-items:center;justify-content:center;padding:20px;
+}
+.share-import-overlay.show{display:flex}
+.share-import-card{
+  background:white;border-radius:16px;padding:20px 18px;max-width:340px;width:100%;
+  box-shadow:0 8px 32px rgba(0,0,0,.15);
+}
+.share-import-card p{font-size:14px;line-height:1.65;color:var(--ink);margin-bottom:16px}
+.share-import-actions{display:flex;gap:8px}
+.share-import-actions button{
+  flex:1;padding:11px;border-radius:10px;border:none;font-family:'Noto Sans JP',sans-serif;
+  font-size:13px;font-weight:700;cursor:pointer;
+}
+.share-import-yes{background:var(--moss);color:white}
+.share-import-no{background:var(--paper2);color:var(--ink2)}
 
 /* 履歴 */
 .history-wrap{padding:12px 14px 100px;max-width:560px;margin:0 auto}
@@ -590,14 +640,54 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--paper);color:var(--i
   </div>
 </div>
 
+<!-- 共有シート -->
+<div class="share-sheet" id="shareSheet" aria-hidden="true">
+  <div class="share-sheet-backdrop" id="shareSheetBackdrop"></div>
+  <div class="share-sheet-panel" role="dialog" aria-labelledby="shareSheetTitle">
+    <div class="share-sheet-title" id="shareSheetTitle">共有</div>
+    <p class="share-sheet-hint" id="shareSheetHint">リンクやファイルで、在庫データを他の人と共有できます</p>
+    <button type="button" class="share-option primary" id="shareLinkBtn">
+      <span class="share-opt-icon">🔗</span>
+      <span id="shareLinkBtnLabel">在庫データのリンクをコピー</span>
+    </button>
+    <button type="button" class="share-option" id="shareLineBtn">
+      <span class="share-opt-icon">💬</span>
+      <span id="shareLineBtnLabel">LINEで送る</span>
+    </button>
+    <button type="button" class="share-option" id="shareCopyBtn">
+      <span class="share-opt-icon">📋</span>
+      <span id="shareCopyBtnLabel">テキストをコピー</span>
+    </button>
+    <button type="button" class="share-option" id="shareNativeBtn" style="display:none">
+      <span class="share-opt-icon">📤</span>
+      <span id="shareNativeBtnLabel">共有メニューを開く</span>
+    </button>
+    <button type="button" class="share-option" id="shareExportBtn">
+      <span class="share-opt-icon">💾</span>
+      <span id="shareExportBtnLabel">バックアップを保存</span>
+    </button>
+    <button type="button" class="share-option" id="shareImportBtn">
+      <span class="share-opt-icon">📂</span>
+      <span id="shareImportBtnLabel">バックアップを読み込む</span>
+    </button>
+    <button type="button" class="share-sheet-close" id="shareSheetClose">閉じる</button>
+  </div>
+</div>
+
+<div class="share-import-overlay" id="shareImportOverlay" aria-hidden="true">
+  <div class="share-import-card">
+    <p id="shareImportMsg">共有された在庫データを読み込みますか？</p>
+    <div class="share-import-actions">
+      <button type="button" class="share-import-no" id="shareImportNo">キャンセル</button>
+      <button type="button" class="share-import-yes" id="shareImportYes">読み込む</button>
+    </div>
+  </div>
+</div>
+<input type="file" id="importFileInput" accept="application/json,.json" hidden>
+
 <!-- FAB -->
 <div class="fab-area">
-  <button class="fab fab-line" id="lineShareBtn" title="LINEで共有">
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="white">
-      <path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63h2.386c.346 0 .627.285.627.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.104.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63.346 0 .628.285.628.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.282.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314"/>
-    </svg>
-  </button>
-  <button class="fab fab-copy" id="copyBtn" title="テキストをコピー">📋</button>
+  <button class="fab fab-share" id="shareOpenBtn" title="共有">共有</button>
 </div>
 
 <script>
@@ -674,12 +764,27 @@ const LANGUAGE_PACKS = {
       changed: "単位を「{unit}」に変更しました"
     },
     share: {
-      lineTitle: "LINEで共有",
-      copyTitle: "テキストをコピー",
+      fabTitle: "共有",
+      sheetTitle: "共有",
+      sheetHint: "リンクやファイルで、在庫データを他の人と共有できます",
+      linkCopy: "在庫データのリンクをコピー",
+      lineSend: "LINEで送る",
+      textCopy: "テキストをコピー",
+      nativeShare: "共有メニューを開く",
+      exportBackup: "バックアップを保存",
+      importBackup: "バックアップを読み込む",
+      close: "閉じる",
       reportTitle: "🌸 渡辺花屋 在庫レポート（{date}）\n",
       zeroMarker: "❌ ",
       memoLabel: "📝 メモ",
-      copied: "📋 コピーしました"
+      copied: "📋 コピーしました",
+      linkCopied: "🔗 共有リンクをコピーしました",
+      linkTooLong: "データが大きすぎます。バックアップ保存をお試しください",
+      exportDone: "💾 バックアップを保存しました",
+      importPrompt: "共有された在庫データを読み込みますか？\n（現在の在庫は上書きされます）",
+      importDone: "✅ 在庫データを読み込みました",
+      importInvalid: "ファイルの形式が正しくありません",
+      nativeShareTitle: "渡辺花屋 在庫"
     }
   }
 };
@@ -718,8 +823,20 @@ function applyLanguagePack(){
   document.querySelector(".voice-hint").innerHTML = LANG.voice.hintHtml;
   document.querySelectorAll(".add-section-label")[0].textContent = LANG.addFlower.nameLabel;
   document.querySelectorAll(".add-section-label")[1].textContent = LANG.addFlower.unitLabel;
-  document.getElementById("lineShareBtn").title = LANG.share.lineTitle;
-  document.getElementById("copyBtn").title = LANG.share.copyTitle;
+  document.getElementById("shareOpenBtn").title = LANG.share.fabTitle;
+  document.getElementById("shareOpenBtn").textContent = LANG.share.fabTitle;
+  setText("shareSheetTitle", LANG.share.sheetTitle);
+  setText("shareSheetHint", LANG.share.sheetHint);
+  setText("shareLinkBtnLabel", LANG.share.linkCopy);
+  setText("shareLineBtnLabel", LANG.share.lineSend);
+  setText("shareCopyBtnLabel", LANG.share.textCopy);
+  setText("shareNativeBtnLabel", LANG.share.nativeShare);
+  setText("shareExportBtnLabel", LANG.share.exportBackup);
+  setText("shareImportBtnLabel", LANG.share.importBackup);
+  setText("shareSheetClose", LANG.share.close);
+  setText("shareImportMsg", LANG.share.importPrompt);
+  const nativeBtn = document.getElementById("shareNativeBtn");
+  if(nativeBtn) nativeBtn.style.display = navigator.share ? "" : "none";
   document.querySelectorAll(".unit-tile").forEach(tile=>{
     const unit = tile.dataset.unit;
     tile.textContent = LANG.units.labels[unit] || unit;
@@ -1151,7 +1268,10 @@ function voiceProcess(text){
   else setStock(best.id,(stocks[best.id]||0)+num);
 }
 
-// ─── 共有（ゼロのみ❌） ───
+// ─── 共有 ───
+const SHARE_HASH_PREFIX = "#d=";
+const SHARE_LINK_MAX = 7500;
+
 function buildShareText(){
   const now=new Date().toLocaleString(LANG.locale,{month:"numeric",day:"numeric",hour:"2-digit",minute:"2-digit"});
   let lines=[formatText(LANG.share.reportTitle,{date:now})];
@@ -1171,15 +1291,195 @@ function buildShareText(){
   }
   return lines.join("\n");
 }
-document.getElementById("lineShareBtn").addEventListener("click",()=>{
-  const url=`https://line.me/R/share?text=${encodeURIComponent(buildShareText())}`;
-  window.open(url,"_blank");
+
+function buildSharePayload(includeHistory){
+  const payload={
+    v:1,
+    stocks,
+    customFlowers,
+    unitStocks,
+    memos,
+    globalMemo,
+    lastUpdateTime
+  };
+  if(includeHistory) payload.history=history.slice(0,80);
+  return payload;
+}
+
+function base64UrlEncode(str){
+  const b64=btoa(unescape(encodeURIComponent(str)));
+  return b64.replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");
+}
+function base64UrlDecode(str){
+  let b64=str.replace(/-/g,"+").replace(/_/g,"/");
+  while(b64.length%4) b64+="=";
+  return decodeURIComponent(escape(atob(b64)));
+}
+
+function encodeSharePayload(includeHistory){
+  return base64UrlEncode(JSON.stringify(buildSharePayload(includeHistory)));
+}
+
+function decodeSharePayload(encoded){
+  try{
+    const data=JSON.parse(base64UrlDecode(encoded));
+    if(!data || data.v!==1 || typeof data.stocks!=="object") return null;
+    return data;
+  }catch(e){ return null; }
+}
+
+function buildShareDataUrl(){
+  const encoded=encodeSharePayload(false);
+  if(encoded.length>SHARE_LINK_MAX) return null;
+  return location.origin+location.pathname+SHARE_HASH_PREFIX+encoded;
+}
+
+function copyText(text, okMsg){
+  const done=()=>toast(okMsg||LANG.share.copied);
+  if(navigator.clipboard){
+    navigator.clipboard.writeText(text).then(done).catch(fallbackCopy);
+  }else fallbackCopy();
+  function fallbackCopy(){
+    const ta=document.createElement("textarea");
+    ta.value=text; document.body.appendChild(ta); ta.select();
+    document.execCommand("copy"); document.body.removeChild(ta);
+    done();
+  }
+}
+
+function applySharePayload(data){
+  if(!data) return false;
+  stocks=data.stocks||{};
+  customFlowers=Array.isArray(data.customFlowers)?data.customFlowers:[];
+  unitStocks=data.unitStocks||{};
+  memos=data.memos||{};
+  globalMemo=data.globalMemo||"";
+  if(Array.isArray(data.history)) history=data.history;
+  lastUpdateTime=data.lastUpdateTime||null;
+  ALL.forEach(f=>{ if(stocks[f.id]==null) stocks[f.id]=0; });
+  customFlowers.forEach(f=>{ if(stocks[f.id]==null) stocks[f.id]=0; });
+  save();
+  saveMemos();
+  saveGlobalMemo();
+  const memoEl=document.getElementById("globalMemoText");
+  if(memoEl) memoEl.value=globalMemo;
+  render();
+  return true;
+}
+
+let pendingImportData=null;
+
+function openShareSheet(){
+  document.getElementById("shareSheet").classList.add("show");
+  document.getElementById("shareSheet").setAttribute("aria-hidden","false");
+}
+function closeShareSheet(){
+  document.getElementById("shareSheet").classList.remove("show");
+  document.getElementById("shareSheet").setAttribute("aria-hidden","true");
+}
+
+function promptImportData(data){
+  pendingImportData=data;
+  document.getElementById("shareImportOverlay").classList.add("show");
+  document.getElementById("shareImportOverlay").setAttribute("aria-hidden","false");
+}
+function closeImportPrompt(){
+  pendingImportData=null;
+  document.getElementById("shareImportOverlay").classList.remove("show");
+  document.getElementById("shareImportOverlay").setAttribute("aria-hidden","true");
+}
+
+function tryImportFromHash(){
+  const hash=location.hash;
+  if(!hash.startsWith(SHARE_HASH_PREFIX)) return;
+  const data=decodeSharePayload(hash.slice(SHARE_HASH_PREFIX.length));
+  history.replaceState(null,"",location.pathname+location.search);
+  if(data) promptImportData(data);
+}
+
+function exportBackupFile(){
+  const blob=new Blob([JSON.stringify(buildSharePayload(true),null,2)],{type:"application/json"});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a");
+  const stamp=new Date().toISOString().slice(0,10);
+  a.href=url;
+  a.download=`watanabe-inventory-${stamp}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  toast(LANG.share.exportDone);
+}
+
+function importBackupFile(file){
+  const reader=new FileReader();
+  reader.onload=()=>{
+    try{
+      const raw=JSON.parse(reader.result);
+      const data=raw.v===1?raw:decodeSharePayload(raw.d||raw.data||"");
+      if(!data){ toast(LANG.share.importInvalid); return; }
+      promptImportData(data);
+    }catch(e){ toast(LANG.share.importInvalid); }
+  };
+  reader.readAsText(file,"UTF-8");
+}
+
+document.getElementById("shareOpenBtn").addEventListener("click",openShareSheet);
+document.getElementById("shareSheetBackdrop").addEventListener("click",closeShareSheet);
+document.getElementById("shareSheetClose").addEventListener("click",closeShareSheet);
+
+document.getElementById("shareLinkBtn").addEventListener("click",()=>{
+  const url=buildShareDataUrl();
+  if(!url){ toast(LANG.share.linkTooLong); return; }
+  const text=url+"\n\n"+buildShareText();
+  copyText(text,LANG.share.linkCopied);
+  closeShareSheet();
 });
-document.getElementById("copyBtn").addEventListener("click",()=>{
-  const text=buildShareText();
-  if(navigator.clipboard) navigator.clipboard.writeText(text).then(()=>toast(LANG.share.copied));
-  else{ const ta=document.createElement("textarea"); ta.value=text; document.body.appendChild(ta); ta.select(); document.execCommand("copy"); document.body.removeChild(ta); toast(LANG.share.copied); }
+
+document.getElementById("shareLineBtn").addEventListener("click",()=>{
+  const link=buildShareDataUrl();
+  let text=buildShareText();
+  if(link) text=text+"\n\n🔗 在庫データ:\n"+link;
+  window.open(`https://line.me/R/share?text=${encodeURIComponent(text)}`,"_blank");
+  closeShareSheet();
 });
+
+document.getElementById("shareCopyBtn").addEventListener("click",()=>{
+  copyText(buildShareText(),LANG.share.copied);
+  closeShareSheet();
+});
+
+document.getElementById("shareNativeBtn").addEventListener("click",async()=>{
+  if(!navigator.share) return;
+  const link=buildShareDataUrl();
+  const text=buildShareText()+(link?`\n\n🔗 ${link}`:"");
+  try{
+    await navigator.share({title:LANG.share.nativeShareTitle,text});
+    closeShareSheet();
+  }catch(e){ if(e.name!=="AbortError") toast(LANG.share.copied); }
+});
+
+document.getElementById("shareExportBtn").addEventListener("click",()=>{
+  exportBackupFile();
+  closeShareSheet();
+});
+
+document.getElementById("shareImportBtn").addEventListener("click",()=>{
+  document.getElementById("importFileInput").click();
+  closeShareSheet();
+});
+
+document.getElementById("importFileInput").addEventListener("change",e=>{
+  const file=e.target.files&&e.target.files[0];
+  e.target.value="";
+  if(file) importBackupFile(file);
+});
+
+document.getElementById("shareImportYes").addEventListener("click",()=>{
+  if(pendingImportData && applySharePayload(pendingImportData)){
+    toast(LANG.share.importDone);
+  }
+  closeImportPrompt();
+});
+document.getElementById("shareImportNo").addEventListener("click",closeImportPrompt);
 
 // ─── タブ・フィルター・検索 ───
 document.getElementById("tabBar").addEventListener("click",e=>{
@@ -1349,6 +1649,7 @@ function guessEmoji(name, unit){
 // ─── 起動 ───
 applyLanguagePack();
 load();
+tryImportFromHash();
 initVoice();
 render();
 </script>
