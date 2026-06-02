@@ -570,7 +570,7 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--paper);color:var(--i
 <div class="share-overlay hidden" id="shareOverlay">
   <div class="share-box">
     <div class="share-title">📡 在庫を共有する</div>
-    <div class="share-desc" id="shareDesc">このURLを花屋の方に送ってください。同じURLを開くと在庫がリアルタイムで同期されます。</div>
+    <div class="share-desc" id="shareDesc">このURLを花屋の方に送ってください。URLを開くと今の在庫データが自動的に読み込まれます。在庫を更新したらまた新しいURLを送ってください。</div>
     <div class="share-status" id="shareStatus"></div>
     <div class="share-url-box">
       <div class="share-url-text" id="shareUrlText">準備中…</div>
@@ -818,93 +818,44 @@ let lastUpdateTime = null;
 let recognition = null;
 let isListening = false;
 
-// ─── クラウド同期（jsonstore.io） ───
-// クライアント側でUUIDを生成 → CORSのLocationヘッダー問題を回避
-const STORE_BASE = "https://www.jsonstore.io";
-let roomId = null;
-let _saveTimer = null;
-let _polling = null;
+// ─── 共有（URLデータ埋め込み方式・外部API不要） ───
 
 function setSyncDot(state){
   const d = document.getElementById("syncDot");
   d.className = "sync-dot " + state;
 }
 
-function getRoomIdFromUrl(){
-  return new URLSearchParams(location.search).get("room");
+function buildShareUrl(){
+  // 在庫データをBase64エンコードしてURLハッシュに埋め込む
+  const data = {
+    stocks, unitStocks, customFlowers,
+    globalMemo, lastUpdateTime
+  };
+  const json = JSON.stringify(data);
+  const b64  = btoa(unescape(encodeURIComponent(json)));
+  return `${location.origin}${location.pathname}#d=${b64}`;
 }
 
-function buildShareUrl(id){
-  return `${location.origin}${location.pathname}?room=${id}`;
-}
-
-function genUUID(){
-  if(crypto.randomUUID) return crypto.randomUUID();
-  return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g,c=>
-    (c^crypto.getRandomValues(new Uint8Array(1))[0]&15>>c/4).toString(16));
-}
-
-async function createRoom(){
-  setSyncDot("syncing");
-  const id = genUUID();
-  roomId = id;
-  await pushRoom();
-  localStorage.setItem("wh_room_v4", id);
-  history.replaceState({}, "", `?room=${id}`);
-  setSyncDot("online");
-  return id;
-}
-
-async function pushRoom(){
-  if(!roomId) return;
-  setSyncDot("syncing");
+function importFromHash(){
+  // URLハッシュからデータを取り込む
+  const hash = location.hash;
+  if(!hash.startsWith("#d=")) return false;
   try{
-    const res = await fetch(`${STORE_BASE}/${roomId}`, {
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body: JSON.stringify(buildSyncData())
-    });
-    if(!res.ok) throw new Error("push failed");
-    setSyncDot("online");
-  }catch(e){ setSyncDot("offline"); }
-}
-
-async function pullRoom(){
-  if(!roomId) return;
-  try{
-    const res = await fetch(`${STORE_BASE}/${roomId}`);
-    if(!res.ok) return;
-    const json = await res.json();
-    if(!json.ok || !json.result) return;
-    applyRemoteData(json.result);
-    setSyncDot("online");
-  }catch(e){ setSyncDot("offline"); }
-}
-
-function buildSyncData(){
-  return {stocks, unitStocks, customFlowers, globalMemo, history:history.slice(0,200), lastUpdateTime};
-}
-
-function applyRemoteData(data){
-  if(!data) return;
-  if(data.stocks)        stocks        = data.stocks;
-  if(data.unitStocks)    unitStocks    = data.unitStocks;
-  if(data.customFlowers) customFlowers = data.customFlowers;
-  if(data.globalMemo != null) globalMemo = data.globalMemo;
-  if(data.history)       history       = data.history;
-  if(data.lastUpdateTime) lastUpdateTime = data.lastUpdateTime;
-  ALL.forEach(f=>{ if(stocks[f.id]==null) stocks[f.id]=0; });
-  customFlowers.forEach(f=>{ if(stocks[f.id]==null) stocks[f.id]=0; });
-  saveLocal();
-  render();
-  renderStats();
-  if(lastUpdateTime) document.getElementById("sTime").textContent = lastUpdateTime;
-}
-
-function startPolling(){
-  if(_polling) clearInterval(_polling);
-  _polling = setInterval(pullRoom, 30000);
-  window.addEventListener("focus", pullRoom);
+    const b64  = hash.slice(3);
+    const json = decodeURIComponent(escape(atob(b64)));
+    const data = JSON.parse(json);
+    if(data.stocks)        stocks        = data.stocks;
+    if(data.unitStocks)    unitStocks    = data.unitStocks;
+    if(data.customFlowers) customFlowers = data.customFlowers;
+    if(data.globalMemo != null) globalMemo = data.globalMemo;
+    if(data.lastUpdateTime) lastUpdateTime = data.lastUpdateTime;
+    ALL.forEach(f=>{ if(stocks[f.id]==null) stocks[f.id]=0; });
+    customFlowers.forEach(f=>{ if(stocks[f.id]==null) stocks[f.id]=0; });
+    saveLocal();
+    // ハッシュをURLから消す（履歴を汚さない）
+    history.replaceState({}, "", location.pathname);
+    return true;
+  }catch(e){ return false; }
 }
 
 function saveLocal(){
@@ -919,19 +870,12 @@ function saveLocal(){
 
 function saveUnits(){
   localStorage.setItem("wh_units_v4",JSON.stringify(unitStocks));
-  schedulePush();
 }
 function saveMemos(){
   localStorage.setItem("wh_memos_v4",JSON.stringify(memos));
 }
 function saveGlobalMemo(){
   localStorage.setItem("wh_gmemo_v4", globalMemo);
-  schedulePush();
-}
-
-function schedulePush(){
-  clearTimeout(_saveTimer);
-  _saveTimer = setTimeout(pushRoom, 2000);
 }
 
 function load(){
@@ -954,26 +898,18 @@ function load(){
   ALL.forEach(f=>{ if(stocks[f.id]==null) stocks[f.id]=0; });
   customFlowers.forEach(f=>{ if(stocks[f.id]==null) stocks[f.id]=0; });
 
-  // URLにroomIdがあれば同期モード
-  const urlRoom = getRoomIdFromUrl();
-  if(urlRoom){
-    roomId = urlRoom;
-    localStorage.setItem("wh_room_v4", urlRoom);
-    setSyncDot("syncing");
-    pullRoom().then(()=>{ setSyncDot("online"); startPolling(); });
-  } else {
-    // ローカルに保存済みroomIdがあれば復元
-    const saved = localStorage.getItem("wh_room_v4");
-    if(saved){ roomId = saved; setSyncDot("online"); startPolling(); }
-    else { setSyncDot("offline"); }
+  // URLハッシュにデータがあれば取り込む
+  if(importFromHash()){
+    setTimeout(()=>toast("📥 在庫データを受け取りました"), 600);
   }
+  setSyncDot("offline");
 }
 
 function save(){
   lastUpdateTime = new Date().toLocaleTimeString("ja-JP",{hour:"2-digit",minute:"2-digit"});
   saveLocal();
   document.getElementById("sTime").textContent = lastUpdateTime;
-  schedulePush();
+}
 }
 
 const UNITS = ["本","束","オケ"];
@@ -1389,28 +1325,14 @@ function guessEmoji(name, unit){
 }
 
 // ─── 共有モーダル ───
-document.getElementById("shareBtn").addEventListener("click", async ()=>{
-  const overlay = document.getElementById("shareOverlay");
-  overlay.classList.remove("hidden");
-  const urlEl  = document.getElementById("shareUrlText");
+document.getElementById("shareBtn").addEventListener("click", ()=>{
+  const overlay  = document.getElementById("shareOverlay");
+  const urlEl    = document.getElementById("shareUrlText");
   const statusEl = document.getElementById("shareStatus");
-
-  if(roomId){
-    const url = buildShareUrl(roomId);
-    urlEl.textContent = url;
-    statusEl.textContent = "✅ 同期中のルーム";
-  } else {
-    urlEl.textContent = "作成中…";
-    statusEl.textContent = "";
-    try{
-      const id = await createRoom();
-      const url = buildShareUrl(id);
-      urlEl.textContent = url;
-      statusEl.textContent = "✅ ルームを作成しました";
-    }catch(e){
-      urlEl.textContent = "作成に失敗しました。ネットワークを確認してください。";
-    }
-  }
+  overlay.classList.remove("hidden");
+  const url = buildShareUrl();
+  urlEl.textContent = url;
+  statusEl.textContent = "✅ 現在の在庫データを含むURLです";
 });
 
 document.getElementById("shareCopyBtn").addEventListener("click", ()=>{
