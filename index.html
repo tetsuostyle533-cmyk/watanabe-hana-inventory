@@ -6,6 +6,9 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <title>渡辺花屋 在庫</title>
 <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@600;700;800&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 <style>
 :root {
   --ink:    #1a1410;
@@ -489,11 +492,122 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--paper);color:var(--i
   transition:border-color .2s;
 }
 .global-memo-text:focus{border-color:var(--moss2);}
+
+/* ── Firebase 接続インジケーター ── */
+.sync-dot{
+  width:8px;height:8px;border-radius:50%;
+  background:#aaa;flex-shrink:0;
+  transition:background .4s;
+}
+.sync-dot.online {background:#4caf50;}
+.sync-dot.offline{background:#e53935;}
+.sync-dot.syncing{background:#ff9800;animation:syncpulse .8s infinite;}
+@keyframes syncpulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* ── Firebase 設定画面 ── */
+.fb-setup-overlay{
+  position:fixed;inset:0;
+  background:rgba(0,0,0,.55);
+  z-index:500;
+  display:flex;align-items:center;justify-content:center;
+  padding:20px;
+}
+.fb-setup-overlay.hidden{display:none;}
+.fb-setup-box{
+  background:var(--paper);
+  border-radius:20px;
+  padding:28px 24px 24px;
+  width:100%;max-width:420px;
+  box-shadow:0 8px 40px rgba(0,0,0,.25);
+}
+.fb-setup-title{
+  font-family:'Shippori Mincho B1',serif;
+  font-size:18px;font-weight:700;
+  color:var(--moss);
+  margin-bottom:6px;
+  display:flex;align-items:center;gap:8px;
+}
+.fb-setup-desc{
+  font-size:12px;color:var(--ink3);
+  line-height:1.7;margin-bottom:20px;
+}
+.fb-setup-desc a{color:var(--moss2);text-decoration:none;}
+.fb-field{margin-bottom:13px;}
+.fb-field label{
+  display:block;
+  font-size:11px;font-weight:700;
+  color:var(--ink3);letter-spacing:1px;
+  margin-bottom:5px;
+}
+.fb-field input{
+  width:100%;
+  padding:10px 13px;
+  border:1.5px solid var(--paper3);
+  border-radius:10px;
+  font-family:'Noto Sans JP',sans-serif;
+  font-size:13px;
+  color:var(--ink);
+  background:white;
+  outline:none;
+  -webkit-appearance:none;
+  transition:border-color .2s;
+}
+.fb-field input:focus{border-color:var(--moss2);}
+.fb-save-btn{
+  width:100%;
+  padding:14px;
+  background:var(--moss);
+  color:white;
+  border:none;border-radius:12px;
+  font-family:'Noto Sans JP',sans-serif;
+  font-size:15px;font-weight:700;
+  cursor:pointer;
+  margin-top:6px;
+  transition:opacity .2s;
+}
+.fb-save-btn:active{opacity:.8;}
+.fb-skip-btn{
+  width:100%;
+  padding:10px;
+  background:none;
+  color:var(--ink3);
+  border:none;
+  font-family:'Noto Sans JP',sans-serif;
+  font-size:12px;
+  cursor:pointer;
+  margin-top:6px;
+  text-decoration:underline;
+}
 </style>
 </head>
 <body>
 
 <div class="toast" id="toast"></div>
+
+<!-- Firebase 設定画面 -->
+<div class="fb-setup-overlay hidden" id="fbSetupOverlay">
+  <div class="fb-setup-box">
+    <div class="fb-setup-title">🔥 Firebase 同期設定</div>
+    <div class="fb-setup-desc">
+      Firebaseプロジェクトの設定値を入力すると、複数の端末でリアルタイムに在庫を共有できます。<br>
+      <a href="https://console.firebase.google.com/" target="_blank">Firebase Console</a> でプロジェクトを作成後、「プロジェクトの設定 → アプリを追加（ウェブ）」から取得してください。
+    </div>
+    <div class="fb-field">
+      <label>API KEY</label>
+      <input id="fbApiKey" type="text" placeholder="AIzaSy...">
+    </div>
+    <div class="fb-field">
+      <label>PROJECT ID</label>
+      <input id="fbProjectId" type="text" placeholder="my-flower-shop">
+    </div>
+    <div class="fb-field">
+      <label>DATABASE URL</label>
+      <input id="fbDbUrl" type="text" placeholder="https://my-flower-shop-default-rtdb.firebaseio.com">
+    </div>
+    <button class="fb-save-btn" id="fbSaveBtn">接続して同期開始</button>
+    <button class="fb-skip-btn" id="fbSkipBtn">今はスキップ（端末内保存のみ）</button>
+  </div>
+</div>
 
 <!-- ヘッダー -->
 <header class="app-header">
@@ -503,7 +617,8 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--paper);color:var(--i
       <div class="header-title">渡辺花屋</div>
       <div class="header-sub">在庫管理</div>
     </div>
-    <div class="header-actions">
+    <div class="header-actions" style="display:flex;align-items:center;gap:8px;">
+      <div class="sync-dot" id="syncDot" title="同期状態"></div>
       <button class="mic-btn" id="micBtn">🎙</button>
     </div>
   </div>
@@ -727,14 +842,80 @@ let lastUpdateTime = null;
 let recognition = null;
 let isListening = false;
 
+// ─── Firebase ───
+let fbDb = null;
+let fbRef = null;
+let _remoteWrite = false; // リモートからの書き込みフラグ（ループ防止）
+
+function setSyncDot(state){ // 'online' | 'offline' | 'syncing'
+  const d = document.getElementById("syncDot");
+  d.className = "sync-dot " + state;
+  d.title = state === "online" ? "同期中" : state === "offline" ? "オフライン（端末内保存）" : "同期中…";
+}
+
+function initFirebase(cfg){
+  try {
+    const app = firebase.apps.length
+      ? firebase.app()
+      : firebase.initializeApp(cfg);
+    fbDb  = firebase.database(app);
+    fbRef = fbDb.ref("inventory");
+
+    // オンライン/オフライン検出
+    fbDb.ref(".info/connected").on("value", snap=>{
+      setSyncDot(snap.val() ? "online" : "offline");
+    });
+
+    // リアルタイム受信：他端末の変更を反映
+    fbRef.on("value", snap=>{
+      if(_remoteWrite) return; // 自分の書き込みに反応しない
+      const data = snap.val();
+      if(!data) return;
+      try {
+        if(data.stocks)       stocks       = data.stocks;
+        if(data.unitStocks)   unitStocks   = data.unitStocks;
+        if(data.customFlowers)customFlowers= data.customFlowers;
+        if(data.globalMemo != null) globalMemo = data.globalMemo;
+        if(data.history)      history      = data.history;
+        if(data.lastUpdateTime) lastUpdateTime = data.lastUpdateTime;
+        ALL.forEach(f=>{ if(stocks[f.id]==null) stocks[f.id]=0; });
+        customFlowers.forEach(f=>{ if(stocks[f.id]==null) stocks[f.id]=0; });
+        saveLocal();
+        render();
+        renderStats();
+        document.getElementById("sTime").textContent = lastUpdateTime || "―";
+      } catch(e){}
+    });
+
+    localStorage.setItem("wh_fb_cfg", JSON.stringify(cfg));
+    return true;
+  } catch(e) {
+    console.error("Firebase init failed:", e);
+    setSyncDot("offline");
+    return false;
+  }
+}
+
+function saveLocal(){
+  localStorage.setItem("wh_s_v4",       JSON.stringify(stocks));
+  localStorage.setItem("wh_h_v4",       JSON.stringify(history));
+  localStorage.setItem("wh_t_v4",       lastUpdateTime||"");
+  localStorage.setItem("wh_custom_v4",  JSON.stringify(customFlowers));
+  localStorage.setItem("wh_units_v4",   JSON.stringify(unitStocks));
+  localStorage.setItem("wh_memos_v4",   JSON.stringify(memos));
+  localStorage.setItem("wh_gmemo_v4",   globalMemo);
+}
+
 function saveUnits(){
   localStorage.setItem("wh_units_v4",JSON.stringify(unitStocks));
+  if(fbRef) fbRef.update({unitStocks});
 }
 function saveMemos(){
   localStorage.setItem("wh_memos_v4",JSON.stringify(memos));
 }
 function saveGlobalMemo(){
   localStorage.setItem("wh_gmemo_v4", globalMemo);
+  if(fbRef) fbRef.update({globalMemo});
 }
 
 function load(){
@@ -756,16 +937,46 @@ function load(){
   }catch(e){}
   ALL.forEach(f=>{ if(stocks[f.id]==null) stocks[f.id]=0; });
   customFlowers.forEach(f=>{ if(stocks[f.id]==null) stocks[f.id]=0; });
+
+  // 保存済みFirebase設定があれば自動接続
+  try{
+    const saved = localStorage.getItem("wh_fb_cfg");
+    if(saved){
+      const cfg = JSON.parse(saved);
+      if(cfg.apiKey && cfg.projectId && cfg.databaseURL){
+        initFirebase(cfg);
+        return;
+      }
+    }
+  }catch(e){}
+
+  // 初回：設定画面を表示
+  if(!localStorage.getItem("wh_fb_skipped")){
+    document.getElementById("fbSetupOverlay").classList.remove("hidden");
+  }
+  setSyncDot("offline");
 }
 
 function save(){
   lastUpdateTime = new Date().toLocaleTimeString("ja-JP",{hour:"2-digit",minute:"2-digit"});
-  localStorage.setItem("wh_s_v4",JSON.stringify(stocks));
-  localStorage.setItem("wh_h_v4",JSON.stringify(history));
-  localStorage.setItem("wh_t_v4",lastUpdateTime);
-  localStorage.setItem("wh_custom_v4",JSON.stringify(customFlowers));
-  saveUnits();
+  saveLocal();
   document.getElementById("sTime").textContent = lastUpdateTime;
+
+  if(fbRef){
+    setSyncDot("syncing");
+    _remoteWrite = true;
+    fbRef.set({
+      stocks, unitStocks, customFlowers,
+      globalMemo, history: history.slice(0,200),
+      lastUpdateTime
+    }).then(()=>{
+      _remoteWrite = false;
+      setSyncDot("online");
+    }).catch(()=>{
+      _remoteWrite = false;
+      setSyncDot("offline");
+    });
+  }
 }
 
 const UNITS = ["本","束","オケ"];
@@ -1180,6 +1391,38 @@ function guessEmoji(name, unit){
   return "🌷";
 }
 
+// ─── Firebase 設定画面 ───
+document.getElementById("fbSaveBtn").addEventListener("click", ()=>{
+  const apiKey      = document.getElementById("fbApiKey").value.trim();
+  const projectId   = document.getElementById("fbProjectId").value.trim();
+  const databaseURL = document.getElementById("fbDbUrl").value.trim();
+  if(!apiKey || !projectId || !databaseURL){
+    toast("すべての項目を入力してください");
+    return;
+  }
+  const cfg = {
+    apiKey,
+    authDomain: `${projectId}.firebaseapp.com`,
+    projectId,
+    databaseURL,
+    storageBucket: `${projectId}.appspot.com`,
+  };
+  const ok = initFirebase(cfg);
+  if(ok){
+    document.getElementById("fbSetupOverlay").classList.add("hidden");
+    toast("🔥 Firebaseに接続しました");
+  } else {
+    toast("❌ 接続に失敗しました。設定値を確認してください");
+  }
+});
+
+document.getElementById("fbSkipBtn").addEventListener("click", ()=>{
+  localStorage.setItem("wh_fb_skipped","1");
+  document.getElementById("fbSetupOverlay").classList.add("hidden");
+  setSyncDot("offline");
+});
+
+// ─── 起動 ───
 load();
 initVoice();
 render();
