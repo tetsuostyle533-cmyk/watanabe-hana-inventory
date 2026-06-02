@@ -826,22 +826,25 @@ function setSyncDot(state){
 }
 
 function buildShareUrl(){
-  // 在庫データをBase64エンコードしてURLハッシュに埋め込む
   const data = {
     stocks, unitStocks, customFlowers,
     globalMemo, lastUpdateTime
   };
   const json = JSON.stringify(data);
-  const b64  = btoa(unescape(encodeURIComponent(json)));
+  // URL安全なbase64（+→- /→_ =除去）でLINE等での文字化けを防ぐ
+  const b64 = btoa(unescape(encodeURIComponent(json)))
+    .replace(/\+/g,'-').replace(/\//g,'_').replace(/=/g,'');
   return `${location.origin}${location.pathname}#d=${b64}`;
 }
 
 function importFromHash(){
-  // URLハッシュからデータを取り込む
   const hash = location.hash;
   if(!hash.startsWith("#d=")) return false;
   try{
-    const b64  = hash.slice(3);
+    // URL安全base64を標準base64に戻してデコード
+    let b64 = hash.slice(3).replace(/-/g,'+').replace(/_/g,'/');
+    const pad = b64.length % 4;
+    if(pad) b64 += '='.repeat(4 - pad);
     const json = decodeURIComponent(escape(atob(b64)));
     const data = JSON.parse(json);
     if(data.stocks)        stocks        = data.stocks;
@@ -852,7 +855,6 @@ function importFromHash(){
     ALL.forEach(f=>{ if(stocks[f.id]==null) stocks[f.id]=0; });
     customFlowers.forEach(f=>{ if(stocks[f.id]==null) stocks[f.id]=0; });
     saveLocal();
-    // ハッシュをURLから消す（履歴を汚さない）
     history.replaceState({}, "", location.pathname);
     return true;
   }catch(e){ return false; }
