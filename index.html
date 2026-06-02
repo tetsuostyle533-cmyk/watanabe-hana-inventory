@@ -6,9 +6,6 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <title>渡辺花屋 在庫</title>
 <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@600;700;800&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
-<!-- Firebase SDK -->
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 <style>
 :root {
   --ink:    #1a1410;
@@ -493,119 +490,97 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--paper);color:var(--i
 }
 .global-memo-text:focus{border-color:var(--moss2);}
 
-/* ── Firebase 接続インジケーター ── */
+/* ── 同期インジケーター ── */
 .sync-dot{
   width:8px;height:8px;border-radius:50%;
   background:#aaa;flex-shrink:0;
   transition:background .4s;
 }
 .sync-dot.online {background:#4caf50;}
-.sync-dot.offline{background:#e53935;}
+.sync-dot.offline{background:#aaa;}
 .sync-dot.syncing{background:#ff9800;animation:syncpulse .8s infinite;}
 @keyframes syncpulse{0%,100%{opacity:1}50%{opacity:.3}}
 
-/* ── Firebase 設定画面 ── */
-.fb-setup-overlay{
+/* ── 共有モーダル ── */
+.share-overlay{
   position:fixed;inset:0;
   background:rgba(0,0,0,.55);
   z-index:500;
   display:flex;align-items:center;justify-content:center;
   padding:20px;
 }
-.fb-setup-overlay.hidden{display:none;}
-.fb-setup-box{
+.share-overlay.hidden{display:none;}
+.share-box{
   background:var(--paper);
   border-radius:20px;
   padding:28px 24px 24px;
-  width:100%;max-width:420px;
+  width:100%;max-width:400px;
   box-shadow:0 8px 40px rgba(0,0,0,.25);
 }
-.fb-setup-title{
+.share-title{
   font-family:'Shippori Mincho B1',serif;
   font-size:18px;font-weight:700;
   color:var(--moss);
-  margin-bottom:6px;
-  display:flex;align-items:center;gap:8px;
+  margin-bottom:8px;
 }
-.fb-setup-desc{
-  font-size:12px;color:var(--ink3);
-  line-height:1.7;margin-bottom:20px;
-}
-.fb-setup-desc a{color:var(--moss2);text-decoration:none;}
-.fb-field{margin-bottom:13px;}
-.fb-field label{
-  display:block;
-  font-size:11px;font-weight:700;
-  color:var(--ink3);letter-spacing:1px;
-  margin-bottom:5px;
-}
-.fb-field input{
-  width:100%;
-  padding:10px 13px;
+.share-desc{font-size:13px;color:var(--ink3);line-height:1.7;margin-bottom:16px;}
+.share-url-box{
+  display:flex;gap:8px;align-items:center;
+  background:var(--paper2);
+  border-radius:10px;padding:10px 12px;
+  margin-bottom:16px;
   border:1.5px solid var(--paper3);
-  border-radius:10px;
-  font-family:'Noto Sans JP',sans-serif;
-  font-size:13px;
-  color:var(--ink);
-  background:white;
-  outline:none;
-  -webkit-appearance:none;
-  transition:border-color .2s;
 }
-.fb-field input:focus{border-color:var(--moss2);}
-.fb-save-btn{
-  width:100%;
-  padding:14px;
-  background:var(--moss);
-  color:white;
+.share-url-text{
+  flex:1;font-size:11px;color:var(--ink2);
+  word-break:break-all;line-height:1.5;
+  font-family:monospace;
+}
+.share-copy-btn{
+  flex-shrink:0;
+  padding:7px 14px;
+  background:var(--moss);color:white;
+  border:none;border-radius:8px;
+  font-size:12px;font-weight:700;
+  cursor:pointer;white-space:nowrap;
+}
+.share-line-btn{
+  width:100%;padding:14px;
+  background:#06C755;color:white;
   border:none;border-radius:12px;
   font-family:'Noto Sans JP',sans-serif;
   font-size:15px;font-weight:700;
-  cursor:pointer;
-  margin-top:6px;
-  transition:opacity .2s;
+  cursor:pointer;margin-bottom:8px;
+  display:flex;align-items:center;justify-content:center;gap:8px;
 }
-.fb-save-btn:active{opacity:.8;}
-.fb-skip-btn{
-  width:100%;
-  padding:10px;
-  background:none;
-  color:var(--ink3);
-  border:none;
-  font-family:'Noto Sans JP',sans-serif;
-  font-size:12px;
-  cursor:pointer;
-  margin-top:6px;
+.share-close-btn{
+  width:100%;padding:10px;
+  background:none;color:var(--ink3);
+  border:none;font-size:13px;cursor:pointer;
   text-decoration:underline;
 }
+.share-status{font-size:11px;color:var(--moss2);margin-bottom:12px;text-align:center;}
 </style>
 </head>
 <body>
 
 <div class="toast" id="toast"></div>
 
-<!-- Firebase 設定画面 -->
-<div class="fb-setup-overlay hidden" id="fbSetupOverlay">
-  <div class="fb-setup-box">
-    <div class="fb-setup-title">🔥 Firebase 同期設定</div>
-    <div class="fb-setup-desc">
-      Firebaseプロジェクトの設定値を入力すると、複数の端末でリアルタイムに在庫を共有できます。<br>
-      <a href="https://console.firebase.google.com/" target="_blank">Firebase Console</a> でプロジェクトを作成後、「プロジェクトの設定 → アプリを追加（ウェブ）」から取得してください。
+<!-- 共有モーダル -->
+<div class="share-overlay hidden" id="shareOverlay">
+  <div class="share-box">
+    <div class="share-title">📡 在庫を共有する</div>
+    <div class="share-desc" id="shareDesc">このURLを花屋の方に送ってください。同じURLを開くと在庫がリアルタイムで同期されます。</div>
+    <div class="share-status" id="shareStatus"></div>
+    <div class="share-url-box">
+      <div class="share-url-text" id="shareUrlText">準備中…</div>
+      <button class="share-copy-btn" id="shareCopyBtn">コピー</button>
     </div>
-    <div class="fb-field">
-      <label>API KEY</label>
-      <input id="fbApiKey" type="text" placeholder="AIzaSy...">
-    </div>
-    <div class="fb-field">
-      <label>PROJECT ID</label>
-      <input id="fbProjectId" type="text" placeholder="my-flower-shop">
-    </div>
-    <div class="fb-field">
-      <label>DATABASE URL</label>
-      <input id="fbDbUrl" type="text" placeholder="https://my-flower-shop-default-rtdb.firebaseio.com">
-    </div>
-    <button class="fb-save-btn" id="fbSaveBtn">接続して同期開始</button>
-    <button class="fb-skip-btn" id="fbSkipBtn">今はスキップ（端末内保存のみ）</button>
+    <button class="share-line-btn" id="shareLineBtn">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63h2.386c.346 0 .627.285.627.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.104.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63.346 0 .628.285.628.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.282.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314"/></svg>
+      LINEで送る
+    </button>
+    <button class="share-close-btn" id="shareCloseBtn">閉じる</button>
   </div>
 </div>
 
@@ -713,6 +688,7 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--paper);color:var(--i
     </svg>
   </button>
   <button class="fab fab-copy" id="copyBtn" title="テキストをコピー">📋</button>
+  <button class="fab" id="shareBtn" title="在庫を共有" style="background:var(--sakura);color:white;font-size:18px;">📡</button>
 </div>
 
 <script>
@@ -842,80 +818,120 @@ let lastUpdateTime = null;
 let recognition = null;
 let isListening = false;
 
-// ─── Firebase ───
-let fbDb = null;
-let fbRef = null;
-let _remoteWrite = false; // リモートからの書き込みフラグ（ループ防止）
+// ─── クラウド同期（jsonblob.com） ───
+const BLOB_API = "https://jsonblob.com/api/jsonBlob";
+let roomId = null;
+let _saveTimer = null;
+let _polling = null;
 
-function setSyncDot(state){ // 'online' | 'offline' | 'syncing'
+function setSyncDot(state){
   const d = document.getElementById("syncDot");
   d.className = "sync-dot " + state;
-  d.title = state === "online" ? "同期中" : state === "offline" ? "オフライン（端末内保存）" : "同期中…";
 }
 
-function initFirebase(cfg){
-  try {
-    const app = firebase.apps.length
-      ? firebase.app()
-      : firebase.initializeApp(cfg);
-    fbDb  = firebase.database(app);
-    fbRef = fbDb.ref("inventory");
+// URLからroomIdを取得
+function getRoomIdFromUrl(){
+  return new URLSearchParams(location.search).get("room");
+}
 
-    // オンライン/オフライン検出
-    fbDb.ref(".info/connected").on("value", snap=>{
-      setSyncDot(snap.val() ? "online" : "offline");
+function buildShareUrl(id){
+  return `${location.origin}${location.pathname}?room=${id}`;
+}
+
+async function createRoom(){
+  setSyncDot("syncing");
+  const data = buildSyncData();
+  const res = await fetch(BLOB_API, {
+    method:"POST",
+    headers:{"Content-Type":"application/json","Accept":"application/json"},
+    body: JSON.stringify(data)
+  });
+  const loc = res.headers.get("Location") || "";
+  const id  = loc.split("/").pop();
+  if(!id) throw new Error("failed");
+  roomId = id;
+  localStorage.setItem("wh_room_v4", id);
+  history.replaceState({}, "", `?room=${id}`);
+  setSyncDot("online");
+  return id;
+}
+
+async function pushRoom(){
+  if(!roomId) return;
+  setSyncDot("syncing");
+  try{
+    await fetch(`${BLOB_API}/${roomId}`, {
+      method:"PUT",
+      headers:{"Content-Type":"application/json","Accept":"application/json"},
+      body: JSON.stringify(buildSyncData())
     });
+    setSyncDot("online");
+  }catch(e){ setSyncDot("offline"); }
+}
 
-    // リアルタイム受信：他端末の変更を反映
-    fbRef.on("value", snap=>{
-      if(_remoteWrite) return; // 自分の書き込みに反応しない
-      const data = snap.val();
-      if(!data) return;
-      try {
-        if(data.stocks)       stocks       = data.stocks;
-        if(data.unitStocks)   unitStocks   = data.unitStocks;
-        if(data.customFlowers)customFlowers= data.customFlowers;
-        if(data.globalMemo != null) globalMemo = data.globalMemo;
-        if(data.history)      history      = data.history;
-        if(data.lastUpdateTime) lastUpdateTime = data.lastUpdateTime;
-        ALL.forEach(f=>{ if(stocks[f.id]==null) stocks[f.id]=0; });
-        customFlowers.forEach(f=>{ if(stocks[f.id]==null) stocks[f.id]=0; });
-        saveLocal();
-        render();
-        renderStats();
-        document.getElementById("sTime").textContent = lastUpdateTime || "―";
-      } catch(e){}
+async function pullRoom(){
+  if(!roomId) return;
+  try{
+    const res = await fetch(`${BLOB_API}/${roomId}`, {
+      headers:{"Accept":"application/json"}
     });
+    if(!res.ok) return;
+    const data = await res.json();
+    applyRemoteData(data);
+  }catch(e){}
+}
 
-    localStorage.setItem("wh_fb_cfg", JSON.stringify(cfg));
-    return true;
-  } catch(e) {
-    console.error("Firebase init failed:", e);
-    setSyncDot("offline");
-    return false;
-  }
+function buildSyncData(){
+  return {stocks, unitStocks, customFlowers, globalMemo, history:history.slice(0,200), lastUpdateTime};
+}
+
+function applyRemoteData(data){
+  if(!data) return;
+  if(data.stocks)        stocks        = data.stocks;
+  if(data.unitStocks)    unitStocks    = data.unitStocks;
+  if(data.customFlowers) customFlowers = data.customFlowers;
+  if(data.globalMemo != null) globalMemo = data.globalMemo;
+  if(data.history)       history       = data.history;
+  if(data.lastUpdateTime) lastUpdateTime = data.lastUpdateTime;
+  ALL.forEach(f=>{ if(stocks[f.id]==null) stocks[f.id]=0; });
+  customFlowers.forEach(f=>{ if(stocks[f.id]==null) stocks[f.id]=0; });
+  saveLocal();
+  render();
+  renderStats();
+  if(lastUpdateTime) document.getElementById("sTime").textContent = lastUpdateTime;
+}
+
+function startPolling(){
+  if(_polling) clearInterval(_polling);
+  _polling = setInterval(pullRoom, 30000);
+  window.addEventListener("focus", pullRoom);
 }
 
 function saveLocal(){
-  localStorage.setItem("wh_s_v4",       JSON.stringify(stocks));
-  localStorage.setItem("wh_h_v4",       JSON.stringify(history));
-  localStorage.setItem("wh_t_v4",       lastUpdateTime||"");
-  localStorage.setItem("wh_custom_v4",  JSON.stringify(customFlowers));
-  localStorage.setItem("wh_units_v4",   JSON.stringify(unitStocks));
-  localStorage.setItem("wh_memos_v4",   JSON.stringify(memos));
-  localStorage.setItem("wh_gmemo_v4",   globalMemo);
+  localStorage.setItem("wh_s_v4",      JSON.stringify(stocks));
+  localStorage.setItem("wh_h_v4",      JSON.stringify(history));
+  localStorage.setItem("wh_t_v4",      lastUpdateTime||"");
+  localStorage.setItem("wh_custom_v4", JSON.stringify(customFlowers));
+  localStorage.setItem("wh_units_v4",  JSON.stringify(unitStocks));
+  localStorage.setItem("wh_memos_v4",  JSON.stringify(memos));
+  localStorage.setItem("wh_gmemo_v4",  globalMemo);
 }
 
 function saveUnits(){
   localStorage.setItem("wh_units_v4",JSON.stringify(unitStocks));
-  if(fbRef) fbRef.update({unitStocks});
+  schedulePush();
 }
 function saveMemos(){
   localStorage.setItem("wh_memos_v4",JSON.stringify(memos));
 }
 function saveGlobalMemo(){
   localStorage.setItem("wh_gmemo_v4", globalMemo);
-  if(fbRef) fbRef.update({globalMemo});
+  schedulePush();
+}
+
+function schedulePush(){
+  clearTimeout(_saveTimer);
+  _saveTimer = setTimeout(pushRoom, 2000);
 }
 
 function load(){
@@ -938,45 +954,26 @@ function load(){
   ALL.forEach(f=>{ if(stocks[f.id]==null) stocks[f.id]=0; });
   customFlowers.forEach(f=>{ if(stocks[f.id]==null) stocks[f.id]=0; });
 
-  // 保存済みFirebase設定があれば自動接続
-  try{
-    const saved = localStorage.getItem("wh_fb_cfg");
-    if(saved){
-      const cfg = JSON.parse(saved);
-      if(cfg.apiKey && cfg.projectId && cfg.databaseURL){
-        initFirebase(cfg);
-        return;
-      }
-    }
-  }catch(e){}
-
-  // 初回：設定画面を表示
-  if(!localStorage.getItem("wh_fb_skipped")){
-    document.getElementById("fbSetupOverlay").classList.remove("hidden");
+  // URLにroomIdがあれば同期モード
+  const urlRoom = getRoomIdFromUrl();
+  if(urlRoom){
+    roomId = urlRoom;
+    localStorage.setItem("wh_room_v4", urlRoom);
+    setSyncDot("syncing");
+    pullRoom().then(()=>{ setSyncDot("online"); startPolling(); });
+  } else {
+    // ローカルに保存済みroomIdがあれば復元
+    const saved = localStorage.getItem("wh_room_v4");
+    if(saved){ roomId = saved; setSyncDot("online"); startPolling(); }
+    else { setSyncDot("offline"); }
   }
-  setSyncDot("offline");
 }
 
 function save(){
   lastUpdateTime = new Date().toLocaleTimeString("ja-JP",{hour:"2-digit",minute:"2-digit"});
   saveLocal();
   document.getElementById("sTime").textContent = lastUpdateTime;
-
-  if(fbRef){
-    setSyncDot("syncing");
-    _remoteWrite = true;
-    fbRef.set({
-      stocks, unitStocks, customFlowers,
-      globalMemo, history: history.slice(0,200),
-      lastUpdateTime
-    }).then(()=>{
-      _remoteWrite = false;
-      setSyncDot("online");
-    }).catch(()=>{
-      _remoteWrite = false;
-      setSyncDot("offline");
-    });
-  }
+  schedulePush();
 }
 
 const UNITS = ["本","束","オケ"];
@@ -1391,35 +1388,45 @@ function guessEmoji(name, unit){
   return "🌷";
 }
 
-// ─── Firebase 設定画面 ───
-document.getElementById("fbSaveBtn").addEventListener("click", ()=>{
-  const apiKey      = document.getElementById("fbApiKey").value.trim();
-  const projectId   = document.getElementById("fbProjectId").value.trim();
-  const databaseURL = document.getElementById("fbDbUrl").value.trim();
-  if(!apiKey || !projectId || !databaseURL){
-    toast("すべての項目を入力してください");
-    return;
-  }
-  const cfg = {
-    apiKey,
-    authDomain: `${projectId}.firebaseapp.com`,
-    projectId,
-    databaseURL,
-    storageBucket: `${projectId}.appspot.com`,
-  };
-  const ok = initFirebase(cfg);
-  if(ok){
-    document.getElementById("fbSetupOverlay").classList.add("hidden");
-    toast("🔥 Firebaseに接続しました");
+// ─── 共有モーダル ───
+document.getElementById("shareBtn").addEventListener("click", async ()=>{
+  const overlay = document.getElementById("shareOverlay");
+  overlay.classList.remove("hidden");
+  const urlEl  = document.getElementById("shareUrlText");
+  const statusEl = document.getElementById("shareStatus");
+
+  if(roomId){
+    const url = buildShareUrl(roomId);
+    urlEl.textContent = url;
+    statusEl.textContent = "✅ 同期中のルーム";
   } else {
-    toast("❌ 接続に失敗しました。設定値を確認してください");
+    urlEl.textContent = "作成中…";
+    statusEl.textContent = "";
+    try{
+      const id = await createRoom();
+      const url = buildShareUrl(id);
+      urlEl.textContent = url;
+      statusEl.textContent = "✅ ルームを作成しました";
+    }catch(e){
+      urlEl.textContent = "作成に失敗しました。ネットワークを確認してください。";
+    }
   }
 });
 
-document.getElementById("fbSkipBtn").addEventListener("click", ()=>{
-  localStorage.setItem("wh_fb_skipped","1");
-  document.getElementById("fbSetupOverlay").classList.add("hidden");
-  setSyncDot("offline");
+document.getElementById("shareCopyBtn").addEventListener("click", ()=>{
+  const url = document.getElementById("shareUrlText").textContent;
+  if(navigator.clipboard) navigator.clipboard.writeText(url).then(()=>toast("📋 URLをコピーしました"));
+  else{ const ta=document.createElement("textarea"); ta.value=url; document.body.appendChild(ta); ta.select(); document.execCommand("copy"); document.body.removeChild(ta); toast("📋 コピーしました"); }
+});
+
+document.getElementById("shareLineBtn").addEventListener("click", ()=>{
+  const url = document.getElementById("shareUrlText").textContent;
+  const text = `🌸 渡辺花屋 在庫アプリ\nこのURLを開いてください👇\n${url}`;
+  window.open(`https://line.me/R/share?text=${encodeURIComponent(text)}`, "_blank");
+});
+
+document.getElementById("shareCloseBtn").addEventListener("click", ()=>{
+  document.getElementById("shareOverlay").classList.add("hidden");
 });
 
 // ─── 起動 ───
