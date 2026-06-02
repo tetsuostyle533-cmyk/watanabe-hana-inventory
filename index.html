@@ -818,8 +818,9 @@ let lastUpdateTime = null;
 let recognition = null;
 let isListening = false;
 
-// ─── クラウド同期（jsonblob.com） ───
-const BLOB_API = "https://jsonblob.com/api/jsonBlob";
+// ─── クラウド同期（jsonstore.io） ───
+// クライアント側でUUIDを生成 → CORSのLocationヘッダー問題を回避
+const STORE_BASE = "https://www.jsonstore.io";
 let roomId = null;
 let _saveTimer = null;
 let _polling = null;
@@ -829,7 +830,6 @@ function setSyncDot(state){
   d.className = "sync-dot " + state;
 }
 
-// URLからroomIdを取得
 function getRoomIdFromUrl(){
   return new URLSearchParams(location.search).get("room");
 }
@@ -838,18 +838,17 @@ function buildShareUrl(id){
   return `${location.origin}${location.pathname}?room=${id}`;
 }
 
+function genUUID(){
+  if(crypto.randomUUID) return crypto.randomUUID();
+  return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g,c=>
+    (c^crypto.getRandomValues(new Uint8Array(1))[0]&15>>c/4).toString(16));
+}
+
 async function createRoom(){
   setSyncDot("syncing");
-  const data = buildSyncData();
-  const res = await fetch(BLOB_API, {
-    method:"POST",
-    headers:{"Content-Type":"application/json","Accept":"application/json"},
-    body: JSON.stringify(data)
-  });
-  const loc = res.headers.get("Location") || "";
-  const id  = loc.split("/").pop();
-  if(!id) throw new Error("failed");
+  const id = genUUID();
   roomId = id;
+  await pushRoom();
   localStorage.setItem("wh_room_v4", id);
   history.replaceState({}, "", `?room=${id}`);
   setSyncDot("online");
@@ -860,11 +859,12 @@ async function pushRoom(){
   if(!roomId) return;
   setSyncDot("syncing");
   try{
-    await fetch(`${BLOB_API}/${roomId}`, {
-      method:"PUT",
-      headers:{"Content-Type":"application/json","Accept":"application/json"},
+    const res = await fetch(`${STORE_BASE}/${roomId}`, {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
       body: JSON.stringify(buildSyncData())
     });
+    if(!res.ok) throw new Error("push failed");
     setSyncDot("online");
   }catch(e){ setSyncDot("offline"); }
 }
@@ -872,13 +872,13 @@ async function pushRoom(){
 async function pullRoom(){
   if(!roomId) return;
   try{
-    const res = await fetch(`${BLOB_API}/${roomId}`, {
-      headers:{"Accept":"application/json"}
-    });
+    const res = await fetch(`${STORE_BASE}/${roomId}`);
     if(!res.ok) return;
-    const data = await res.json();
-    applyRemoteData(data);
-  }catch(e){}
+    const json = await res.json();
+    if(!json.ok || !json.result) return;
+    applyRemoteData(json.result);
+    setSyncDot("online");
+  }catch(e){ setSyncDot("offline"); }
 }
 
 function buildSyncData(){
