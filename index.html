@@ -560,11 +560,136 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--paper);color:var(--i
   text-decoration:underline;
 }
 .share-status{font-size:11px;color:var(--moss2);margin-bottom:12px;text-align:center;}
+
+/* ── テンキー入力モーダル ── */
+.numpad-overlay{
+  position:fixed;inset:0;
+  background:rgba(0,0,0,.45);
+  z-index:600;
+  display:flex;align-items:flex-end;justify-content:center;
+}
+.numpad-overlay.hidden{display:none;}
+.numpad-box{
+  background:white;
+  border-radius:24px 24px 0 0;
+  padding:16px 16px calc(env(safe-area-inset-bottom,0px)+20px);
+  width:100%;max-width:400px;
+  box-shadow:0 -4px 32px rgba(0,0,0,.2);
+}
+.numpad-name{
+  font-size:13px;color:var(--ink3);
+  text-align:center;margin-bottom:4px;font-weight:500;
+}
+.numpad-display{
+  font-family:'Shippori Mincho B1',serif;
+  font-size:52px;font-weight:700;
+  text-align:center;color:var(--ink);
+  margin-bottom:12px;line-height:1;
+  min-height:60px;letter-spacing:2px;
+}
+.numpad-unit{font-size:18px;color:var(--ink3);}
+.numpad-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:8px;margin-bottom:8px;
+}
+.nk{
+  padding:16px 8px;border:none;border-radius:14px;
+  background:var(--paper2);color:var(--ink);
+  font-family:'Shippori Mincho B1',serif;
+  font-size:26px;font-weight:700;
+  cursor:pointer;transition:background .1s, transform .1s;
+  -webkit-user-select:none;user-select:none;
+}
+.nk:active{background:var(--paper3);transform:scale(.94);}
+.nk.del{font-size:20px;background:var(--sakura3);color:var(--sakura);}
+.nk.ok{
+  background:var(--moss);color:white;font-size:18px;
+  grid-column:span 2;letter-spacing:1px;
+}
+.nk.ok:active{background:var(--moss2);}
+
+/* ── 長押しクイック加算ポップアップ ── */
+.quick-popup{
+  position:fixed;
+  background:var(--ink);
+  border-radius:14px;
+  padding:6px;
+  display:flex;gap:5px;
+  z-index:500;
+  box-shadow:0 4px 20px rgba(0,0,0,.35);
+  transform:translateY(-8px);
+}
+.quick-popup.hidden{display:none;}
+.qp-btn{
+  padding:10px 14px;
+  border:none;border-radius:10px;
+  background:rgba(255,255,255,.15);
+  color:white;
+  font-family:'Noto Sans JP',sans-serif;
+  font-size:13px;font-weight:700;
+  cursor:pointer;white-space:nowrap;
+  transition:background .1s;
+}
+.qp-btn:active{background:rgba(255,255,255,.3);}
+
+/* ── 全リセット確認ダイアログ ── */
+.reset-bar{
+  background:white;
+  border-radius:12px;
+  margin:12px 14px 0;
+  padding:12px 16px;
+  display:flex;align-items:center;justify-content:space-between;
+  box-shadow:0 1px 4px rgba(0,0,0,.07);
+}
+.reset-bar-label{font-size:13px;color:var(--ink3);}
+.reset-btn{
+  padding:8px 16px;
+  border:1.5px solid var(--sakura);
+  border-radius:10px;
+  background:white;
+  color:var(--sakura);
+  font-family:'Noto Sans JP',sans-serif;
+  font-size:12px;font-weight:700;
+  cursor:pointer;transition:.15s;
+}
+.reset-btn.confirm{background:var(--sakura);color:white;}
 </style>
 </head>
 <body>
 
 <div class="toast" id="toast"></div>
+
+<!-- テンキーモーダル -->
+<div class="numpad-overlay hidden" id="numpadOverlay">
+  <div class="numpad-box">
+    <div class="numpad-name" id="numpadName"></div>
+    <div class="numpad-display">
+      <span id="numpadDisplay">0</span><span class="numpad-unit" id="numpadUnit"></span>
+    </div>
+    <div class="numpad-grid">
+      <button class="nk" data-k="7">7</button>
+      <button class="nk" data-k="8">8</button>
+      <button class="nk" data-k="9">9</button>
+      <button class="nk" data-k="4">4</button>
+      <button class="nk" data-k="5">5</button>
+      <button class="nk" data-k="6">6</button>
+      <button class="nk" data-k="1">1</button>
+      <button class="nk" data-k="2">2</button>
+      <button class="nk" data-k="3">3</button>
+      <button class="nk del" data-k="del">⌫</button>
+      <button class="nk" data-k="0">0</button>
+      <button class="nk ok" data-k="ok">決定</button>
+    </div>
+  </div>
+</div>
+
+<!-- 長押しクイック加算 -->
+<div class="quick-popup hidden" id="quickPopup">
+  <button class="qp-btn" data-v="5">+5</button>
+  <button class="qp-btn" data-v="10">+10</button>
+  <button class="qp-btn" data-v="20">+20</button>
+  <button class="qp-btn" data-v="50">+50</button>
+</div>
 
 <!-- 共有モーダル -->
 <div class="share-overlay hidden" id="shareOverlay">
@@ -1065,11 +1190,23 @@ function buildCard(f){
     const id = e.currentTarget.dataset.id;
     setStock(id, Math.max(0,(stocks[id]||0)-1));
   });
-  div.querySelector(".qty-btn.p").addEventListener("click", e=>{
+
+  // 数字タップ → テンキー入力
+  div.querySelector(".qty-num").addEventListener("click", e=>{
+    e.stopPropagation();
+    openNumpad(f.id);
+  });
+
+  // ＋通常クリック
+  const pBtn = div.querySelector(".qty-btn.p");
+  pBtn.addEventListener("click", e=>{
     e.stopPropagation();
     const id = e.currentTarget.dataset.id;
     setStock(id, (stocks[id]||0)+1);
   });
+  // ＋長押し → クイック加算
+  setupLongPress(pBtn, f.id);
+
   div.querySelector(".qty-unit").addEventListener("click", e=>{
     e.stopPropagation();
     const id = e.currentTarget.dataset.id;
@@ -1081,14 +1218,22 @@ function buildCard(f){
 
 function renderHistory(){
   const wrap = document.getElementById("historyWrap");
-  if(!history.length){ wrap.innerHTML=`<div class="empty-msg">まだ変更履歴がありません</div>`; return; }
+  const resetBar = `<div class="reset-bar">
+    <span class="reset-bar-label">📦 在庫を一括リセット（全て0に）</span>
+    <button class="reset-btn" id="resetAllBtn">リセット</button>
+  </div>`;
+  if(!history.length){
+    wrap.innerHTML = resetBar + `<div class="empty-msg" style="margin-top:12px">まだ変更履歴がありません</div>`;
+    setupResetBtn();
+    return;
+  }
   const groups={};
   history.slice(0,100).forEach(h=>{
     const d=new Date(h.ts).toLocaleDateString("ja-JP",{month:"long",day:"numeric",weekday:"short"});
     if(!groups[d]) groups[d]=[];
     groups[d].push(h);
   });
-  wrap.innerHTML = Object.entries(groups).map(([date,items])=>`
+  wrap.innerHTML = resetBar + Object.entries(groups).map(([date,items])=>`
     <div class="history-date-label">${date}</div>
     ${items.map(h=>{
       const t=new Date(h.ts).toLocaleTimeString("ja-JP",{hour:"2-digit",minute:"2-digit"});
@@ -1106,6 +1251,7 @@ function renderHistory(){
       </div>`;
     }).join("")}
   `).join("");
+  setupResetBtn();
 }
 
 let _tt;
@@ -1389,6 +1535,110 @@ document.getElementById("shareLineBtn").addEventListener("click", ()=>{
 document.getElementById("shareCloseBtn").addEventListener("click", ()=>{
   document.getElementById("shareOverlay").classList.add("hidden");
 });
+
+// ─── テンキー入力 ───
+let _numpadId = null;
+let _numpadVal = "";
+
+function openNumpad(id){
+  _numpadId = id;
+  _numpadVal = String(stocks[id]||0);
+  const f = byId(id);
+  document.getElementById("numpadName").textContent = f.name;
+  document.getElementById("numpadUnit").textContent = unitStocks[id]||f.unit;
+  document.getElementById("numpadDisplay").textContent = _numpadVal;
+  document.getElementById("numpadOverlay").classList.remove("hidden");
+}
+
+function closeNumpad(){ document.getElementById("numpadOverlay").classList.add("hidden"); _numpadId=null; }
+
+document.getElementById("numpadOverlay").addEventListener("click", e=>{
+  if(e.target===document.getElementById("numpadOverlay")) closeNumpad();
+});
+
+document.getElementById("numpadOverlay").addEventListener("click", e=>{
+  const k = e.target.closest(".nk");
+  if(!k) return;
+  const key = k.dataset.k;
+  if(key==="ok"){
+    const val = parseInt(_numpadVal)||0;
+    if(_numpadId) setStock(_numpadId, val);
+    closeNumpad();
+  } else if(key==="del"){
+    _numpadVal = _numpadVal.slice(0,-1)||"0";
+    document.getElementById("numpadDisplay").textContent = _numpadVal;
+  } else {
+    if(_numpadVal==="0") _numpadVal = key;
+    else _numpadVal += key;
+    if(_numpadVal.length > 4) _numpadVal = _numpadVal.slice(0,4);
+    document.getElementById("numpadDisplay").textContent = _numpadVal;
+  }
+});
+
+// ─── 長押しクイック加算 ───
+let _lpTimer = null;
+let _lpMoved = false;
+
+function setupLongPress(btn, id){
+  const start = e=>{
+    _lpMoved = false;
+    _lpTimer = setTimeout(()=>{
+      if(_lpMoved) return;
+      const rect = btn.getBoundingClientRect();
+      const pop = document.getElementById("quickPopup");
+      pop.dataset.id = id;
+      const top = rect.top - 60;
+      pop.style.top  = Math.max(8, top) + "px";
+      pop.style.left = Math.max(8, rect.left - 20) + "px";
+      pop.classList.remove("hidden");
+      if(navigator.vibrate) navigator.vibrate(40);
+    }, 480);
+  };
+  btn.addEventListener("touchstart", start, {passive:true});
+  btn.addEventListener("mousedown",  start);
+  btn.addEventListener("touchmove",  ()=>{ _lpMoved=true; clearTimeout(_lpTimer); }, {passive:true});
+  btn.addEventListener("touchend",   ()=> clearTimeout(_lpTimer));
+  btn.addEventListener("mouseup",    ()=> clearTimeout(_lpTimer));
+  btn.addEventListener("mouseleave", ()=> clearTimeout(_lpTimer));
+}
+
+document.getElementById("quickPopup").addEventListener("click", e=>{
+  const btn = e.target.closest(".qp-btn");
+  if(!btn) return;
+  const id  = document.getElementById("quickPopup").dataset.id;
+  const val = parseInt(btn.dataset.v);
+  if(id && val) setStock(id, (stocks[id]||0)+val);
+  document.getElementById("quickPopup").classList.add("hidden");
+});
+
+document.addEventListener("click", e=>{
+  if(!e.target.closest("#quickPopup")) document.getElementById("quickPopup").classList.add("hidden");
+});
+
+// ─── 全在庫リセット ───
+function setupResetBtn(){
+  const btn = document.getElementById("resetAllBtn");
+  if(!btn) return;
+  btn.addEventListener("click", ()=>{
+    if(btn.dataset.confirming==="1"){
+      getAllFlowers().forEach(([,fl])=>fl.forEach(f=>{ stocks[f.id]=0; }));
+      history.unshift({id:"_reset",delta:0,after:0,name:"全在庫リセット",unit:"",ts:Date.now()});
+      save();
+      render();
+      renderHistory();
+      toast("🔄 全在庫を0にリセットしました");
+      return;
+    }
+    btn.dataset.confirming="1";
+    btn.textContent="本当にリセット？";
+    btn.classList.add("confirm");
+    setTimeout(()=>{
+      btn.dataset.confirming="0";
+      btn.textContent="リセット";
+      btn.classList.remove("confirm");
+    },3000);
+  });
+}
 
 // ─── 起動 ───
 load();
