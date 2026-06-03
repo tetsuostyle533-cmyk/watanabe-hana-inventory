@@ -1345,14 +1345,33 @@ function guessEmoji(name, unit){
 }
 
 // ─── 共有モーダル ───
-document.getElementById("shareBtn").addEventListener("click", ()=>{
+async function shortenUrl(longUrl){
+  try{
+    const res = await fetch(
+      `https://is.gd/create.php?format=simple&url=${encodeURIComponent(longUrl)}`
+    );
+    if(!res.ok) return longUrl;
+    const short = (await res.text()).trim();
+    return short.startsWith("http") ? short : longUrl;
+  }catch(e){ return longUrl; }
+}
+
+document.getElementById("shareBtn").addEventListener("click", async ()=>{
   const overlay  = document.getElementById("shareOverlay");
   const urlEl    = document.getElementById("shareUrlText");
   const statusEl = document.getElementById("shareStatus");
   overlay.classList.remove("hidden");
-  const url = buildShareUrl();
+  urlEl.textContent = "短縮URL作成中…";
+  statusEl.textContent = "";
+  document.getElementById("shareCopyBtn").disabled = true;
+  document.getElementById("shareLineBtn").disabled = true;
+
+  const longUrl = buildShareUrl();
+  const url = await shortenUrl(longUrl);
   urlEl.textContent = url;
   statusEl.textContent = "✅ 現在の在庫データを含むURLです";
+  document.getElementById("shareCopyBtn").disabled = false;
+  document.getElementById("shareLineBtn").disabled = false;
 });
 
 document.getElementById("shareCopyBtn").addEventListener("click", ()=>{
@@ -1363,7 +1382,7 @@ document.getElementById("shareCopyBtn").addEventListener("click", ()=>{
 
 document.getElementById("shareLineBtn").addEventListener("click", ()=>{
   const url = document.getElementById("shareUrlText").textContent;
-  const text = `🌸 渡辺花屋 在庫アプリ\nこのURLを開いてください👇\n${url}`;
+  const text = `🌸 渡辺花屋 在庫\nこのURLを開いてください👇\n${url}`;
   window.open(`https://line.me/R/share?text=${encodeURIComponent(text)}`, "_blank");
 });
 
