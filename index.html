@@ -826,12 +826,21 @@ function setSyncDot(state){
 }
 
 function buildShareUrl(){
+  // 0以外の在庫だけ含めてURLを短くする
+  const nonZeroStocks = Object.fromEntries(
+    Object.entries(stocks).filter(([,v]) => v > 0)
+  );
+  const nonZeroUnits = Object.fromEntries(
+    Object.entries(unitStocks).filter(([k]) => stocks[k] > 0)
+  );
   const data = {
-    stocks, unitStocks, customFlowers,
-    globalMemo, lastUpdateTime
+    s: nonZeroStocks,
+    u: nonZeroUnits,
+    c: customFlowers.filter(f => (stocks[f.id]||0) > 0),
+    m: globalMemo || undefined,
+    t: lastUpdateTime || undefined
   };
   const json = JSON.stringify(data);
-  // URL安全なbase64（+→- /→_ =除去）でLINE等での文字化けを防ぐ
   const b64 = btoa(unescape(encodeURIComponent(json)))
     .replace(/\+/g,'-').replace(/\//g,'_').replace(/=/g,'');
   return `${location.origin}${location.pathname}#d=${b64}`;
@@ -847,10 +856,20 @@ function importFromHash(){
     if(pad) b64 += '='.repeat(4 - pad);
     const json = decodeURIComponent(escape(atob(b64)));
     const data = JSON.parse(json);
-    if(data.stocks)        stocks        = data.stocks;
-    if(data.unitStocks)    unitStocks    = data.unitStocks;
-    if(data.customFlowers) customFlowers = data.customFlowers;
+    // 新形式（短縮キー）と旧形式の両方に対応
+    const src = data.s || data.stocks || {};
+    Object.entries(src).forEach(([k,v])=>{ stocks[k] = v; });
+    const srcU = data.u || data.unitStocks || {};
+    Object.assign(unitStocks, srcU);
+    if(data.c || data.customFlowers){
+      (data.c || data.customFlowers).forEach(f=>{
+        if(!customFlowers.find(cf=>cf.id===f.id)) customFlowers.push(f);
+        stocks[f.id] = src[f.id] || 0;
+      });
+    }
+    if(data.m != null) globalMemo = data.m;
     if(data.globalMemo != null) globalMemo = data.globalMemo;
+    if(data.t) lastUpdateTime = data.t;
     if(data.lastUpdateTime) lastUpdateTime = data.lastUpdateTime;
     ALL.forEach(f=>{ if(stocks[f.id]==null) stocks[f.id]=0; });
     customFlowers.forEach(f=>{ if(stocks[f.id]==null) stocks[f.id]=0; });
