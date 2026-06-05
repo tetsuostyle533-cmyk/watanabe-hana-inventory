@@ -638,6 +638,33 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--paper);color:var(--i
 .reset-btn{background:#fee2e2;color:#dc2626;border:none;border-radius:8px;padding:8px 16px;font-size:13px;font-weight:700;cursor:pointer;}
 .reset-btn.confirm{background:#dc2626;color:#fff;}
 
+/* ─── 配達・注文管理 ─── */
+.order-filter-bar{display:flex;gap:7px;padding:10px 12px 6px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;background:var(--paper);border-bottom:1px solid var(--paper3);}
+.order-filter-bar::-webkit-scrollbar{display:none}
+.order-pill{flex-shrink:0;padding:6px 14px;border:1.5px solid var(--paper3);border-radius:18px;font-family:'Noto Sans JP',sans-serif;font-size:11px;background:white;cursor:pointer;color:var(--ink2);white-space:nowrap;transition:.2s;-webkit-appearance:none;}
+.order-pill.on{background:var(--moss4);border-color:var(--moss2);color:var(--moss);font-weight:700}
+.order-section-label{font-family:'Shippori Mincho B1',serif;font-size:11px;font-weight:700;color:var(--ink3);letter-spacing:2px;padding:10px 12px 4px;}
+.order-today-section{background:var(--kin3);border-bottom:2px solid var(--kin);}
+.order-today-section .order-section-label{color:var(--kin);}
+.order-card{background:white;margin:6px 8px;border-radius:var(--r);border:1.5px solid var(--paper3);padding:12px 14px;display:flex;flex-direction:column;gap:6px;position:relative;overflow:hidden;transition:.15s;}
+.order-card.today{border-left:4px solid var(--kin);background:var(--kin3);}
+.order-card-top{display:flex;align-items:center;gap:8px;}
+.order-card-name{font-family:'Shippori Mincho B1',serif;font-size:15px;font-weight:700;color:var(--ink);flex:1;}
+.order-status-badge{flex-shrink:0;padding:3px 9px;border-radius:10px;font-size:10px;font-weight:700;cursor:pointer;border:none;transition:.15s;-webkit-appearance:none;}
+.order-status-badge.pending{background:var(--sakura3);color:var(--sakura);}
+.order-status-badge.preparing{background:var(--kin3);color:var(--kin);}
+.order-status-badge.done{background:var(--moss4);color:var(--moss);}
+.order-card-meta{font-size:11px;color:var(--ink3);display:flex;gap:10px;flex-wrap:wrap;}
+.order-card-address{font-size:12px;color:var(--ink2);}
+.order-card-flowers{font-size:11px;color:var(--ink3);font-style:italic;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.order-field-input{width:100%;padding:11px 14px;border:1.5px solid var(--paper3);border-radius:8px;font-family:'Noto Sans JP',sans-serif;font-size:14px;background:white;outline:none;color:var(--ink);-webkit-appearance:none;transition:.2s;box-sizing:border-box;}
+.order-field-input:focus{border-color:var(--moss2);}
+.order-field-textarea{width:100%;padding:11px 14px;border:1.5px solid var(--paper3);border-radius:8px;font-family:'Noto Sans JP',sans-serif;font-size:13px;background:white;outline:none;color:var(--ink);resize:none;-webkit-appearance:none;transition:.2s;box-sizing:border-box;}
+.order-field-textarea:focus{border-color:var(--moss2);}
+.order-field-row{display:flex;gap:12px;}
+.order-fab{position:fixed;bottom:calc(env(safe-area-inset-bottom,0px) + 20px);right:16px;background:var(--moss);color:white;border:none;border-radius:24px;padding:13px 20px;font-family:'Noto Sans JP',sans-serif;font-size:13px;font-weight:700;cursor:pointer;z-index:30;box-shadow:0 4px 16px rgba(61,90,62,.35);display:none;transition:.2s;letter-spacing:.5px;}
+.order-fab:active{transform:scale(.95);}
+
 </style>
 </head>
 <body>
@@ -724,6 +751,7 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--paper);color:var(--i
   <button class="tab-btn" data-tab="hoka">その他</button>
   <button class="tab-btn" data-tab="green">グリーン</button>
   <button class="tab-btn" data-tab="history">履歴</button>
+  <button class="tab-btn" data-tab="delivery">🚐 配達</button>
 </div>
 
 <!-- 検索 -->
@@ -744,7 +772,22 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--paper);color:var(--i
       <p class="empty-msg">まだ変更履歴がありません</p>
     </div>
   </div>
+  <div class="page" id="page-delivery">
+    <div class="order-filter-bar" id="orderFilterBar">
+      <button class="order-pill on" data-filter="all">すべて</button>
+      <button class="order-pill" data-filter="pending">未確認</button>
+      <button class="order-pill" data-filter="preparing">準備中</button>
+      <button class="order-pill" data-filter="done">完了</button>
+    </div>
+    <div class="order-today-section" id="orderTodaySection" style="display:none">
+      <div class="order-section-label">📦 本日の配達</div>
+      <div id="orderTodayList"></div>
+    </div>
+    <div class="order-section-label" id="orderAllLabel">すべての注文</div>
+    <div id="orderList"><div class="empty-msg">注文がありません</div></div>
+  </div>
 </main>
+<button class="order-fab" id="orderAddBtn">＋ 注文追加</button>
 
 <!-- 音声パネル -->
 <div class="voice-panel" id="voicePanel">
@@ -787,6 +830,49 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--paper);color:var(--i
   </div>
   <div class="add-screen-footer">
     <button class="add-submit-btn" id="addSubmitBtn" disabled>登録する</button>
+  </div>
+</div>
+
+<!-- 注文追加画面 -->
+<div class="add-screen" id="orderAddScreen">
+  <div class="add-screen-header">
+    <button class="add-back-btn" id="orderAddBackBtn">←</button>
+    <div class="add-screen-title" id="orderAddScreenTitle">注文を追加</div>
+  </div>
+  <div class="add-screen-body">
+    <div>
+      <div class="add-section-label">お客様名 *</div>
+      <input class="add-name-input" id="oCustomerName" type="text" placeholder="例：田中様" autocomplete="off">
+    </div>
+    <div>
+      <div class="add-section-label">電話番号</div>
+      <input class="order-field-input" id="oPhone" type="tel" placeholder="090-0000-0000" autocomplete="off">
+    </div>
+    <div class="order-field-row">
+      <div style="flex:1">
+        <div class="add-section-label">配達日 *</div>
+        <input class="order-field-input" id="oDate" type="date">
+      </div>
+      <div style="flex:1">
+        <div class="add-section-label">配達時間</div>
+        <input class="order-field-input" id="oTime" type="time">
+      </div>
+    </div>
+    <div>
+      <div class="add-section-label">住所 *</div>
+      <input class="order-field-input" id="oAddress" type="text" placeholder="例：渋谷区〇〇1-2-3" autocomplete="off">
+    </div>
+    <div>
+      <div class="add-section-label">花の内容</div>
+      <textarea class="order-field-textarea" id="oFlowerDetails" placeholder="例：白ユリ5本、カーネーション赤10本…" rows="3"></textarea>
+    </div>
+    <div>
+      <div class="add-section-label">備考</div>
+      <textarea class="order-field-textarea" id="oNotes" placeholder="例：インターホン使用、2階入口" rows="2"></textarea>
+    </div>
+  </div>
+  <div class="add-screen-footer">
+    <button class="add-submit-btn" id="orderSubmitBtn" disabled>登録する</button>
   </div>
 </div>
 
@@ -927,6 +1013,10 @@ let currentTab = "all";
 let lastUpdateTime = null;
 let recognition = null;
 let isListening = false;
+let orders = [];
+let orderFilter = "all";
+let _orderLpTimer = null;
+let _orderEditingId = null;
 
 // ─── 共有（URLデータ埋め込み方式・外部API不要） ───
 
@@ -1008,6 +1098,9 @@ function saveMemos(){
 function saveGlobalMemo(){
   localStorage.setItem("wh_gmemo_v4", globalMemo);
 }
+function saveOrders(){
+  localStorage.setItem("wh_orders_v4", JSON.stringify(orders));
+}
 
 function load(){
   try{
@@ -1025,6 +1118,8 @@ function load(){
     if(u) unitStocks=JSON.parse(u);
     if(m) memos=JSON.parse(m);
     if(gm) globalMemo=gm;
+    const ord=localStorage.getItem("wh_orders_v4");
+    if(ord) orders=JSON.parse(ord);
   }catch(e){}
   ALL.forEach(f=>{ if(stocks[f.id]==null) stocks[f.id]=0; });
   customFlowers.forEach(f=>{ if(stocks[f.id]==null) stocks[f.id]=0; });
@@ -1235,6 +1330,130 @@ function renderHistory(){
   setupResetBtn();
 }
 
+// ─── 注文・配達管理 ───
+
+function todayStr(){
+  return new Date().toISOString().slice(0,10);
+}
+
+function statusLabel(s){
+  return s==="pending"?"未確認":s==="preparing"?"準備中":"完了";
+}
+
+function renderOrders(){
+  const today=todayStr();
+  const sorted=[...orders].sort((a,b)=>{
+    if(!a.date&&!b.date) return 0;
+    if(!a.date) return 1;
+    if(!b.date) return -1;
+    const da=a.date+(a.time||"00:00"), db=b.date+(b.time||"00:00");
+    return da<db?-1:da>db?1:0;
+  });
+  const filtered=orderFilter==="all"?sorted:sorted.filter(o=>o.status===orderFilter);
+
+  const todayOrders=sorted.filter(o=>o.date===today);
+  const todaySection=document.getElementById("orderTodaySection");
+  const todayList=document.getElementById("orderTodayList");
+  if(todayOrders.length){
+    todaySection.style.display="";
+    todayList.innerHTML=todayOrders.map(o=>orderCardHTML(o,true)).join("");
+  } else {
+    todaySection.style.display="none";
+  }
+
+  const wrap=document.getElementById("orderList");
+  const allLabel=document.getElementById("orderAllLabel");
+  if(!filtered.length){
+    allLabel.style.display=orderFilter==="all"?"none":"";
+    wrap.innerHTML=`<div class="empty-msg">注文がありません</div>`;
+    return;
+  }
+  allLabel.style.display="";
+  wrap.innerHTML=filtered.map(o=>orderCardHTML(o,o.date===today)).join("");
+}
+
+function orderCardHTML(o,isToday){
+  const timeStr=[o.date,o.time].filter(Boolean).join(" ")||"日時未定";
+  const addrShort=o.address?o.address.slice(0,20)+(o.address.length>20?"…":""):"住所なし";
+  const flowerShort=o.flowerDetails?o.flowerDetails.slice(0,30)+(o.flowerDetails.length>30?"…":""):"";
+  return `<div class="order-card${isToday?" today":""}" data-id="${o.id}">
+    <div class="order-card-top">
+      <div class="order-card-name">${o.customerName}</div>
+      <button class="order-status-badge ${o.status}" data-action="status" data-id="${o.id}">${statusLabel(o.status)}</button>
+    </div>
+    <div class="order-card-meta">
+      <span>🗓 ${timeStr}</span>
+      ${o.phone?`<span>📞 ${o.phone}</span>`:""}
+    </div>
+    <div class="order-card-address">📍 ${addrShort}</div>
+    ${flowerShort?`<div class="order-card-flowers">🌸 ${flowerShort}</div>`:""}
+  </div>`;
+}
+
+function cycleOrderStatus(id){
+  const o=orders.find(o=>o.id===id); if(!o) return;
+  const CYCLE=["pending","preparing","done"];
+  o.status=CYCLE[(CYCLE.indexOf(o.status)+1)%CYCLE.length];
+  saveOrders(); renderOrders();
+  toast(`ステータス：${statusLabel(o.status)}`);
+}
+
+function deleteOrder(id){
+  const o=orders.find(x=>x.id===id);
+  orders=orders.filter(x=>x.id!==id);
+  saveOrders(); renderOrders();
+  toast(`🗑 ${o?o.customerName:"注文"}を削除しました`);
+}
+
+function openOrderAddScreen(){
+  _orderEditingId=null;
+  document.getElementById("orderAddScreenTitle").textContent="注文を追加";
+  document.getElementById("oDate").value=todayStr();
+  document.getElementById("oTime").value="";
+  document.getElementById("oCustomerName").value="";
+  document.getElementById("oPhone").value="";
+  document.getElementById("oAddress").value="";
+  document.getElementById("oFlowerDetails").value="";
+  document.getElementById("oNotes").value="";
+  document.getElementById("orderSubmitBtn").disabled=true;
+  document.getElementById("orderAddScreen").classList.add("show");
+}
+
+function closeOrderAddScreen(){
+  document.getElementById("orderAddScreen").classList.remove("show");
+}
+
+function validateOrderForm(){
+  const name=document.getElementById("oCustomerName").value.trim();
+  const date=document.getElementById("oDate").value;
+  const addr=document.getElementById("oAddress").value.trim();
+  document.getElementById("orderSubmitBtn").disabled=!(name&&date&&addr);
+}
+
+function submitOrder(){
+  const id=_orderEditingId||("ord_"+Date.now());
+  const order={
+    id,
+    customerName: document.getElementById("oCustomerName").value.trim(),
+    phone:        document.getElementById("oPhone").value.trim(),
+    date:         document.getElementById("oDate").value,
+    time:         document.getElementById("oTime").value,
+    address:      document.getElementById("oAddress").value.trim(),
+    flowerDetails:document.getElementById("oFlowerDetails").value.trim(),
+    notes:        document.getElementById("oNotes").value.trim(),
+    status:       "pending",
+    createdAt:    Date.now()
+  };
+  if(_orderEditingId){
+    const idx=orders.findIndex(o=>o.id===_orderEditingId);
+    if(idx>=0){ order.status=orders[idx].status; order.createdAt=orders[idx].createdAt; orders[idx]=order; }
+  } else {
+    orders.unshift(order);
+  }
+  saveOrders(); renderOrders(); closeOrderAddScreen();
+  toast("✅ 注文を登録しました");
+}
+
 let _tt;
 function toast(msg){
   const el=document.getElementById("toast");
@@ -1323,19 +1542,65 @@ document.getElementById("tabBar").addEventListener("click",e=>{
   const tab=btn.dataset.tab;
   document.querySelectorAll(".tab-btn").forEach(b=>b.classList.remove("active"));
   btn.classList.add("active");
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+  const orderFab=document.getElementById("orderAddBtn");
   if(tab==="history"){
-    document.getElementById("page-inventory").classList.remove("active");
     document.getElementById("page-history").classList.add("active");
     document.getElementById("searchArea").style.display="none";
+    orderFab.style.display="none";
     renderHistory();
+  } else if(tab==="delivery"){
+    document.getElementById("page-delivery").classList.add("active");
+    document.getElementById("searchArea").style.display="none";
+    orderFab.style.display="flex";
+    renderOrders();
   } else {
-    document.getElementById("page-history").classList.remove("active");
     document.getElementById("page-inventory").classList.add("active");
     document.getElementById("searchArea").style.display="";
+    orderFab.style.display="none";
     currentTab=tab; render();
   }
 });
 document.getElementById("searchInput").addEventListener("input",render);
+
+// ─── 注文管理イベント ───
+document.getElementById("orderAddBtn").addEventListener("click", openOrderAddScreen);
+document.getElementById("orderAddBackBtn").addEventListener("click", closeOrderAddScreen);
+["oCustomerName","oDate","oAddress"].forEach(id=>{
+  document.getElementById(id).addEventListener("input", validateOrderForm);
+});
+document.getElementById("orderSubmitBtn").addEventListener("click", submitOrder);
+
+document.getElementById("orderFilterBar").addEventListener("click", e=>{
+  const pill=e.target.closest(".order-pill"); if(!pill) return;
+  orderFilter=pill.dataset.filter;
+  document.querySelectorAll(".order-pill").forEach(p=>p.classList.remove("on"));
+  pill.classList.add("on");
+  renderOrders();
+});
+
+function setupOrderLongPress(listEl){
+  listEl.addEventListener("click", e=>{
+    const badge=e.target.closest("[data-action='status']");
+    if(badge){ cycleOrderStatus(badge.dataset.id); }
+  });
+  listEl.addEventListener("pointerdown", e=>{
+    const card=e.target.closest(".order-card");
+    if(!card||e.target.closest("[data-action]")) return;
+    const id=card.dataset.id;
+    _orderLpTimer=setTimeout(()=>{
+      if(navigator.vibrate) navigator.vibrate(40);
+      if(confirm(`「${orders.find(o=>o.id===id)?.customerName||"この注文"}」を削除しますか？`)){
+        deleteOrder(id);
+      }
+    },600);
+  });
+  listEl.addEventListener("pointerup",    ()=>clearTimeout(_orderLpTimer));
+  listEl.addEventListener("pointermove",  ()=>clearTimeout(_orderLpTimer));
+  listEl.addEventListener("pointercancel",()=>clearTimeout(_orderLpTimer));
+}
+setupOrderLongPress(document.getElementById("orderList"));
+setupOrderLongPress(document.getElementById("orderTodayList"));
 document.getElementById("filterZero").addEventListener("click",function(){
   hideZero=!hideZero; this.classList.toggle("on",hideZero); render();
 });
