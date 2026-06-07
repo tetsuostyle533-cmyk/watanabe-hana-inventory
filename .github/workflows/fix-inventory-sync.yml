@@ -1,0 +1,59 @@
+name: Fix inventory sync
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - .github/workflows/fix-inventory-sync.yml
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fix index.html
+        run: |
+          node <<'NODE'
+          const fs = require('fs');
+          const path = 'index.html';
+          let html = fs.readFileSync(path, 'utf8');
+
+          // The original refreshCard touches .flower-tags, which is not present in the compact card markup.
+          html = html.replace(
+            '  tags.innerHTML = badge + `<span class="flower-tag tag-unit">${curUnit}</span>`;',
+            '  if(tags) tags.innerHTML = badge + `<span class="flower-tag tag-unit">${curUnit}</span>`;'
+          );
+
+          // If the pasted Firebase block removed </body>, restore proper closing tags.
+          html = html.replace(/\n<\/script>\s*<\/html>\s*$/,
+            '\n</script>\n</body>\n</html>\n'
+          );
+
+          // Make the share modal wording match real-time room sharing.
+          html = html.replace(
+            /<div class="share-desc" id="shareDesc">[\s\S]*?<\/div>/,
+            '<div class="share-desc" id="shareDesc">このURLを花屋の方に送ってください。同じURLを開いた人は、在庫を変更すると自動で同じ数字に更新されます。</div>'
+          );
+
+          // Avoid the first empty remote snapshot overwriting useful local inventory before initial upload.
+          html = html.replace(
+            `roomRef.onSnapshot(doc=>{\n  if(!doc.exists){\n    queueCloudSave();\n    return;\n  }`,
+            `roomRef.onSnapshot(doc=>{\n  if(!doc.exists){\n    roomRef.set({\n      stocks,\n      unitStocks,\n      customFlowers,\n      memos,\n      globalMemo,\n      history: history.slice(0,300),\n      lastUpdateTime\n    }, {merge:true});\n    return;\n  }`
+          );
+
+          fs.writeFileSync(path, html);
+          NODE
+      - name: Commit fix
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          if git diff --cached --quiet; then
+            echo "No changes needed"
+          else
+            git commit -m "Fix Firebase inventory sync"
+            git push
+          fi
