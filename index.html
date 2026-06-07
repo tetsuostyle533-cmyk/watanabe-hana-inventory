@@ -1626,5 +1626,101 @@ load();
 initVoice();
 render();
 </script>
-</body>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyBhN7OB2Iw9tDGyElttijytpuSpdLz4GBo",
+  authDomain: "watanabehanaya-cb569.firebaseapp.com",
+  projectId: "watanabehanaya-cb569",
+  storageBucket: "watanabehanaya-cb569.firebasestorage.app",
+  messagingSenderId: "7136655000",
+  appId: "1:7136655000:web:0104804346a8740293c2ed"
+};
+
+const roomId = new URLSearchParams(location.search).get("room") || "default";
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+const roomRef = db.collection("inventoryRooms").doc(roomId);
+
+let applyingRemote = false;
+let syncTimer = null;
+
+const oldSave = save;
+save = function(){
+  oldSave();
+  queueCloudSave();
+};
+
+const oldSaveUnits = saveUnits;
+saveUnits = function(){
+  oldSaveUnits();
+  queueCloudSave();
+};
+
+function queueCloudSave(){
+  if(applyingRemote) return;
+  clearTimeout(syncTimer);
+  setSyncDot("syncing");
+  syncTimer = setTimeout(()=>{
+    roomRef.set({
+      stocks,
+      unitStocks,
+      customFlowers,
+      memos,
+      globalMemo,
+      history: history.slice(0,300),
+      lastUpdateTime
+    }, {merge:true}).then(()=>setSyncDot("online")).catch(()=>{
+      setSyncDot("offline");
+      toast("同期エラー");
+    });
+  }, 300);
+}
+
+buildShareUrl = function(){
+  return `${location.origin}${location.pathname}?room=${encodeURIComponent(roomId)}`;
+};
+
+refreshCard = function(id){
+  const el = document.querySelector(`.flower-card[data-id="${id}"]`);
+  if(!el) return;
+  const f = byId(id);
+  const q = stocks[id] || 0;
+  el.className = "flower-card" + (q===0 ? " zero" : q<=3 ? " low" : "");
+  const numEl = el.querySelector(".qty-num");
+  if(numEl) numEl.textContent = q;
+  const qtyUnitBtn = el.querySelector(".qty-unit");
+  if(qtyUnitBtn && f) qtyUnitBtn.textContent = unitStocks[f.id] || f.unit;
+};
+
+roomRef.onSnapshot(doc=>{
+  if(!doc.exists){
+    queueCloudSave();
+    return;
+  }
+  applyingRemote = true;
+  const data = doc.data();
+  stocks = data.stocks || {};
+  unitStocks = data.unitStocks || {};
+  customFlowers = data.customFlowers || [];
+  memos = data.memos || {};
+  globalMemo = data.globalMemo || "";
+  history = Array.isArray(data.history) ? data.history : [];
+  lastUpdateTime = data.lastUpdateTime || lastUpdateTime;
+
+  ALL.forEach(f=>{ if(stocks[f.id] == null) stocks[f.id] = 0; });
+  customFlowers.forEach(f=>{ if(stocks[f.id] == null) stocks[f.id] = 0; });
+
+  saveLocal();
+  render();
+  renderStats();
+  setSyncDot("online");
+  applyingRemote = false;
+}, err=>{
+  console.error(err);
+  setSyncDot("offline");
+  toast("Firestoreの同期を確認してください");
+});
+</script>
 </html>
