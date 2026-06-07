@@ -57,3 +57,4 @@ jobs:
             git commit -m "Fix Firebase inventory sync"
             git push
           fi
+# trigger: 2026-06-07T00:00:00Z
