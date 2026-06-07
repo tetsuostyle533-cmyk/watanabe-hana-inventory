@@ -680,7 +680,7 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--paper);color:var(--i
 <div class="share-overlay hidden" id="shareOverlay">
   <div class="share-box">
     <div class="share-title">📡 在庫を共有する</div>
-    <div class="share-desc" id="shareDesc">このURLを花屋の方に送ってください。URLを開くと今の在庫データが自動的に読み込まれます。在庫を更新したらまた新しいURLを送ってください。</div>
+    <div class="share-desc" id="shareDesc">このURLを花屋の方に送ってください。同じURLを開いた人は、在庫を変更すると自動で同じ数字に更新されます。</div>
     <div class="share-status" id="shareStatus"></div>
     <div class="share-url-box">
       <div class="share-url-text" id="shareUrlText">準備中…</div>
@@ -1090,7 +1090,7 @@ function refreshCard(id){
       ? `<span class="flower-tag tag-low">残り少</span>`
       : `<span class="flower-tag tag-ok">在庫あり</span>`;
   const curUnit = unitStocks[f.id]||f.unit;
-  tags.innerHTML = badge + `<span class="flower-tag tag-unit">${curUnit}</span>`;
+  if(tags) tags.innerHTML = badge + `<span class="flower-tag tag-unit">${curUnit}</span>`;
   const qtyUnitBtn = el.querySelector(".qty-unit");
   if(qtyUnitBtn) qtyUnitBtn.textContent = curUnit;
 }
@@ -1696,7 +1696,15 @@ refreshCard = function(id){
 
 roomRef.onSnapshot(doc=>{
   if(!doc.exists){
-    queueCloudSave();
+    roomRef.set({
+      stocks,
+      unitStocks,
+      customFlowers,
+      memos,
+      globalMemo,
+      history: history.slice(0,300),
+      lastUpdateTime
+    }, {merge:true});
     return;
   }
   applyingRemote = true;
@@ -1723,4 +1731,5 @@ roomRef.onSnapshot(doc=>{
   toast("Firestoreの同期を確認してください");
 });
 </script>
+</body>
 </html>
