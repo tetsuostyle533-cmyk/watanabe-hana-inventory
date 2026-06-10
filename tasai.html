@@ -1,0 +1,1307 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>カラーサンド tasai | 砂が紡ぐ、色の物語</title>
+<meta name="description" content="カラーサンド tasai — 天然の砂が生む、繊細で美しいカラーサンドアート。ひとつひとつ手作りの作品をお届けします。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Noto+Sans+JP:wght@300;400;500&family=Noto+Serif+JP:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --rose:    #f5c5d0;
+  --rose2:   #ead0d8;
+  --lavender:#d9d0ea;
+  --sky:     #c5d8f0;
+  --mint:    #c5e8d8;
+  --peach:   #f5ddc5;
+  --lemon:   #f0eac5;
+  --gold:    #c8a86b;
+  --gold2:   #e8d5a8;
+  --sand:    #f5efe8;
+  --sand2:   #ede4d8;
+  --ink:     #2a2118;
+  --ink2:    #5a4e42;
+  --ink3:    #9a8e82;
+  --white:   #fdfaf7;
+  --r: 20px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Noto Sans JP', sans-serif;
+  background: var(--white);
+  color: var(--ink);
+  overflow-x: hidden;
+  line-height: 1.8;
+}
+
+/* ──────────── NAV ──────────── */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  padding: 0 5vw;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+  background: rgba(253,250,247,.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(200,168,107,.2);
+  transition: box-shadow .3s;
+}
+nav.scrolled { box-shadow: 0 2px 20px rgba(42,33,24,.08); }
+
+.nav-logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: 3px;
+  color: var(--ink);
+  text-decoration: none;
+}
+.nav-logo span {
+  color: var(--gold);
+}
+
+.nav-links {
+  display: flex;
+  gap: 32px;
+  list-style: none;
+}
+.nav-links a {
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 2px;
+  color: var(--ink2);
+  text-decoration: none;
+  transition: color .2s;
+}
+.nav-links a:hover { color: var(--gold); }
+
+.nav-hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+  padding: 8px;
+  background: none;
+  border: none;
+}
+.nav-hamburger span {
+  display: block;
+  width: 24px; height: 1.5px;
+  background: var(--ink2);
+  transition: .3s;
+}
+
+/* ──────────── HERO ──────────── */
+#hero {
+  position: relative;
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: linear-gradient(135deg, #f9f3ee 0%, #f5efe8 40%, #ede4d8 100%);
+}
+
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.sand-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  opacity: .45;
+  animation: drift 12s ease-in-out infinite alternate;
+}
+.sand-orb:nth-child(1) { width:420px; height:420px; background:var(--rose);    top:-80px;  left:-100px; animation-delay:0s; }
+.sand-orb:nth-child(2) { width:360px; height:360px; background:var(--lavender);bottom:-60px;right:-80px; animation-delay:-4s; }
+.sand-orb:nth-child(3) { width:280px; height:280px; background:var(--peach);   top:40%;    left:55%;    animation-delay:-8s; }
+.sand-orb:nth-child(4) { width:200px; height:200px; background:var(--lemon);   bottom:15%; left:20%;    animation-delay:-3s; }
+.sand-orb:nth-child(5) { width:160px; height:160px; background:var(--mint);    top:20%;    right:25%;   animation-delay:-6s; }
+
+@keyframes drift {
+  0%   { transform: translate(0,0) scale(1); }
+  100% { transform: translate(30px,20px) scale(1.08); }
+}
+
+.hero-content {
+  position: relative;
+  text-align: center;
+  padding: 100px 5vw 60px;
+  max-width: 760px;
+}
+
+.hero-en {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(11px, 1.5vw, 13px);
+  font-weight: 300;
+  letter-spacing: 6px;
+  color: var(--gold);
+  text-transform: uppercase;
+  margin-bottom: 20px;
+}
+
+.hero-title {
+  font-family: 'Noto Serif JP', serif;
+  font-size: clamp(36px, 7vw, 72px);
+  font-weight: 300;
+  line-height: 1.3;
+  letter-spacing: 4px;
+  color: var(--ink);
+  margin-bottom: 12px;
+}
+
+.hero-brand {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(20px, 4vw, 42px);
+  font-weight: 400;
+  letter-spacing: 8px;
+  color: var(--gold);
+  margin-bottom: 32px;
+}
+
+.hero-sub {
+  font-size: 14px;
+  font-weight: 300;
+  color: var(--ink2);
+  letter-spacing: 2px;
+  line-height: 2.2;
+  margin-bottom: 48px;
+}
+
+.hero-cta {
+  display: inline-block;
+  padding: 16px 48px;
+  background: transparent;
+  border: 1px solid var(--gold);
+  color: var(--gold);
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 14px;
+  letter-spacing: 4px;
+  text-decoration: none;
+  transition: all .3s;
+}
+.hero-cta:hover {
+  background: var(--gold);
+  color: var(--white);
+}
+
+.hero-scroll {
+  position: absolute;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  font-size: 10px;
+  letter-spacing: 3px;
+  color: var(--ink3);
+}
+.hero-scroll::after {
+  content: '';
+  display: block;
+  width: 1px;
+  height: 40px;
+  background: linear-gradient(to bottom, var(--ink3), transparent);
+  animation: scrollLine 2s ease-in-out infinite;
+}
+@keyframes scrollLine {
+  0%,100% { opacity: 1; transform: scaleY(1); }
+  50% { opacity: .4; transform: scaleY(.6); }
+}
+
+/* ──────────── SECTION COMMON ──────────── */
+section { padding: 100px 5vw; }
+
+.section-en {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 11px;
+  font-weight: 300;
+  letter-spacing: 5px;
+  color: var(--gold);
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.section-title {
+  font-family: 'Noto Serif JP', serif;
+  font-size: clamp(26px, 4vw, 38px);
+  font-weight: 300;
+  letter-spacing: 3px;
+  margin-bottom: 16px;
+}
+.section-line {
+  width: 40px;
+  height: 1px;
+  background: var(--gold);
+  margin-bottom: 24px;
+}
+.section-desc {
+  font-size: 14px;
+  font-weight: 300;
+  color: var(--ink2);
+  line-height: 2.4;
+  max-width: 560px;
+}
+
+/* ──────────── CONCEPT ──────────── */
+#concept {
+  background: var(--white);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: center;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding-left: max(5vw, calc((100vw - 1100px)/2));
+  padding-right: max(5vw, calc((100vw - 1100px)/2));
+}
+
+.concept-visual {
+  position: relative;
+  aspect-ratio: 4/5;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.concept-sand-art {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(160deg,
+    #f9c5cf 0%,
+    #e8d0f0 20%,
+    #c5d8f0 38%,
+    #c5e8d8 55%,
+    #f5e4c0 72%,
+    #f9c5cf 88%,
+    #e8d0f0 100%
+  );
+  position: relative;
+}
+
+.sand-layer {
+  position: absolute;
+  left: 0; right: 0;
+  height: 22%;
+  opacity: .7;
+}
+.sand-layer:nth-child(1) { top:0%;    background: linear-gradient(90deg, #f9c5cf 0%, #f5b8c5 100%); border-radius: 0 0 60% 60% / 0 0 30% 30%; }
+.sand-layer:nth-child(2) { top:16%;   background: linear-gradient(90deg, #f0d0e8 20%, #e8c5f0 80%); border-radius: 0 0 40% 60% / 0 0 20% 20%; }
+.sand-layer:nth-child(3) { top:30%;   background: linear-gradient(90deg, #c8d8f5 0%, #c0cff0 100%); border-radius: 0 0 55% 45% / 0 0 25% 25%; }
+.sand-layer:nth-child(4) { top:44%;   background: linear-gradient(90deg, #c5e8d8 30%, #b8e0d0 70%); border-radius: 0 0 45% 55% / 0 0 22% 22%; }
+.sand-layer:nth-child(5) { top:57%;   background: linear-gradient(90deg, #f0e4b8 0%, #ead8a8 100%); border-radius: 0 0 60% 40% / 0 0 28% 28%; }
+.sand-layer:nth-child(6) { top:70%;   background: linear-gradient(90deg, #f5d0c8 20%, #f0c8c0 80%); border-radius: 0 0 40% 60% / 0 0 18% 18%; }
+.sand-layer:nth-child(7) { top:82%;   background: linear-gradient(90deg, #d8d0f0 0%, #c8c0e8 100%); border-radius: 0 0 50% 50% / 0 0 20% 20%; height:30%; }
+
+.concept-label {
+  position: absolute;
+  bottom: 24px;
+  right: 24px;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 12px;
+  letter-spacing: 3px;
+  color: var(--ink2);
+  writing-mode: vertical-rl;
+  opacity: .6;
+}
+
+/* ──────────── GALLERY ──────────── */
+#gallery {
+  background: var(--sand);
+  text-align: center;
+}
+#gallery .section-line { margin: 0 auto 48px; }
+
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.gallery-item {
+  position: relative;
+  aspect-ratio: 1;
+  border-radius: 4px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform .4s;
+}
+.gallery-item:hover { transform: scale(.98); }
+.gallery-item:hover .gallery-overlay { opacity: 1; }
+
+.gallery-sand {
+  width: 100%; height: 100%;
+  position: relative;
+}
+
+.g1 { background: radial-gradient(circle at 30% 70%, #f9c5cf 0%, #f0d0e8 40%, #e8d0f5 100%); }
+.g2 { background: radial-gradient(circle at 60% 40%, #c5d8f0 0%, #c8d0f5 50%, #d5c5f0 100%); }
+.g3 { background: radial-gradient(circle at 50% 50%, #c5e8d8 0%, #d8f0e8 50%, #c8e8f0 100%); }
+.g4 { background: radial-gradient(circle at 70% 30%, #f5e4c0 0%, #f0d8a8 50%, #e8d0b8 100%); }
+.g5 { background: radial-gradient(circle at 40% 60%, #f9c5cf 0%, #f5d0e0 30%, #c5d8f0 70%, #c8e8d8 100%); }
+.g6 { background: radial-gradient(circle at 50% 80%, #e8d0f0 0%, #d0c8f0 40%, #c8d8f5 100%); }
+
+.gallery-pattern {
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 25% 25%, rgba(255,255,255,.3) 0%, transparent 40%),
+    radial-gradient(circle at 75% 75%, rgba(255,255,255,.2) 0%, transparent 40%);
+}
+
+.gallery-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(42,33,24,.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity .3s;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 13px;
+  letter-spacing: 3px;
+  color: white;
+}
+
+.gallery-item.large {
+  grid-column: span 2;
+  aspect-ratio: 2/1;
+}
+
+.gallery-insta {
+  margin-top: 48px;
+  text-align: center;
+}
+.insta-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 36px;
+  border: 1px solid var(--ink3);
+  color: var(--ink2);
+  text-decoration: none;
+  font-size: 12px;
+  letter-spacing: 3px;
+  transition: all .3s;
+}
+.insta-btn:hover { background: var(--ink); color: var(--white); border-color: var(--ink); }
+.insta-icon { font-size: 16px; }
+
+/* ──────────── PRODUCTS ──────────── */
+#products {
+  background: var(--white);
+  text-align: center;
+}
+#products .section-line { margin: 0 auto 56px; }
+
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+  max-width: 1000px;
+  margin: 0 auto 64px;
+}
+
+.product-card {
+  background: var(--white);
+  border: 1px solid rgba(200,168,107,.25);
+  transition: box-shadow .3s, transform .3s;
+}
+.product-card:hover {
+  box-shadow: 0 12px 48px rgba(42,33,24,.1);
+  transform: translateY(-4px);
+}
+
+.product-img {
+  aspect-ratio: 3/4;
+  position: relative;
+  overflow: hidden;
+}
+.product-sand {
+  width: 100%; height: 100%;
+  position: relative;
+}
+
+.ps1 { background: linear-gradient(200deg, #f9c5cf 0%, #e8d0f0 35%, #c5d8f0 65%, #c5e8d8 100%); }
+.ps2 { background: linear-gradient(160deg, #f5e4c0 0%, #f9c5cf 40%, #e8d0f0 75%, #d0c8f8 100%); }
+.ps3 { background: linear-gradient(140deg, #c5d8f0 0%, #c5e8d8 35%, #f5e4c0 65%, #f9c5cf 100%); }
+.ps4 { background: linear-gradient(180deg, #e8d0f0 0%, #f9c5cf 25%, #f5e4c0 50%, #c5e8d8 75%, #c5d8f0 100%); }
+.ps5 { background: linear-gradient(170deg, #c5e8d8 0%, #c5d8f0 40%, #e8d0f0 70%, #f9c5cf 100%); }
+.ps6 { background: linear-gradient(150deg, #f5e4c0 0%, #c5e8d8 30%, #c5d8f0 60%, #e8d0f0 100%); }
+
+.product-glitter {
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 20% 30%, rgba(255,255,255,.5) 0%, transparent 15%),
+    radial-gradient(circle at 70% 20%, rgba(255,255,255,.4) 0%, transparent 10%),
+    radial-gradient(circle at 50% 70%, rgba(255,255,255,.35) 0%, transparent 12%),
+    radial-gradient(circle at 80% 60%, rgba(255,255,255,.4) 0%, transparent 8%),
+    radial-gradient(circle at 30% 80%, rgba(255,255,255,.3) 0%, transparent 10%);
+}
+
+.product-info {
+  padding: 20px;
+  text-align: left;
+}
+.product-name {
+  font-family: 'Noto Serif JP', serif;
+  font-size: 15px;
+  font-weight: 400;
+  letter-spacing: 2px;
+  margin-bottom: 8px;
+}
+.product-desc {
+  font-size: 12px;
+  font-weight: 300;
+  color: var(--ink3);
+  line-height: 1.8;
+  margin-bottom: 14px;
+}
+.product-price {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 18px;
+  font-weight: 400;
+  color: var(--gold);
+  letter-spacing: 1px;
+}
+.product-price span {
+  font-size: 12px;
+  font-weight: 300;
+  color: var(--ink3);
+  margin-left: 4px;
+}
+
+.product-order-btn {
+  display: block;
+  width: 100%;
+  padding: 13px;
+  border: 1px solid var(--gold);
+  background: transparent;
+  color: var(--gold);
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 13px;
+  letter-spacing: 3px;
+  cursor: pointer;
+  transition: all .3s;
+  margin-top: 12px;
+}
+.product-order-btn:hover { background: var(--gold); color: var(--white); }
+
+.price-note {
+  font-size: 12px;
+  color: var(--ink3);
+  letter-spacing: 1px;
+  line-height: 2;
+}
+.price-note strong { color: var(--ink2); }
+
+/* ──────────── STORY ──────────── */
+#story {
+  background: linear-gradient(180deg, var(--sand) 0%, var(--white) 100%);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: center;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding-left: max(5vw, calc((100vw - 1100px)/2));
+  padding-right: max(5vw, calc((100vw - 1100px)/2));
+}
+
+.story-portrait {
+  aspect-ratio: 4/5;
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+}
+.portrait-bg {
+  width: 100%; height: 100%;
+  background: linear-gradient(160deg, #f5efe8 0%, #ede4d8 40%, #e8ddd0 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 80px;
+  position: relative;
+}
+.portrait-deco {
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 80% 20%, rgba(249,197,207,.4) 0%, transparent 40%),
+    radial-gradient(circle at 20% 80%, rgba(197,208,240,.35) 0%, transparent 40%);
+}
+
+.story-quote {
+  font-family: 'Noto Serif JP', serif;
+  font-size: clamp(18px, 2.5vw, 28px);
+  font-weight: 300;
+  line-height: 2;
+  letter-spacing: 2px;
+  color: var(--ink);
+  margin: 32px 0;
+  position: relative;
+  padding-left: 24px;
+}
+.story-quote::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 8px; bottom: 8px;
+  width: 2px;
+  background: var(--gold);
+}
+
+/* ──────────── ACCESS ──────────── */
+#access {
+  background: var(--white);
+  text-align: center;
+}
+#access .section-line { margin: 0 auto 48px; }
+
+.access-content {
+  max-width: 800px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  text-align: left;
+  margin-bottom: 48px;
+}
+
+.access-map-wrap {
+  border-radius: 4px;
+  overflow: hidden;
+  aspect-ratio: 1;
+  background: linear-gradient(145deg, #e8eed8 0%, #d8e4c8 50%, #c8d8b8 100%);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(200,168,107,.2);
+}
+
+.map-placeholder {
+  text-align: center;
+  color: var(--ink2);
+}
+.map-placeholder .map-icon { font-size: 48px; margin-bottom: 12px; }
+.map-placeholder p {
+  font-size: 13px;
+  font-weight: 300;
+  letter-spacing: 1px;
+  color: var(--ink3);
+}
+.map-btn {
+  display: inline-block;
+  margin-top: 16px;
+  padding: 10px 24px;
+  border: 1px solid var(--gold);
+  color: var(--gold);
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-decoration: none;
+  transition: all .3s;
+}
+.map-btn:hover { background: var(--gold); color: white; }
+
+.access-info dt {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 3px;
+  color: var(--gold);
+  text-transform: uppercase;
+  margin-top: 24px;
+  margin-bottom: 6px;
+}
+.access-info dt:first-child { margin-top: 0; }
+.access-info dd {
+  font-size: 14px;
+  font-weight: 300;
+  color: var(--ink2);
+  line-height: 1.9;
+  letter-spacing: .5px;
+}
+
+/* ──────────── CONTACT ──────────── */
+#contact {
+  background: var(--sand);
+  text-align: center;
+}
+#contact .section-line { margin: 0 auto 48px; }
+
+.contact-form {
+  max-width: 560px;
+  margin: 0 auto;
+  text-align: left;
+}
+
+.form-group {
+  margin-bottom: 28px;
+}
+.form-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 3px;
+  color: var(--gold);
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.form-label .req {
+  color: var(--rose);
+  margin-left: 6px;
+  font-size: 10px;
+}
+.form-input, .form-select, .form-textarea {
+  width: 100%;
+  padding: 14px 16px;
+  border: none;
+  border-bottom: 1px solid var(--sand2);
+  background: transparent;
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 14px;
+  font-weight: 300;
+  color: var(--ink);
+  outline: none;
+  transition: border-color .2s;
+  -webkit-appearance: none;
+  border-radius: 0;
+}
+.form-input:focus, .form-select:focus, .form-textarea:focus {
+  border-bottom-color: var(--gold);
+}
+.form-input::placeholder, .form-textarea::placeholder { color: var(--ink3); }
+.form-textarea { resize: vertical; min-height: 120px; line-height: 1.8; }
+.form-select { cursor: pointer; }
+
+.form-submit {
+  display: block;
+  width: 100%;
+  padding: 18px;
+  background: var(--ink);
+  color: var(--white);
+  border: none;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 16px;
+  letter-spacing: 4px;
+  cursor: pointer;
+  transition: background .3s;
+  margin-top: 40px;
+}
+.form-submit:hover { background: var(--gold); }
+
+/* ──────────── FOOTER ──────────── */
+footer {
+  background: var(--ink);
+  color: rgba(253,250,247,.6);
+  text-align: center;
+  padding: 60px 5vw 40px;
+}
+.footer-logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 26px;
+  font-weight: 600;
+  letter-spacing: 4px;
+  color: var(--white);
+  margin-bottom: 8px;
+}
+.footer-logo span { color: var(--gold2); }
+.footer-tagline {
+  font-size: 11px;
+  letter-spacing: 3px;
+  color: rgba(253,250,247,.4);
+  margin-bottom: 40px;
+}
+.footer-links {
+  display: flex;
+  justify-content: center;
+  gap: 32px;
+  list-style: none;
+  margin-bottom: 40px;
+}
+.footer-links a {
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: rgba(253,250,247,.5);
+  text-decoration: none;
+  transition: color .2s;
+}
+.footer-links a:hover { color: var(--gold2); }
+.footer-copy {
+  font-size: 10px;
+  letter-spacing: 1px;
+  color: rgba(253,250,247,.25);
+}
+
+/* ──────────── MODAL ──────────── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(42,33,24,.75);
+  z-index: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .3s;
+}
+.modal-overlay.open { opacity: 1; pointer-events: all; }
+.modal-box {
+  background: var(--white);
+  max-width: 440px;
+  width: 100%;
+  padding: 48px 40px;
+  text-align: center;
+  transform: translateY(20px);
+  transition: transform .3s;
+}
+.modal-overlay.open .modal-box { transform: translateY(0); }
+.modal-box h3 {
+  font-family: 'Noto Serif JP', serif;
+  font-size: 20px;
+  font-weight: 300;
+  letter-spacing: 3px;
+  margin-bottom: 16px;
+}
+.modal-box p {
+  font-size: 13px;
+  font-weight: 300;
+  color: var(--ink2);
+  line-height: 2.2;
+  margin-bottom: 32px;
+}
+.modal-close {
+  padding: 12px 40px;
+  border: 1px solid var(--ink2);
+  background: none;
+  color: var(--ink2);
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 13px;
+  letter-spacing: 3px;
+  cursor: pointer;
+  transition: all .3s;
+}
+.modal-close:hover { background: var(--ink); color: var(--white); border-color: var(--ink); }
+
+/* ──────────── TOAST ──────────── */
+.toast {
+  position: fixed;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  background: var(--ink);
+  color: var(--white);
+  padding: 12px 28px;
+  font-size: 13px;
+  font-weight: 300;
+  letter-spacing: 1px;
+  opacity: 0;
+  pointer-events: none;
+  transition: all .3s;
+  z-index: 600;
+  white-space: nowrap;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ──────────── MOBILE ──────────── */
+@media (max-width: 768px) {
+  nav { padding: 0 4vw; }
+  .nav-links { display: none; }
+  .nav-links.open {
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 64px; left: 0; right: 0;
+    background: var(--white);
+    padding: 32px 5vw;
+    gap: 24px;
+    border-bottom: 1px solid rgba(200,168,107,.15);
+    box-shadow: 0 8px 32px rgba(42,33,24,.08);
+    z-index: 99;
+  }
+  .nav-links a { font-size: 14px; }
+  .nav-hamburger { display: flex; }
+
+  #concept {
+    grid-template-columns: 1fr;
+    gap: 48px;
+    padding: 80px 5vw;
+  }
+  .concept-visual { max-width: 320px; margin: 0 auto; }
+
+  .gallery-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .gallery-item.large { grid-column: span 2; }
+
+  .products-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  #story {
+    grid-template-columns: 1fr;
+    gap: 48px;
+    padding: 80px 5vw;
+  }
+  .story-portrait { max-width: 280px; margin: 0 auto; }
+
+  .access-content {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  section { padding: 80px 5vw; }
+}
+
+@media (max-width: 480px) {
+  .products-grid {
+    grid-template-columns: 1fr;
+  }
+  .gallery-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+}
+
+/* ──────────── ANIMATE ON SCROLL ──────────── */
+.fade-in {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity .8s ease, transform .8s ease;
+}
+.fade-in.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.fade-in-delay-1 { transition-delay: .1s; }
+.fade-in-delay-2 { transition-delay: .2s; }
+.fade-in-delay-3 { transition-delay: .3s; }
+</style>
+</head>
+<body>
+
+<!-- ──── TOAST ──── -->
+<div class="toast" id="toast"></div>
+
+<!-- ──── NAV ──── -->
+<nav id="nav">
+  <a href="#hero" class="nav-logo">カラーサンド <span>tasai</span></a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#concept">コンセプト</a></li>
+    <li><a href="#gallery">ギャラリー</a></li>
+    <li><a href="#products">作品・価格</a></li>
+    <li><a href="#story">作家について</a></li>
+    <li><a href="#access">アクセス</a></li>
+    <li><a href="#contact">お問い合わせ</a></li>
+  </ul>
+  <button class="nav-hamburger" id="hamburger" aria-label="メニュー">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- ──── HERO ──── -->
+<section id="hero">
+  <div class="hero-bg">
+    <div class="sand-orb"></div>
+    <div class="sand-orb"></div>
+    <div class="sand-orb"></div>
+    <div class="sand-orb"></div>
+    <div class="sand-orb"></div>
+  </div>
+  <div class="hero-content">
+    <div class="hero-en">Color Sand Art</div>
+    <div class="hero-title">砂が紡ぐ<br>色の物語</div>
+    <div class="hero-brand">tasai</div>
+    <p class="hero-sub">
+      ひと粒ひと粒、丁寧に重ねた天然の砂。<br>
+      繊細な色彩が、あなたの日常に静かな輝きを添えます。
+    </p>
+    <a href="#gallery" class="hero-cta">GALLERY</a>
+  </div>
+  <div class="hero-scroll">SCROLL</div>
+</section>
+
+<!-- ──── CONCEPT ──── -->
+<section id="concept">
+  <div class="fade-in">
+    <div class="section-en">Concept</div>
+    <h2 class="section-title">tasaiについて</h2>
+    <div class="section-line"></div>
+    <p class="section-desc">
+      「tasai（多彩）」は、自然が育んだ多彩な色を持つカラーサンドを使い、
+      一点一点手作りで仕上げるアートブランドです。<br><br>
+      砂漠の砂、深海の鉱物、火山の恵み——地球の歴史が刻まれた砂が、
+      繊細なグラデーションとなってガラスの中に息づきます。<br><br>
+      日常の中に、さりげない美しさを。
+      暮らしに寄り添う、唯一無二のアートをお届けします。
+    </p>
+  </div>
+  <div class="concept-visual fade-in fade-in-delay-2">
+    <div class="concept-sand-art">
+      <div class="sand-layer"></div>
+      <div class="sand-layer"></div>
+      <div class="sand-layer"></div>
+      <div class="sand-layer"></div>
+      <div class="sand-layer"></div>
+      <div class="sand-layer"></div>
+      <div class="sand-layer"></div>
+    </div>
+    <div class="concept-label">tasai × colorful sand</div>
+  </div>
+</section>
+
+<!-- ──── GALLERY ──── -->
+<section id="gallery">
+  <div class="fade-in">
+    <div class="section-en">Gallery</div>
+    <h2 class="section-title">作品一覧</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="gallery-grid">
+    <div class="gallery-item fade-in">
+      <div class="gallery-sand g1"><div class="gallery-pattern"></div></div>
+      <div class="gallery-overlay">Rose Garden</div>
+    </div>
+    <div class="gallery-item fade-in fade-in-delay-1">
+      <div class="gallery-sand g2"><div class="gallery-pattern"></div></div>
+      <div class="gallery-overlay">Ocean Blue</div>
+    </div>
+    <div class="gallery-item fade-in fade-in-delay-2">
+      <div class="gallery-sand g3"><div class="gallery-pattern"></div></div>
+      <div class="gallery-overlay">Forest Mist</div>
+    </div>
+    <div class="gallery-item large fade-in fade-in-delay-1">
+      <div class="gallery-sand g5"><div class="gallery-pattern"></div></div>
+      <div class="gallery-overlay">Rainbow Dream</div>
+    </div>
+    <div class="gallery-item fade-in fade-in-delay-2">
+      <div class="gallery-sand g4"><div class="gallery-pattern"></div></div>
+      <div class="gallery-overlay">Desert Gold</div>
+    </div>
+    <div class="gallery-item fade-in fade-in-delay-1">
+      <div class="gallery-sand g6"><div class="gallery-pattern"></div></div>
+      <div class="gallery-overlay">Twilight</div>
+    </div>
+    <div class="gallery-item fade-in fade-in-delay-2">
+      <div class="gallery-sand g2"><div class="gallery-pattern"></div></div>
+      <div class="gallery-overlay">Aurora</div>
+    </div>
+    <div class="gallery-item fade-in">
+      <div class="gallery-sand g1"><div class="gallery-pattern"></div></div>
+      <div class="gallery-overlay">Sakura</div>
+    </div>
+  </div>
+
+  <div class="gallery-insta fade-in">
+    <a href="https://www.instagram.com/" target="_blank" rel="noopener" class="insta-btn">
+      <span class="insta-icon">📷</span>
+      Instagram でもっと見る @tasai_colorsand
+    </a>
+  </div>
+</section>
+
+<!-- ──── PRODUCTS ──── -->
+<section id="products">
+  <div class="fade-in">
+    <div class="section-en">Products &amp; Price</div>
+    <h2 class="section-title">作品・価格一覧</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="products-grid">
+    <div class="product-card fade-in">
+      <div class="product-img">
+        <div class="product-sand ps1"><div class="product-glitter"></div></div>
+      </div>
+      <div class="product-info">
+        <div class="product-name">ミニボトル</div>
+        <div class="product-desc">小さなガラス瓶に詰めたパステルカラー。デスクや棚に飾れるサイズ。</div>
+        <div class="product-price">¥2,200 <span>〜 税込</span></div>
+        <button class="product-order-btn" onclick="openModal('ミニボトル', '¥2,200〜')">ORDER</button>
+      </div>
+    </div>
+    <div class="product-card fade-in fade-in-delay-1">
+      <div class="product-img">
+        <div class="product-sand ps2"><div class="product-glitter"></div></div>
+      </div>
+      <div class="product-info">
+        <div class="product-name">スタンダードボトル</div>
+        <div class="product-desc">豊かなグラデーションを楽しめる定番サイズ。ギフトにも人気。</div>
+        <div class="product-price">¥3,800 <span>〜 税込</span></div>
+        <button class="product-order-btn" onclick="openModal('スタンダードボトル', '¥3,800〜')">ORDER</button>
+      </div>
+    </div>
+    <div class="product-card fade-in fade-in-delay-2">
+      <div class="product-img">
+        <div class="product-sand ps3"><div class="product-glitter"></div></div>
+      </div>
+      <div class="product-info">
+        <div class="product-name">フォトフレーム</div>
+        <div class="product-desc">カラーサンドを背景にした特製フォトフレーム。お写真と一緒に。</div>
+        <div class="product-price">¥5,500 <span>〜 税込</span></div>
+        <button class="product-order-btn" onclick="openModal('フォトフレーム', '¥5,500〜')">ORDER</button>
+      </div>
+    </div>
+    <div class="product-card fade-in">
+      <div class="product-img">
+        <div class="product-sand ps4"><div class="product-glitter"></div></div>
+      </div>
+      <div class="product-info">
+        <div class="product-name">ウェルカムボード</div>
+        <div class="product-desc">結婚式・パーティーの入口を彩る特製ボード。文字入れ対応。</div>
+        <div class="product-price">¥12,000 <span>〜 税込</span></div>
+        <button class="product-order-btn" onclick="openModal('ウェルカムボード', '¥12,000〜')">ORDER</button>
+      </div>
+    </div>
+    <div class="product-card fade-in fade-in-delay-1">
+      <div class="product-img">
+        <div class="product-sand ps5"><div class="product-glitter"></div></div>
+      </div>
+      <div class="product-info">
+        <div class="product-name">カスタムオーダー</div>
+        <div class="product-desc">色・サイズ・デザインをご希望に合わせてお作りします。お気軽にご相談ください。</div>
+        <div class="product-price">¥6,000 <span>〜 税込</span></div>
+        <button class="product-order-btn" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">CONTACT</button>
+      </div>
+    </div>
+    <div class="product-card fade-in fade-in-delay-2">
+      <div class="product-img">
+        <div class="product-sand ps6"><div class="product-glitter"></div></div>
+      </div>
+      <div class="product-info">
+        <div class="product-name">ギフトセット</div>
+        <div class="product-desc">ミニボトル3本のセット。誕生日・記念日のギフトに最適なラッピング付き。</div>
+        <div class="product-price">¥7,500 <span>税込</span></div>
+        <button class="product-order-btn" onclick="openModal('ギフトセット', '¥7,500')">ORDER</button>
+      </div>
+    </div>
+  </div>
+  <p class="price-note fade-in">
+    ※ 価格はすべて税込表記です。<br>
+    ※ オーダー作品はご入金確認後、約2〜3週間でお届けいたします。<br>
+    ※ 送料は別途ご案内いたします（全国一律 <strong>¥700</strong>）。
+  </p>
+</section>
+
+<!-- ──── STORY ──── -->
+<section id="story">
+  <div class="story-portrait fade-in">
+    <div class="portrait-bg">
+      <div class="portrait-deco"></div>
+      🌈
+    </div>
+  </div>
+  <div class="fade-in fade-in-delay-1">
+    <div class="section-en">About Artist</div>
+    <h2 class="section-title">作家について</h2>
+    <div class="section-line"></div>
+    <blockquote class="story-quote">
+      砂の色に、<br>こころが動く瞬間がある。
+    </blockquote>
+    <p class="section-desc">
+      幼い頃から色彩に魅了され、絵画・陶芸などを経てカラーサンドアートの世界へ。
+      日本各地の天然砂と世界の鉱物砂を組み合わせ、一本一本丁寧に仕上げた作品は
+      国内外の展示会でも高い評価を受けています。<br><br>
+      「見るたびに違う表情を見せてくれる砂の奥深さに、今もなお夢中です」<br><br>
+      2015年にブランド「tasai（多彩）」を設立。
+      暮らしの中に溶け込む、静かで豊かなアートを追い求めています。
+    </p>
+  </div>
+</section>
+
+<!-- ──── ACCESS ──── -->
+<section id="access">
+  <div class="fade-in">
+    <div class="section-en">Access &amp; Info</div>
+    <h2 class="section-title">店舗・アクセス</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="access-content">
+    <div class="access-map-wrap fade-in">
+      <div class="map-placeholder">
+        <div class="map-icon">🗺</div>
+        <p>カラーサンド tasai</p>
+        <a href="https://maps.google.com/" target="_blank" rel="noopener" class="map-btn">Google Map で開く</a>
+      </div>
+    </div>
+    <dl class="access-info fade-in fade-in-delay-1">
+      <dt>Shop Name</dt>
+      <dd>カラーサンド tasai（多彩）</dd>
+
+      <dt>Address</dt>
+      <dd>〒000-0000<br>※ご住所はお問い合わせ時にご案内いたします</dd>
+
+      <dt>Open / Close</dt>
+      <dd>
+        火・木・土　10:00 〜 18:00<br>
+        日・祝　　　11:00 〜 17:00<br>
+        月・水・金　定休日
+      </dd>
+
+      <dt>Online</dt>
+      <dd>
+        作品のご注文・お問い合わせは<br>
+        オンラインにて24時間受付中です。
+      </dd>
+
+      <dt>SNS</dt>
+      <dd>
+        Instagram：@tasai_colorsand<br>
+        最新作品・イベント情報を発信中
+      </dd>
+    </dl>
+  </div>
+</section>
+
+<!-- ──── CONTACT ──── -->
+<section id="contact">
+  <div class="fade-in">
+    <div class="section-en">Contact</div>
+    <h2 class="section-title">お問い合わせ</h2>
+    <div class="section-line"></div>
+    <p class="section-desc" style="margin: 0 auto 48px; text-align:center;">
+      作品のご注文・カスタムオーダー・イベントへのご参加など<br>
+      お気軽にお問い合わせください。2営業日以内にご返信いたします。
+    </p>
+  </div>
+  <form class="contact-form fade-in" id="contactForm" novalidate>
+    <div class="form-group">
+      <label class="form-label" for="name">お名前 <span class="req">必須</span></label>
+      <input class="form-input" type="text" id="name" name="name" placeholder="山田 花子" autocomplete="name" required>
+    </div>
+    <div class="form-group">
+      <label class="form-label" for="email">メールアドレス <span class="req">必須</span></label>
+      <input class="form-input" type="email" id="email" name="email" placeholder="example@mail.com" autocomplete="email" required>
+    </div>
+    <div class="form-group">
+      <label class="form-label" for="subject">お問い合わせ種別</label>
+      <select class="form-select" id="subject" name="subject">
+        <option value="">選択してください</option>
+        <option value="order">作品のご注文</option>
+        <option value="custom">カスタムオーダー</option>
+        <option value="gift">ギフト・プレゼント相談</option>
+        <option value="event">イベント・展示会について</option>
+        <option value="other">その他</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label" for="message">メッセージ <span class="req">必須</span></label>
+      <textarea class="form-textarea" id="message" name="message" placeholder="ご希望のサイズ・カラー・ご用途など、お気軽にお書きください。" required></textarea>
+    </div>
+    <button type="submit" class="form-submit">SEND MESSAGE</button>
+  </form>
+</section>
+
+<!-- ──── FOOTER ──── -->
+<footer>
+  <div class="footer-logo">カラーサンド <span>tasai</span></div>
+  <div class="footer-tagline">— 砂が紡ぐ、色の物語 —</div>
+  <ul class="footer-links">
+    <li><a href="#concept">コンセプト</a></li>
+    <li><a href="#gallery">ギャラリー</a></li>
+    <li><a href="#products">作品・価格</a></li>
+    <li><a href="#story">作家について</a></li>
+    <li><a href="#access">アクセス</a></li>
+    <li><a href="#contact">お問い合わせ</a></li>
+  </ul>
+  <div class="footer-copy">© 2025 カラーサンド tasai. All rights reserved.</div>
+</footer>
+
+<!-- ──── ORDER MODAL ──── -->
+<div class="modal-overlay" id="orderModal">
+  <div class="modal-box">
+    <h3 id="modalTitle">ご注文について</h3>
+    <p id="modalBody">お問い合わせフォームよりご希望の作品名とご希望のカラーをお知らせください。</p>
+    <button class="modal-close" onclick="closeModal()">CLOSE</button>
+  </div>
+</div>
+
+<script>
+// ── Nav scroll ──
+const navEl = document.getElementById('nav');
+window.addEventListener('scroll', () => {
+  navEl.classList.toggle('scrolled', window.scrollY > 40);
+});
+
+// ── Hamburger ──
+const hamburger = document.getElementById('hamburger');
+const navLinks  = document.getElementById('navLinks');
+hamburger.addEventListener('click', () => {
+  navLinks.classList.toggle('open');
+});
+navLinks.querySelectorAll('a').forEach(a => {
+  a.addEventListener('click', () => navLinks.classList.remove('open'));
+});
+
+// ── Fade in on scroll ──
+const fadeEls = document.querySelectorAll('.fade-in');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      observer.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.12 });
+fadeEls.forEach(el => observer.observe(el));
+
+// ── Order modal ──
+function openModal(name, price) {
+  document.getElementById('modalTitle').textContent = name + ' のご注文';
+  document.getElementById('modalBody').textContent =
+    name + '（' + price + '）のご注文を承ります。\nお問い合わせフォームより、ご希望のカラーや数量をお知らせください。\n担当者より2営業日以内にご連絡いたします。';
+  document.getElementById('orderModal').classList.add('open');
+}
+function closeModal() {
+  document.getElementById('orderModal').classList.remove('open');
+}
+document.getElementById('orderModal').addEventListener('click', e => {
+  if (e.target === e.currentTarget) closeModal();
+});
+
+// ── Contact form ──
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+}
+document.getElementById('contactForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const name    = document.getElementById('name').value.trim();
+  const email   = document.getElementById('email').value.trim();
+  const message = document.getElementById('message').value.trim();
+  if (!name || !email || !message) {
+    showToast('必須項目を入力してください');
+    return;
+  }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    showToast('メールアドレスの形式が正しくありません');
+    return;
+  }
+  showToast('送信いただきありがとうございます。2営業日以内にご連絡いたします。');
+  e.target.reset();
+});
+</script>
+</body>
+</html>
