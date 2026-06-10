@@ -1084,13 +1084,15 @@ function refreshCard(id){
   const numEl = el.querySelector(".qty-num");
   if(numEl) numEl.textContent = q;
   const tags = el.querySelector(".flower-tags");
-  const badge = q===0
-    ? `<span class="flower-tag tag-zero">欠品</span>`
-    : q<=3
-      ? `<span class="flower-tag tag-low">残り少</span>`
-      : `<span class="flower-tag tag-ok">在庫あり</span>`;
   const curUnit = unitStocks[f.id]||f.unit;
-  tags.innerHTML = badge + `<span class="flower-tag tag-unit">${curUnit}</span>`;
+  if(tags){
+    const badge = q===0
+      ? `<span class="flower-tag tag-zero">欠品</span>`
+      : q<=3
+        ? `<span class="flower-tag tag-low">残り少</span>`
+        : `<span class="flower-tag tag-ok">在庫あり</span>`;
+    tags.innerHTML = badge + `<span class="flower-tag tag-unit">${curUnit}</span>`;
+  }
   const qtyUnitBtn = el.querySelector(".qty-unit");
   if(qtyUnitBtn) qtyUnitBtn.textContent = curUnit;
 }
