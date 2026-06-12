@@ -984,7 +984,7 @@ function importFromHash(){
     ALL.forEach(f=>{ if(stocks[f.id]==null) stocks[f.id]=0; });
     customFlowers.forEach(f=>{ if(stocks[f.id]==null) stocks[f.id]=0; });
     saveLocal();
-    history.replaceState({}, "", location.pathname);
+    window.history.replaceState({}, "", location.pathname);
     return true;
   }catch(e){ return false; }
 }
@@ -1641,10 +1641,54 @@ const firebaseConfig = {
 const roomId = new URLSearchParams(location.search).get("room") || "default";
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
+
+// ★ オフライン永続化：ページを閉じても未送信の変更を端末内に保持し、
+//    次にアプリを開いたときに自動でサーバーへ送り直す
+db.enablePersistence({ synchronizeTabs: true }).catch(function(){ /* 非対応ブラウザでは無視 */ });
+
 const roomRef = db.collection("inventoryRooms").doc(roomId);
 
 let applyingRemote = false;
 let syncTimer = null;
+let localDirty = false;   // ★ まだサーバーに送っていない変更があるかどうか
+
+// ★ 実際にサーバーへ書き込む処理（共通化）
+function doCloudSave(){
+  localDirty = false;
+  roomRef.set({
+    stocks,
+    unitStocks,
+    customFlowers,
+    memos,
+    globalMemo,
+    history: history.slice(0,300),
+    lastUpdateTime
+  }, {merge:true}).then(()=>setSyncDot("online")).catch(()=>{
+    setSyncDot("offline");
+    toast("同期エラー");
+  });
+}
+
+function queueCloudSave(){
+  if(applyingRemote) return;
+  localDirty = true;
+  clearTimeout(syncTimer);
+  setSyncDot("syncing");
+  syncTimer = setTimeout(doCloudSave, 300);
+}
+
+// ★ 待ち時間を飛ばして即サーバーへ送る
+function flushCloudSave(){
+  if(!localDirty) return;
+  clearTimeout(syncTimer);
+  doCloudSave();
+}
+
+// ★ ページを閉じる・他のアプリに切り替える瞬間に、未送信の変更を即送信
+window.addEventListener("pagehide", flushCloudSave);
+document.addEventListener("visibilitychange", function(){
+  if(document.visibilityState === "hidden") flushCloudSave();
+});
 
 const oldSave = save;
 save = function(){
@@ -1658,25 +1702,17 @@ saveUnits = function(){
   queueCloudSave();
 };
 
-function queueCloudSave(){
-  if(applyingRemote) return;
-  clearTimeout(syncTimer);
-  setSyncDot("syncing");
-  syncTimer = setTimeout(()=>{
-    roomRef.set({
-      stocks,
-      unitStocks,
-      customFlowers,
-      memos,
-      globalMemo,
-      history: history.slice(0,300),
-      lastUpdateTime
-    }, {merge:true}).then(()=>setSyncDot("online")).catch(()=>{
-      setSyncDot("offline");
-      toast("同期エラー");
-    });
-  }, 300);
-}
+// ★ メモもサーバーに保存されるようにする（今まではスマホ内だけだった）
+const oldSaveGlobalMemo = saveGlobalMemo;
+saveGlobalMemo = function(){
+  oldSaveGlobalMemo();
+  queueCloudSave();
+};
+const oldSaveMemos = saveMemos;
+saveMemos = function(){
+  oldSaveMemos();
+  queueCloudSave();
+};
 
 buildShareUrl = function(){
   return `${location.origin}${location.pathname}?room=${encodeURIComponent(roomId)}`;
@@ -1707,13 +1743,26 @@ roomRef.onSnapshot(doc=>{
     }, {merge:true});
     return;
   }
+
+  // ★ こちらの未送信の変更がある間は、サーバーの（古い）データで上書きしない
+  if(localDirty) return;
+
   applyingRemote = true;
   const data = doc.data();
+
+  // ★ メモを入力中なら、入力中の内容を消さないように守る
+  const memoEl = document.getElementById("globalMemoText");
+  const memoFocused = memoEl && document.activeElement === memoEl;
+
   stocks = data.stocks || {};
   unitStocks = data.unitStocks || {};
   customFlowers = data.customFlowers || [];
   memos = data.memos || {};
-  globalMemo = data.globalMemo || "";
+  if(memoFocused){
+    globalMemo = memoEl.value;  // 入力中の自分のメモを優先
+  } else {
+    globalMemo = data.globalMemo || "";
+  }
   history = Array.isArray(data.history) ? data.history : [];
   lastUpdateTime = data.lastUpdateTime || lastUpdateTime;
 
@@ -1721,8 +1770,12 @@ roomRef.onSnapshot(doc=>{
   customFlowers.forEach(f=>{ if(stocks[f.id] == null) stocks[f.id] = 0; });
 
   saveLocal();
-  render();
-  renderStats();
+  if(memoFocused){
+    renderStats();  // ★ メモ入力中は画面を作り直さない（文字が消えるのを防ぐ）
+  } else {
+    render();
+    renderStats();
+  }
   setSyncDot("online");
   applyingRemote = false;
 }, err=>{
