@@ -676,23 +676,6 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--paper);color:var(--i
   <button class="qp-btn" data-v="50">+50</button>
 </div>
 
-<!-- 共有モーダル -->
-<div class="share-overlay hidden" id="shareOverlay">
-  <div class="share-box">
-    <div class="share-title">📡 在庫を共有する</div>
-    <div class="share-desc" id="shareDesc">このURLを花屋の方に送ってください。同じURLを開いた人は、在庫を変更すると自動で同じ数字に更新されます。</div>
-    <div class="share-status" id="shareStatus"></div>
-    <div class="share-url-box">
-      <div class="share-url-text" id="shareUrlText">準備中…</div>
-      <button class="share-copy-btn" id="shareCopyBtn">コピー</button>
-    </div>
-    <button class="share-line-btn" id="shareLineBtn">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63h2.386c.346 0 .627.285.627.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.104.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63.346 0 .628.285.628.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.282.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314"/></svg>
-      LINEで送る
-    </button>
-    <button class="share-close-btn" id="shareCloseBtn">閉じる</button>
-  </div>
-</div>
 
 <!-- ヘッダー -->
 <header class="app-header">
@@ -704,7 +687,6 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--paper);color:var(--i
     </div>
     <div class="header-actions" style="display:flex;align-items:center;gap:8px;">
       <div class="sync-dot" id="syncDot" title="同期状態"></div>
-      <button class="mic-btn" id="micBtn">🎙</button>
     </div>
   </div>
   <div class="stats-bar">
@@ -746,21 +728,6 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--paper);color:var(--i
   </div>
 </main>
 
-<!-- 音声パネル -->
-<div class="voice-panel" id="voicePanel">
-  <div class="voice-drag"></div>
-  <div class="voice-title">🎙 音声で在庫を入力</div>
-  <div class="voice-waveform">
-    <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
-    <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
-    <div class="wave-bar"></div><div class="wave-bar"></div>
-  </div>
-  <div class="voice-text" id="voiceText">話してください…</div>
-  <div class="voice-hint">
-    <strong>入荷・仕入れ・追加</strong> → ＋加算 ／ <strong>出荷・使用・売った</strong> → −減算<br>
-    例：「白ユリ 5束 入荷」「カーネーション白 3本 使った」
-  </div>
-</div>
 
 
 <!-- 追加画面（フルスクリーン） -->
@@ -797,8 +764,6 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--paper);color:var(--i
       <path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63h2.386c.346 0 .627.285.627.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.104.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63.346 0 .628.285.628.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.282.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314"/>
     </svg>
   </button>
-  <button class="fab fab-copy" id="copyBtn" title="テキストをコピー">📋</button>
-  <button class="fab" id="shareBtn" title="在庫を共有" style="background:var(--sakura);color:white;font-size:18px;">📡</button>
 </div>
 
 <script>
@@ -1242,53 +1207,6 @@ function toast(msg){
   clearTimeout(_tt); _tt=setTimeout(()=>el.classList.remove("show"),2000);
 }
 
-function initVoice(){
-  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-  if(!SR){ document.getElementById("micBtn").style.opacity=".4"; return; }
-  recognition=new SR();
-  recognition.lang="ja-JP"; recognition.continuous=false; recognition.interimResults=true;
-  recognition.onresult=e=>{
-    const txt=Array.from(e.results).map(r=>r[0].transcript).join("");
-    document.getElementById("voiceText").textContent=txt||"話してください…";
-    if(e.results[e.results.length-1].isFinal) voiceProcess(txt);
-  };
-  recognition.onend=stopVoice;
-  recognition.onerror=e=>{ stopVoice(); toast("認識エラー: "+e.error); };
-}
-function toggleVoice(){ isListening?stopVoice():startVoice(); }
-function startVoice(){
-  if(!recognition){ toast("音声入力非対応です"); return; }
-  isListening=true;
-  document.getElementById("micBtn").classList.add("on");
-  document.getElementById("micBtn").textContent="⏹";
-  document.getElementById("voicePanel").classList.add("show");
-  document.getElementById("voiceText").textContent="話してください…";
-  recognition.start();
-}
-function stopVoice(){
-  isListening=false;
-  document.getElementById("micBtn").classList.remove("on");
-  document.getElementById("micBtn").textContent="🎙";
-  setTimeout(()=>document.getElementById("voicePanel").classList.remove("show"),1500);
-  try{ recognition.stop(); }catch(e){}
-}
-function voiceProcess(text){
-  const t=text.replace(/\s/g,"");
-  let num=null;
-  const nm=t.match(/(\d+)/); if(nm) num=parseInt(nm[1]);
-  const kanji={"一":1,"二":2,"三":3,"四":4,"五":5,"六":6,"七":7,"八":8,"九":9,"十":10,"十五":15,"二十":20,"三十":30};
-  if(num==null) for(const[k,v] of Object.entries(kanji)) if(t.includes(k)){num=v;break;}
-  if(num==null) num=1;
-  const isOut=/出荷|使用|使っ|売っ|出し|減/.test(t);
-  const isSet=/在庫|セット|数量/.test(t);
-  let best=null,bestLen=0;
-  getAllFlowers().forEach(([,fl])=>fl.forEach(f=>{ const n=f.name.replace(/\s/g,"").toLowerCase(); if(t.toLowerCase().includes(n)&&n.length>bestLen){best=f;bestLen=n.length;} }));
-  if(!best){ toast(`「${text}」：花名が認識できませんでした`); return; }
-  if(isSet) setStock(best.id,num);
-  else if(isOut) setStock(best.id,Math.max(0,(stocks[best.id]||0)-num));
-  else setStock(best.id,(stocks[best.id]||0)+num);
-}
-
 function buildShareText(){
   const now=new Date().toLocaleString("ja-JP",{month:"numeric",day:"numeric",hour:"2-digit",minute:"2-digit"});
   let lines=[`🌸 渡辺花屋 在庫レポート（${now}）\n`];
@@ -1312,11 +1230,6 @@ document.getElementById("lineShareBtn").addEventListener("click",()=>{
   const url=`https://line.me/R/share?text=${encodeURIComponent(buildShareText())}`;
   window.open(url,"_blank");
 });
-document.getElementById("copyBtn").addEventListener("click",()=>{
-  const text=buildShareText();
-  if(navigator.clipboard) navigator.clipboard.writeText(text).then(()=>toast("📋 コピーしました"));
-  else{ const ta=document.createElement("textarea"); ta.value=text; document.body.appendChild(ta); ta.select(); document.execCommand("copy"); document.body.removeChild(ta); toast("📋 コピーしました"); }
-});
 
 document.getElementById("tabBar").addEventListener("click",e=>{
   const btn=e.target.closest(".tab-btn"); if(!btn) return;
@@ -1339,7 +1252,6 @@ document.getElementById("searchInput").addEventListener("input",render);
 document.getElementById("filterZero").addEventListener("click",function(){
   hideZero=!hideZero; this.classList.toggle("on",hideZero); render();
 });
-document.getElementById("micBtn").addEventListener("click",toggleVoice);
 
 let addTargetId = null;
 let addTargetCat = null;
@@ -1471,52 +1383,6 @@ function guessEmoji(name, unit){
   return "🌷";
 }
 
-// ─── 共有モーダル ───
-async function shortenUrl(longUrl){
-  try{
-    const res = await fetch(
-      `https://is.gd/create.php?format=simple&url=${encodeURIComponent(longUrl)}`
-    );
-    if(!res.ok) return longUrl;
-    const short = (await res.text()).trim();
-    return short.startsWith("http") ? short : longUrl;
-  }catch(e){ return longUrl; }
-}
-
-document.getElementById("shareBtn").addEventListener("click", async ()=>{
-  const overlay  = document.getElementById("shareOverlay");
-  const urlEl    = document.getElementById("shareUrlText");
-  const statusEl = document.getElementById("shareStatus");
-  overlay.classList.remove("hidden");
-  urlEl.textContent = "短縮URL作成中…";
-  statusEl.textContent = "";
-  document.getElementById("shareCopyBtn").disabled = true;
-  document.getElementById("shareLineBtn").disabled = true;
-
-  const longUrl = buildShareUrl();
-  const url = await shortenUrl(longUrl);
-  urlEl.textContent = url;
-  statusEl.textContent = "✅ 現在の在庫データを含むURLです";
-  document.getElementById("shareCopyBtn").disabled = false;
-  document.getElementById("shareLineBtn").disabled = false;
-});
-
-document.getElementById("shareCopyBtn").addEventListener("click", ()=>{
-  const url = document.getElementById("shareUrlText").textContent;
-  if(navigator.clipboard) navigator.clipboard.writeText(url).then(()=>toast("📋 URLをコピーしました"));
-  else{ const ta=document.createElement("textarea"); ta.value=url; document.body.appendChild(ta); ta.select(); document.execCommand("copy"); document.body.removeChild(ta); toast("📋 コピーしました"); }
-});
-
-document.getElementById("shareLineBtn").addEventListener("click", ()=>{
-  const url = document.getElementById("shareUrlText").textContent;
-  const text = `🌸 渡辺花屋 在庫\nこのURLを開いてください👇\n${url}`;
-  window.open(`https://line.me/R/share?text=${encodeURIComponent(text)}`, "_blank");
-});
-
-document.getElementById("shareCloseBtn").addEventListener("click", ()=>{
-  document.getElementById("shareOverlay").classList.add("hidden");
-});
-
 // ─── テンキー入力 ───
 let _numpadId = null;
 let _numpadVal = "";
@@ -1623,12 +1489,17 @@ function setupResetBtn(){
 
 // ─── 起動 ───
 load();
-initVoice();
 render();
 </script>
 <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
 <script>
+// ★ Firebaseが読み込めない環境（プレビュー画面・圏外など）でも
+//    エラーで止まらず、スマホ内保存だけで動き続けるようにする
+if (typeof firebase === "undefined") {
+  setSyncDot("offline");
+} else {
+
 const firebaseConfig = {
   apiKey: "AIzaSyBhN7OB2Iw9tDGyElttijytpuSpdLz4GBo",
   authDomain: "watanabehanaya-cb569.firebaseapp.com",
@@ -1714,10 +1585,6 @@ saveMemos = function(){
   queueCloudSave();
 };
 
-buildShareUrl = function(){
-  return `${location.origin}${location.pathname}?room=${encodeURIComponent(roomId)}`;
-};
-
 refreshCard = function(id){
   const el = document.querySelector(`.flower-card[data-id="${id}"]`);
   if(!el) return;
@@ -1783,6 +1650,8 @@ roomRef.onSnapshot(doc=>{
   setSyncDot("offline");
   toast("Firestoreの同期を確認してください");
 });
+
+} // ← Firebaseガードの終わり
 </script>
 </body>
 </html>
