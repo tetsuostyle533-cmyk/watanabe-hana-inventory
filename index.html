@@ -638,6 +638,125 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--paper);color:var(--i
 .reset-btn{background:#fee2e2;color:#dc2626;border:none;border-radius:8px;padding:8px 16px;font-size:13px;font-weight:700;cursor:pointer;}
 .reset-btn.confirm{background:#dc2626;color:#fff;}
 
+/* ══════════════════════════════════════
+   デスクトップレイアウト（960px以上）
+══════════════════════════════════════ */
+.sidebar-wrap{display:contents}
+.main-wrap   {display:contents}
+
+@media(min-width:960px){
+  body{display:flex;height:100dvh;overflow:hidden;background:var(--paper2);}
+
+  /* ─ サイドバー ─ */
+  .sidebar-wrap{
+    display:flex;flex-direction:column;
+    width:240px;flex-shrink:0;
+    height:100dvh;overflow-y:auto;overflow-x:hidden;
+    scrollbar-width:thin;
+    border-right:1px solid var(--paper3);
+    background:var(--paper2);
+  }
+
+  /* ヘッダー：縦並び */
+  .app-header{position:static;flex-shrink:0;background:var(--moss);}
+  .header-inner{
+    flex-direction:column;align-items:flex-start;
+    padding:22px 18px 14px;gap:10px;
+  }
+  .header-logo{font-size:26px;opacity:1;}
+  .header-text{flex-direction:column;gap:3px;align-items:flex-start;}
+  .header-title{font-size:16px;letter-spacing:2.5px;}
+  .header-sub{
+    display:block;font-size:10px;color:rgba(255,255,255,.75);
+    letter-spacing:1px;font-family:'Noto Sans JP',sans-serif;font-weight:400;
+  }
+  .header-actions{margin-top:4px;}
+  .mic-btn{width:36px;height:36px;font-size:16px;}
+
+  /* 統計：縦並び */
+  .stats-bar{
+    flex-direction:column;padding:0;
+    background:rgba(0,0,0,.18);flex-shrink:0;
+  }
+  .stat-item{
+    justify-content:flex-start;padding:10px 18px;
+    border-right:none;border-bottom:1px solid rgba(255,255,255,.1);
+    font-size:11px;gap:10px;
+  }
+  .stat-item:last-child{border-bottom:none;}
+  .stat-num{font-size:18px;}
+
+  /* タブ：縦並びリスト */
+  .tab-bar{
+    position:static;flex-direction:column;
+    flex:1;overflow-y:auto;overflow-x:hidden;
+    background:var(--paper2);border-bottom:none;
+    scrollbar-width:thin;padding-bottom:80px;
+  }
+  .tab-btn{
+    text-align:left;padding:12px 18px;
+    border-bottom:none!important;border-left:3px solid transparent;
+    margin-bottom:0;font-size:13px;letter-spacing:.3px;
+    border-radius:0;width:100%;white-space:normal;
+  }
+  .tab-btn:hover:not(.active){background:var(--paper3);}
+  .tab-btn.active{
+    border-bottom-color:transparent!important;
+    border-left-color:var(--moss);
+    background:var(--moss4);color:var(--moss);font-weight:700;
+  }
+
+  /* FAB：サイドバー下部固定 */
+  .fab-area{
+    position:fixed;left:0;bottom:0;right:auto;
+    width:240px;flex-direction:row;justify-content:center;
+    gap:12px;padding:10px 0;
+    background:var(--paper2);
+    border-top:1px solid var(--paper3);
+    border-right:1px solid var(--paper3);
+    z-index:60;
+  }
+  .fab{width:42px;height:42px;font-size:17px;}
+
+  /* ─ メインコンテンツ ─ */
+  .main-wrap{
+    display:flex;flex-direction:column;
+    flex:1;height:100dvh;overflow:hidden;
+  }
+  .search-area{
+    position:sticky;top:0;z-index:30;flex-shrink:0;
+    box-shadow:0 1px 4px rgba(0,0,0,.08);
+    padding:10px 16px;
+  }
+  .main{flex:1;overflow-y:auto;}
+
+  /* 在庫：2カラムグリッド */
+  .inventory-wrap{
+    max-width:none;padding:14px 20px 40px;
+  }
+  #inventoryWrap{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(320px,1fr));
+    gap:12px;align-items:start;
+  }
+  .cat-section{margin-bottom:0;}
+
+  /* 履歴 */
+  .history-wrap{max-width:760px;margin:0 auto;padding:20px 24px 40px;}
+
+  /* カード：デスクトップ余白 */
+  .flower-card{padding:8px 12px;}
+  .flower-name{font-size:14px;}
+  .qty-num{font-size:20px;width:36px;}
+  .qty-btn{width:32px;height:32px;}
+
+  /* ホバーステート */
+  .qty-btn:hover{opacity:.85;}
+  .flower-card:hover{filter:brightness(.97);}
+  .card-add-btn:hover{background:#ffd5b0;}
+  .tab-btn:hover{cursor:pointer;}
+}
+
 </style>
 </head>
 <body>
@@ -677,6 +796,7 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--paper);color:var(--i
 </div>
 
 
+<div class="sidebar-wrap">
 <!-- ヘッダー -->
 <header class="app-header">
   <div class="header-inner">
@@ -707,7 +827,9 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--paper);color:var(--i
   <button class="tab-btn" data-tab="green">グリーン</button>
   <button class="tab-btn" data-tab="history">履歴</button>
 </div>
+</div><!-- /sidebar-wrap -->
 
+<div class="main-wrap">
 <!-- 検索 -->
 <div class="search-area" id="searchArea">
   <div class="search-wrap">
@@ -727,8 +849,7 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--paper);color:var(--i
     </div>
   </div>
 </main>
-
-
+</div><!-- /main-wrap -->
 
 <!-- 追加画面（フルスクリーン） -->
 <div class="add-screen" id="addScreen">
