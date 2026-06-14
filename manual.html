@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>棺前飾り 作業マニュアル｜渡辺花屋</title>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@600;700;800&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --moss:   #3d5a3e;
+  --moss2:  #5a7d5b;
+  --moss4:  #eaf3ea;
+  --ink:    #1a1410;
+  --ink2:   #4a3f35;
+  --ink3:   #8a7b6f;
+  --paper:  #faf7f2;
+  --paper2: #f2ede4;
+  --paper3: #e8e0d4;
+  --gold:   #c07830;
+  --gold2:  #e09040;
+  --gold3:  #fff8ee;
+  --purple: #7a6fbb;
+  --purple2:#9d8fdd;
+  --purple3:#f0eefa;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Noto Sans JP',sans-serif;
+  background:var(--paper);
+  color:var(--ink);
+  line-height:1.6;
+}
+
+/* ─── ヘッダー ─── */
+.page-header{
+  background:var(--moss);
+  padding:28px 24px 24px;
+  text-align:center;
+  position:relative;
+  overflow:hidden;
+}
+.page-header::before{
+  content:"";
+  position:absolute;inset:0;
+  background:url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M20 20c0-5.5-4.5-10-10-10s-10 4.5-10 10 4.5 10 10 10 10-4.5 10-10zm10 0c0 5.5 4.5 10 10 10s10-4.5 10-10-4.5-10-10-10-10 4.5-10 10z'/%3E%3C/g%3E%3C/svg%3E");
+}
+.header-shop{
+  font-size:12px;letter-spacing:3px;
+  color:rgba(255,255,255,.7);
+  margin-bottom:6px;
+}
+.header-title{
+  font-family:'Shippori Mincho B1',serif;
+  font-size:26px;font-weight:800;
+  color:#fff;letter-spacing:4px;
+  margin-bottom:6px;
+}
+.header-sub{
+  font-size:13px;color:rgba(255,255,255,.75);
+  letter-spacing:1px;
+}
+.header-badge{
+  display:inline-block;
+  background:rgba(255,255,255,.15);
+  border:1px solid rgba(255,255,255,.3);
+  border-radius:20px;
+  padding:4px 16px;
+  font-size:11px;
+  color:rgba(255,255,255,.85);
+  margin-top:10px;
+  letter-spacing:1px;
+}
+
+/* ─── ナビ ─── */
+.nav-tabs{
+  display:flex;
+  background:#fff;
+  border-bottom:2px solid var(--paper3);
+  position:sticky;top:0;z-index:50;
+  box-shadow:0 2px 8px rgba(0,0,0,.06);
+}
+.nav-tab{
+  flex:1;padding:13px 8px;
+  text-align:center;
+  font-size:13px;font-weight:700;
+  color:var(--ink3);
+  text-decoration:none;
+  border-bottom:3px solid transparent;
+  margin-bottom:-2px;
+  transition:.2s;
+  letter-spacing:.5px;
+}
+.nav-tab:hover{color:var(--moss);}
+.nav-tab.gold{color:var(--gold);}
+.nav-tab.gold:hover,.nav-tab.gold:focus{border-bottom-color:var(--gold);}
+.nav-tab.purple{color:var(--purple);}
+.nav-tab.purple:hover,.nav-tab.purple:focus{border-bottom-color:var(--purple);}
+
+/* ─── セクション ─── */
+.content{max-width:680px;margin:0 auto;padding:0 16px 60px;}
+
+.section{margin-top:32px;}
+.section-head{
+  display:flex;align-items:center;gap:12px;
+  padding:16px 20px;
+  border-radius:16px 16px 0 0;
+  color:#fff;
+}
+.section-head.gold-bg{background:linear-gradient(135deg,var(--gold),var(--gold2));}
+.section-head.purple-bg{background:linear-gradient(135deg,var(--purple),var(--purple2));}
+
+.section-price{
+  font-family:'Shippori Mincho B1',serif;
+  font-size:14px;font-weight:700;
+  background:rgba(255,255,255,.2);
+  border:1px solid rgba(255,255,255,.35);
+  border-radius:20px;padding:4px 12px;
+  white-space:nowrap;flex-shrink:0;
+}
+.section-title{
+  font-family:'Shippori Mincho B1',serif;
+  font-size:22px;font-weight:800;
+  letter-spacing:3px;flex:1;
+}
+.section-size{
+  font-size:12px;
+  background:rgba(0,0,0,.18);
+  border-radius:8px;padding:3px 10px;
+  white-space:nowrap;
+}
+
+.section-body{
+  background:#fff;
+  border-radius:0 0 16px 16px;
+  overflow:hidden;
+  box-shadow:0 4px 20px rgba(0,0,0,.08);
+}
+
+/* ─── 写真グリッド ─── */
+.photo-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:2px;
+  background:var(--paper3);
+}
+.photo-grid img{
+  width:100%;
+  aspect-ratio:4/3;
+  object-fit:cover;
+  display:block;
+  transition:transform .3s;
+}
+.photo-grid img:hover{transform:scale(1.02);z-index:1;position:relative;}
+.photo-caption{
+  text-align:center;
+  font-size:11px;
+  color:var(--ink3);
+  padding:7px 12px;
+  background:var(--paper2);
+  border-bottom:1px solid var(--paper3);
+  letter-spacing:.5px;
+}
+
+/* ─── 花材 ─── */
+.mat-section{padding:20px 20px 0;}
+.mat-label{
+  font-size:11px;font-weight:700;
+  color:var(--ink3);
+  letter-spacing:2px;
+  margin-bottom:12px;
+  display:flex;align-items:center;gap:8px;
+}
+.mat-label::after{
+  content:"";flex:1;
+  height:1px;background:var(--paper3);
+}
+
+.mat-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+  margin-bottom:20px;
+}
+.mat-card{
+  background:var(--paper);
+  border-radius:10px;
+  padding:10px 12px;
+  border:1.5px solid var(--paper3);
+  display:flex;align-items:center;gap:10px;
+}
+.mat-card.premium-gold{
+  background:var(--gold3);
+  border-color:#e8c060;
+}
+.mat-card.premium-purple{
+  background:var(--purple3);
+  border-color:#c0b8ee;
+}
+.mat-card.green{
+  background:var(--moss4);
+  border-color:#b8d8b8;
+}
+.mat-qty{
+  font-family:'Shippori Mincho B1',serif;
+  font-size:20px;font-weight:700;
+  min-width:36px;
+  text-align:center;
+  flex-shrink:0;
+}
+.mat-card.premium-gold .mat-qty{color:var(--gold);}
+.mat-card.premium-purple .mat-qty{color:var(--purple);}
+.mat-card.green .mat-qty{color:var(--moss);}
+.mat-qty-unit{font-size:10px;font-weight:400;}
+.mat-info{min-width:0;}
+.mat-name{
+  font-size:13px;font-weight:700;
+  color:var(--ink);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.mat-note{font-size:10px;color:var(--ink3);margin-top:2px;}
+
+/* ─── 手順 ─── */
+.steps-section{padding:0 20px 20px;}
+.steps-label{
+  font-size:11px;font-weight:700;
+  color:var(--ink3);
+  letter-spacing:2px;
+  margin-bottom:12px;
+  display:flex;align-items:center;gap:8px;
+}
+.steps-label::after{content:"";flex:1;height:1px;background:var(--paper3);}
+
+.steps-list{
+  list-style:none;
+  display:flex;flex-direction:column;gap:6px;
+  counter-reset:step;
+}
+.steps-list li{
+  counter-increment:step;
+  display:flex;align-items:flex-start;gap:12px;
+  padding:10px 12px;
+  background:var(--paper);
+  border-radius:10px;
+  font-size:13px;line-height:1.5;
+  color:var(--ink2);
+}
+.steps-list li::before{
+  content:counter(step);
+  font-family:'Shippori Mincho B1',serif;
+  font-size:13px;font-weight:800;
+  color:#fff;
+  min-width:24px;height:24px;
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+}
+.steps-list.gold li::before{background:var(--gold);}
+.steps-list.purple li::before{background:var(--purple);}
+.steps-list li strong{color:var(--ink);font-weight:700;}
+
+/* ─── 差分ボックス ─── */
+.diff-box{
+  margin:16px 20px 0;
+  background:var(--purple3);
+  border:2px solid var(--purple2);
+  border-radius:12px;
+  padding:14px 16px;
+}
+.diff-box-title{
+  font-size:11px;font-weight:700;
+  color:var(--purple);
+  letter-spacing:2px;
+  margin-bottom:10px;
+}
+.diff-items{display:flex;flex-direction:column;gap:8px;}
+.diff-item{
+  display:flex;align-items:center;gap:10px;
+  font-size:13px;font-weight:700;
+  color:var(--purple);
+}
+.diff-plus{
+  background:var(--purple);
+  color:#fff;
+  font-size:14px;font-weight:900;
+  width:24px;height:24px;
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+}
+
+/* ─── 共通注意事項 ─── */
+.common-section{
+  margin-top:32px;
+  background:#fff;
+  border-radius:16px;
+  overflow:hidden;
+  box-shadow:0 4px 20px rgba(0,0,0,.08);
+}
+.common-head{
+  background:linear-gradient(135deg,var(--moss),var(--moss2));
+  padding:14px 20px;
+  display:flex;align-items:center;gap:10px;
+  color:#fff;
+}
+.common-head-icon{font-size:20px;}
+.common-head-title{
+  font-family:'Shippori Mincho B1',serif;
+  font-size:16px;font-weight:700;
+  letter-spacing:2px;
+}
+.common-body{padding:20px;}
+.common-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+.common-item{
+  display:flex;align-items:flex-start;gap:10px;
+  padding:12px;
+  background:var(--paper);
+  border-radius:10px;
+  border-left:3px solid var(--moss2);
+}
+.common-item-icon{font-size:18px;flex-shrink:0;}
+.common-item-text{font-size:12px;line-height:1.6;color:var(--ink2);}
+.common-item-text strong{color:var(--moss);display:block;margin-bottom:2px;}
+
+/* ─── 印刷ボタン ─── */
+.print-btn-wrap{
+  text-align:center;
+  padding:24px 0 0;
+}
+.print-btn{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:13px 32px;
+  background:var(--moss);color:#fff;
+  border:none;border-radius:24px;
+  font-family:'Noto Sans JP',sans-serif;
+  font-size:14px;font-weight:700;
+  cursor:pointer;
+  box-shadow:0 4px 16px rgba(61,90,62,.3);
+  transition:.2s;
+  text-decoration:none;
+}
+.print-btn:hover{background:var(--moss2);transform:translateY(-1px);}
+
+.back-link{
+  display:inline-flex;align-items:center;gap:6px;
+  margin-bottom:20px;
+  font-size:13px;color:var(--ink3);
+  text-decoration:none;
+}
+.back-link:hover{color:var(--moss);}
+
+/* ─── 印刷スタイル ─── */
+@media print{
+  .nav-tabs,.print-btn-wrap,.back-link{display:none!important;}
+  body{background:#fff;}
+  .section{break-inside:avoid;}
+  .page-header{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  .section-head{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  .common-head{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+}
+
+/* ─── レスポンシブ ─── */
+@media(max-width:480px){
+  .mat-grid{grid-template-columns:1fr;}
+  .common-grid{grid-template-columns:1fr;}
+  .section-title{font-size:18px;}
+}
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <div class="header-shop">渡辺花屋　作業マニュアル</div>
+  <div class="header-title">棺前飾り</div>
+  <div class="header-sub">葬儀用　棺の前に飾るアレンジメント</div>
+  <div class="header-badge">1個入りオアシスベース × 4 使用</div>
+</div>
+
+<nav class="nav-tabs">
+  <a class="nav-tab gold" href="#sec-5man">棺前 五万</a>
+  <a class="nav-tab purple" href="#sec-7man">棺前 七万</a>
+  <a class="nav-tab" href="#sec-common">共通注意事項</a>
+</nav>
+
+<div class="content">
+  <a class="back-link" href="index.html">← 在庫管理に戻る</a>
+
+  <!-- ═══════════ 棺前 五万 ═══════════ -->
+  <div class="section" id="sec-5man">
+    <div class="section-head gold-bg">
+      <div class="section-price">¥50,000</div>
+      <div class="section-title">棺前 五万</div>
+      <div class="section-size">80 × 35 cm</div>
+    </div>
+    <div class="section-body">
+
+      <div class="photo-grid">
+        <img src="images/manual/kanmae-5man.jpg"  alt="棺前5万 完成写真①">
+        <img src="images/manual/kanmae-5man-2.jpg" alt="棺前5万 完成写真②">
+      </div>
+      <div class="photo-caption">完成例 ― ガーベラ・マム・アルストロ・スプレーカーネーションを中心に構成</div>
+
+      <div class="mat-section">
+        <div class="mat-label">花　材</div>
+        <div class="mat-grid">
+          <div class="mat-card">
+            <div class="mat-qty">3<span class="mat-qty-unit">本</span></div>
+            <div class="mat-info">
+              <div class="mat-name">ガーベラ</div>
+              <div class="mat-note">色はお客様希望色</div>
+            </div>
+          </div>
+          <div class="mat-card">
+            <div class="mat-qty">4<span class="mat-qty-unit">本</span></div>
+            <div class="mat-info">
+              <div class="mat-name">マム（スプレー菊）</div>
+              <div class="mat-note">白・淡ピンク系</div>
+            </div>
+          </div>
+          <div class="mat-card">
+            <div class="mat-qty">3<span class="mat-qty-unit">本</span></div>
+            <div class="mat-info">
+              <div class="mat-name">アルストロメリア</div>
+              <div class="mat-note">色はお客様希望色</div>
+            </div>
+          </div>
+          <div class="mat-card">
+            <div class="mat-qty">3<span class="mat-qty-unit">本</span></div>
+            <div class="mat-info">
+              <div class="mat-name">スプレーカーネーション</div>
+              <div class="mat-note">色はお客様希望色</div>
+            </div>
+          </div>
+          <div class="mat-card">
+            <div class="mat-qty">3<span class="mat-qty-unit">本</span></div>
+            <div class="mat-info">
+              <div class="mat-name">ゴッドセフィアナ</div>
+              <div class="mat-note">グリーン系葉物</div>
+            </div>
+          </div>
+          <div class="mat-card green">
+            <div class="mat-qty" style="font-size:13px">適量</div>
+            <div class="mat-info">
+              <div class="mat-name">レザーファン</div>
+              <div class="mat-note">ベース隠し・土台</div>
+            </div>
+          </div>
+          <div class="mat-card green">
+            <div class="mat-qty" style="font-size:13px">適量</div>
+            <div class="mat-info">
+              <div class="mat-name">ドラセナ / 斑入り葉</div>
+              <div class="mat-note">左右の流れ出し</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="steps-section">
+        <div class="steps-label">作　業　手　順</div>
+        <ol class="steps-list gold">
+          <li>ベース4個を横並びにセットし、水を十分に吸わせる</li>
+          <li>レザーファンでベース全体を覆い、土台を整える</li>
+          <li>ドラセナ・斑入り葉を左右に流して全体の輪郭を作る</li>
+          <li>マム（スプレー菊）を中心から外側へ均等に配置</li>
+          <li>アルストロメリアをリズム良く差し込む</li>
+          <li>スプレーカーネーションを空きスペースへ補う</li>
+          <li>ガーベラを3ヶ所の目立つ位置に<strong>高低差をつけて</strong>挿す</li>
+          <li>ゴッドセフィアナで仕上げ・ボリューム調整</li>
+          <li>霧吹きで全体に水をかけて完成</li>
+        </ol>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══════════ 棺前 七万 ═══════════ -->
+  <div class="section" id="sec-7man">
+    <div class="section-head purple-bg">
+      <div class="section-price">¥70,000</div>
+      <div class="section-title">棺前 七万</div>
+      <div class="section-size">80 × 35 cm（高さあり）</div>
+    </div>
+    <div class="section-body">
+
+      <div class="photo-grid">
+        <img src="images/manual/kanmae-7man.jpg"  alt="棺前7万 完成写真①">
+        <img src="images/manual/kanmae-7man-2.jpg" alt="棺前7万 完成写真②">
+      </div>
+      <div class="photo-caption">完成例 ― ユリ（ピンク）とラン（デンファレ）を加えた豪華版</div>
+
+      <div class="diff-box">
+        <div class="diff-box-title">五万との違い（追加花材）</div>
+        <div class="diff-items">
+          <div class="diff-item">
+            <div class="diff-plus">＋</div>
+            ユリ（ピンク）2〜3本 ― 中心に高く・メインとして目立たせる
+          </div>
+          <div class="diff-item">
+            <div class="diff-plus">＋</div>
+            ラン（デンファレ）2〜3本 ― 上部に流すように高めに配置
+          </div>
+        </div>
+      </div>
+
+      <div class="mat-section">
+        <div class="mat-label">花　材（全て）</div>
+        <div class="mat-grid">
+          <div class="mat-card premium-purple">
+            <div class="mat-qty">2〜3<span class="mat-qty-unit">本</span></div>
+            <div class="mat-info">
+              <div class="mat-name">ユリ（ピンク）</div>
+              <div class="mat-note">★ メイン・中心高く</div>
+            </div>
+          </div>
+          <div class="mat-card premium-purple">
+            <div class="mat-qty">2〜3<span class="mat-qty-unit">本</span></div>
+            <div class="mat-info">
+              <div class="mat-name">ラン（デンファレ）</div>
+              <div class="mat-note">★ 上部に流す</div>
+            </div>
+          </div>
+          <div class="mat-card">
+            <div class="mat-qty">3<span class="mat-qty-unit">本</span></div>
+            <div class="mat-info">
+              <div class="mat-name">ガーベラ</div>
+              <div class="mat-note">色はお客様希望色</div>
+            </div>
+          </div>
+          <div class="mat-card">
+            <div class="mat-qty">4<span class="mat-qty-unit">本</span></div>
+            <div class="mat-info">
+              <div class="mat-name">マム（スプレー菊）</div>
+              <div class="mat-note">白・淡ピンク系</div>
+            </div>
+          </div>
+          <div class="mat-card">
+            <div class="mat-qty">3<span class="mat-qty-unit">本</span></div>
+            <div class="mat-info">
+              <div class="mat-name">アルストロメリア</div>
+              <div class="mat-note">色はお客様希望色</div>
+            </div>
+          </div>
+          <div class="mat-card">
+            <div class="mat-qty">3<span class="mat-qty-unit">本</span></div>
+            <div class="mat-info">
+              <div class="mat-name">スプレーカーネーション</div>
+              <div class="mat-note">色はお客様希望色</div>
+            </div>
+          </div>
+          <div class="mat-card">
+            <div class="mat-qty">3<span class="mat-qty-unit">本</span></div>
+            <div class="mat-info">
+              <div class="mat-name">ゴッドセフィアナ</div>
+              <div class="mat-note">グリーン系葉物</div>
+            </div>
+          </div>
+          <div class="mat-card green">
+            <div class="mat-qty" style="font-size:13px">適量</div>
+            <div class="mat-info">
+              <div class="mat-name">レザーファン</div>
+              <div class="mat-note">ベース隠し・土台</div>
+            </div>
+          </div>
+          <div class="mat-card green">
+            <div class="mat-qty" style="font-size:13px">適量</div>
+            <div class="mat-info">
+              <div class="mat-name">ドラセナ / 斑入り葉</div>
+              <div class="mat-note">左右の流れ出し</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="steps-section">
+        <div class="steps-label">作　業　手　順</div>
+        <ol class="steps-list purple">
+          <li>ベース4個を横並びにセットし、水を十分に吸わせる</li>
+          <li>レザーファンでベース全体を覆い、土台を整える</li>
+          <li>ドラセナ・斑入り葉を左右に流して全体の輪郭を作る</li>
+          <li><strong>ユリを中心に高く</strong>挿す（つぼみ〜半開きを選ぶ）</li>
+          <li><strong>ランを上部に流す</strong>ように高めに配置</li>
+          <li>マム（スプレー菊）を中心から外側へ均等に配置</li>
+          <li>アルストロメリアをリズム良く差し込む</li>
+          <li>スプレーカーネーションを空きスペースへ補う</li>
+          <li>ガーベラを3ヶ所の目立つ位置に<strong>高低差をつけて</strong>挿す</li>
+          <li>ゴッドセフィアナで仕上げ・ボリューム調整</li>
+          <li>霧吹きで全体に水をかけて完成</li>
+        </ol>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══════════ 共通注意事項 ═══════════ -->
+  <div class="common-section" id="sec-common">
+    <div class="common-head">
+      <div class="common-head-icon">📋</div>
+      <div class="common-head-title">共 通 注 意 事 項</div>
+    </div>
+    <div class="common-body">
+      <div class="common-grid">
+        <div class="common-item">
+          <div class="common-item-icon">🟩</div>
+          <div class="common-item-text">
+            <strong>オアシス吸水</strong>
+            水に浮かせて自然吸水。押し込み厳禁（中に空洞ができる）
+          </div>
+        </div>
+        <div class="common-item">
+          <div class="common-item-icon">✂️</div>
+          <div class="common-item-text">
+            <strong>茎の切り口</strong>
+            斜め切り・水中カット後すぐ挿す。切り口を乾かさない
+          </div>
+        </div>
+        <div class="common-item">
+          <div class="common-item-icon">⚠️</div>
+          <div class="common-item-text">
+            <strong>ユリの葯を取る</strong>
+            花粉が衣装・棺を汚す。必ず開花前に葯を除去する
+          </div>
+        </div>
+        <div class="common-item">
+          <div class="common-item-icon">💧</div>
+          <div class="common-item-text">
+            <strong>完成後の霧吹き</strong>
+            全体に霧吹きで水をかけ、保湿してから納品
+          </div>
+        </div>
+        <div class="common-item">
+          <div class="common-item-icon">🌡️</div>
+          <div class="common-item-text">
+            <strong>保管</strong>
+            冷暗所保管。直射日光・エアコン直風は厳禁
+          </div>
+        </div>
+        <div class="common-item">
+          <div class="common-item-icon">🌸</div>
+          <div class="common-item-text">
+            <strong>ユリの開花確認</strong>
+            つぼみが多い場合は前日から水揚げして開花を促す
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="print-btn-wrap">
+    <button class="print-btn" onclick="window.print()">
+      🖨️　印刷 / PDFで保存
+    </button>
+  </div>
+
+</div>
+</body>
+</html>
