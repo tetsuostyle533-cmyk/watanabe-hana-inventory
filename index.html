@@ -638,6 +638,182 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--paper);color:var(--i
 .reset-btn{background:#fee2e2;color:#dc2626;border:none;border-radius:8px;padding:8px 16px;font-size:13px;font-weight:700;cursor:pointer;}
 .reset-btn.confirm{background:#dc2626;color:#fff;}
 
+/* ── マニュアル ── */
+.manual-wrap{padding:12px 12px 100px;max-width:560px;margin:0 auto;}
+.manual-header{
+  background:linear-gradient(135deg,var(--moss),var(--moss2));
+  border-radius:12px;
+  padding:16px 18px;
+  margin-bottom:14px;
+  color:white;
+}
+.manual-header-title{
+  font-family:'Shippori Mincho B1',serif;
+  font-size:18px;font-weight:700;
+  letter-spacing:2px;margin-bottom:4px;
+}
+.manual-header-sub{font-size:12px;opacity:.8;letter-spacing:1px;}
+
+.manual-card{
+  background:white;
+  border-radius:12px;
+  overflow:hidden;
+  margin-bottom:14px;
+  box-shadow:0 2px 10px rgba(0,0,0,.08);
+}
+.manual-card-head{
+  display:flex;align-items:center;gap:10px;
+  padding:12px 16px;
+  color:white;
+}
+.price-5man{background:linear-gradient(135deg,#c07830,#e09040);}
+.price-7man{background:linear-gradient(135deg,#7a6fbb,#9d8fdd);}
+
+.manual-price-badge{
+  font-family:'Shippori Mincho B1',serif;
+  font-size:13px;font-weight:700;
+  background:rgba(255,255,255,.22);
+  border:1px solid rgba(255,255,255,.35);
+  border-radius:20px;
+  padding:3px 10px;
+  white-space:nowrap;flex-shrink:0;
+}
+.manual-card-title{
+  font-family:'Shippori Mincho B1',serif;
+  font-size:17px;font-weight:700;
+  letter-spacing:2px;flex:1;
+}
+.manual-size-tag{
+  font-size:11px;opacity:.85;
+  background:rgba(0,0,0,.15);
+  border-radius:8px;padding:2px 8px;
+  white-space:nowrap;flex-shrink:0;
+}
+
+.manual-card-body{padding:14px 16px;}
+.manual-section-label{
+  font-size:10px;font-weight:700;
+  color:var(--ink3);
+  letter-spacing:2px;text-transform:uppercase;
+  margin:14px 0 8px;
+}
+.manual-section-label:first-child{margin-top:0;}
+
+.manual-base-info{
+  display:flex;align-items:center;gap:8px;
+  background:var(--moss4);
+  border:1px solid var(--moss2);
+  border-radius:8px;
+  padding:10px 12px;
+  font-size:13px;
+  color:var(--ink);
+}
+.base-icon{font-size:16px;}
+
+.manual-table{
+  width:100%;border-collapse:collapse;
+  font-size:12px;
+}
+.manual-table th{
+  background:var(--paper2);
+  color:var(--ink3);
+  font-weight:700;
+  font-size:10px;
+  letter-spacing:1px;
+  padding:6px 8px;
+  text-align:left;
+  border-bottom:1px solid var(--paper3);
+}
+.manual-table td{
+  padding:7px 8px;
+  border-bottom:1px solid var(--paper3);
+  vertical-align:middle;
+  color:var(--ink);
+}
+.manual-table tr:last-child td{border-bottom:none;}
+.qty-cell{
+  font-family:'Shippori Mincho B1',serif;
+  font-size:14px;font-weight:700;
+  color:var(--moss);
+  white-space:nowrap;
+  text-align:center;
+}
+.tr-green td{color:var(--moss2);background:#f8fdf8;}
+.tr-premium td{color:#7a6fbb;font-weight:600;}
+.tr-premium .qty-cell{color:#7a6fbb;}
+
+.manual-steps{
+  list-style:none;
+  padding:0;margin:0;
+  display:flex;flex-direction:column;gap:7px;
+}
+.manual-steps{counter-reset:step;}
+.manual-steps li{
+  display:flex;align-items:flex-start;gap:10px;
+  font-size:13px;line-height:1.5;
+  color:var(--ink);
+  counter-increment:step;
+  padding:8px 10px;
+  background:var(--paper);
+  border-radius:8px;
+  border-left:3px solid var(--paper3);
+}
+.manual-steps li::before{
+  content:counter(step);
+  font-family:'Shippori Mincho B1',serif;
+  font-size:13px;font-weight:700;
+  color:white;
+  background:var(--step-color, var(--ink3));
+  min-width:22px;height:22px;
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;margin-top:1px;
+}
+
+.manual-note{
+  display:flex;align-items:flex-start;gap:8px;
+  margin-top:12px;
+  background:#fffbea;
+  border:1px solid #f0d060;
+  border-radius:8px;
+  padding:10px 12px;
+  font-size:12px;
+  color:#806000;
+  line-height:1.6;
+}
+.manual-note-icon{font-size:16px;flex-shrink:0;}
+
+.manual-common{
+  background:white;
+  border-radius:12px;
+  padding:16px;
+  box-shadow:0 2px 10px rgba(0,0,0,.08);
+  border-top:3px solid var(--moss);
+}
+.manual-common-title{
+  font-family:'Shippori Mincho B1',serif;
+  font-size:14px;font-weight:700;
+  color:var(--moss);
+  letter-spacing:1.5px;
+  margin-bottom:12px;
+}
+.manual-checklist{
+  list-style:none;padding:0;margin:0;
+  display:flex;flex-direction:column;gap:8px;
+}
+.manual-checklist li{
+  display:flex;align-items:flex-start;gap:8px;
+  font-size:13px;line-height:1.5;
+  color:var(--ink);
+}
+.manual-checklist li::before{
+  content:"✓";
+  color:var(--moss2);
+  font-weight:700;
+  flex-shrink:0;
+  margin-top:1px;
+}
+
 </style>
 </head>
 <body>
@@ -706,6 +882,7 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--paper);color:var(--i
   <button class="tab-btn" data-tab="hoka">その他</button>
   <button class="tab-btn" data-tab="green">グリーン</button>
   <button class="tab-btn" data-tab="history">履歴</button>
+  <button class="tab-btn" data-tab="manual">マニュアル</button>
 </div>
 
 <!-- 検索 -->
@@ -724,6 +901,121 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--paper);color:var(--i
   <div class="page" id="page-history">
     <div class="history-wrap" id="historyWrap">
       <p class="empty-msg">まだ変更履歴がありません</p>
+    </div>
+  </div>
+  <div class="page" id="page-manual">
+    <div class="manual-wrap">
+      <div class="manual-header">
+        <div class="manual-header-title">棺前飾り　作業マニュアル</div>
+        <div class="manual-header-sub">1個入りベース × 4 使用</div>
+      </div>
+
+      <!-- 棺前 5万 -->
+      <div class="manual-card">
+        <div class="manual-card-head price-5man">
+          <div class="manual-price-badge">¥50,000</div>
+          <div class="manual-card-title">棺前 五万</div>
+          <div class="manual-size-tag">80 × 35 cm</div>
+        </div>
+        <div class="manual-card-body">
+          <div class="manual-section-label">ベース</div>
+          <div class="manual-base-info">
+            <span class="base-icon">🟩</span>
+            <span>1個入りオアシス × <strong>4個</strong>（横一列に並べる）</span>
+          </div>
+
+          <div class="manual-section-label">花材</div>
+          <table class="manual-table">
+            <thead>
+              <tr><th>花材</th><th>本数</th><th>備考</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>ガーベラ</td><td class="qty-cell">3本</td><td>色はお客様希望色</td></tr>
+              <tr><td>マム（スプレー菊）</td><td class="qty-cell">4本</td><td>白・淡ピンク系</td></tr>
+              <tr><td>アルストロメリア</td><td class="qty-cell">3本</td><td>色はお客様希望色</td></tr>
+              <tr><td>スプレーカーネーション</td><td class="qty-cell">3本</td><td>色はお客様希望色</td></tr>
+              <tr><td>ゴッドセフィアナ</td><td class="qty-cell">3本</td><td>グリーン系葉物</td></tr>
+              <tr class="tr-green"><td>レザーファン</td><td class="qty-cell">適量</td><td>ベース隠し・土台</td></tr>
+              <tr class="tr-green"><td>ドラセナ / 斑入り葉</td><td class="qty-cell">適量</td><td>左右の流れ出し</td></tr>
+            </tbody>
+          </table>
+
+          <div class="manual-section-label">手順</div>
+          <ol class="manual-steps" style="--step-color:#c07830">
+            <li>ベース4個を横並びにセットし、水を十分に吸わせる</li>
+            <li>レザーファンでベース全体を覆い、土台を作る</li>
+            <li>ドラセナ・斑入り葉を左右に流して全体の形を作る</li>
+            <li>マム（スプレー菊）を中心から外側へ均等に配置</li>
+            <li>アルストロメリアをリズム良く差し込む</li>
+            <li>スプレーカーネーションを空きスペースへ</li>
+            <li>ガーベラを3ヶ所の目立つ位置に高低差をつけて挿す</li>
+            <li>ゴッドセフィアナで仕上げ・ボリューム調整</li>
+          </ol>
+        </div>
+      </div>
+
+      <!-- 棺前 7万 -->
+      <div class="manual-card">
+        <div class="manual-card-head price-7man">
+          <div class="manual-price-badge">¥70,000</div>
+          <div class="manual-card-title">棺前 七万</div>
+          <div class="manual-size-tag">65 × 35 cm（高さあり）</div>
+        </div>
+        <div class="manual-card-body">
+          <div class="manual-section-label">ベース</div>
+          <div class="manual-base-info">
+            <span class="base-icon">🟩</span>
+            <span>1個入りオアシス × <strong>4個</strong>（横一列に並べる）</span>
+          </div>
+
+          <div class="manual-section-label">花材</div>
+          <table class="manual-table">
+            <thead>
+              <tr><th>花材</th><th>本数</th><th>備考</th></tr>
+            </thead>
+            <tbody>
+              <tr class="tr-premium"><td>ユリ（ピンク）</td><td class="qty-cell">2〜3本</td><td>★ メイン花材・中心高く</td></tr>
+              <tr><td>ガーベラ</td><td class="qty-cell">3本</td><td>色はお客様希望色</td></tr>
+              <tr><td>マム（スプレー菊）</td><td class="qty-cell">3本</td><td>白・淡ピンク系</td></tr>
+              <tr><td>アルストロメリア</td><td class="qty-cell">2本</td><td>色はお客様希望色</td></tr>
+              <tr><td>スプレーカーネーション</td><td class="qty-cell">2本</td><td>色はお客様希望色</td></tr>
+              <tr><td>ゴッドセフィアナ</td><td class="qty-cell">3本</td><td>グリーン系葉物</td></tr>
+              <tr class="tr-green"><td>レザーファン</td><td class="qty-cell">適量</td><td>ベース隠し・土台</td></tr>
+              <tr class="tr-green"><td>ドラセナ / 斑入り葉</td><td class="qty-cell">適量</td><td>左右の流れ出し</td></tr>
+            </tbody>
+          </table>
+
+          <div class="manual-section-label">手順</div>
+          <ol class="manual-steps" style="--step-color:#7a6fbb">
+            <li>ベース4個を横並びにセットし、水を十分に吸わせる</li>
+            <li>レザーファンでベース全体を覆い、土台を作る</li>
+            <li>ドラセナ・斑入り葉を左右に流して全体の形を作る</li>
+            <li><strong>ユリを中心に高く</strong>挿す（つぼみ～半開きを選ぶ）</li>
+            <li>マム（スプレー菊）を中心から外側へ均等に配置</li>
+            <li>アルストロメリアをリズム良く差し込む</li>
+            <li>スプレーカーネーションを空きスペースへ</li>
+            <li>ガーベラを3ヶ所の目立つ位置に高低差をつけて挿す</li>
+            <li>ゴッドセフィアナで仕上げ・ボリューム調整</li>
+          </ol>
+
+          <div class="manual-note">
+            <span class="manual-note-icon">💡</span>
+            ユリは当日開花状況を確認。つぼみ多めなら前日に水揚げしておく。
+          </div>
+        </div>
+      </div>
+
+      <!-- 共通メモ -->
+      <div class="manual-common">
+        <div class="manual-common-title">共通 注意事項</div>
+        <ul class="manual-checklist">
+          <li>オアシスは水に浮かせて自然吸水（押し込み厳禁）</li>
+          <li>花は茎を斜め切り・水中カット後すぐ挿す</li>
+          <li>ユリの葯（花粉）は必ず取り除く（衣装汚れ防止）</li>
+          <li>完成後は霧吹きで全体に水をかける</li>
+          <li>納品まで冷暗所保管、直射日光・エアコン直風を避ける</li>
+        </ul>
+      </div>
     </div>
   </div>
 </main>
@@ -1239,10 +1531,17 @@ document.getElementById("tabBar").addEventListener("click",e=>{
   if(tab==="history"){
     document.getElementById("page-inventory").classList.remove("active");
     document.getElementById("page-history").classList.add("active");
+    document.getElementById("page-manual").classList.remove("active");
     document.getElementById("searchArea").style.display="none";
     renderHistory();
+  } else if(tab==="manual"){
+    document.getElementById("page-inventory").classList.remove("active");
+    document.getElementById("page-history").classList.remove("active");
+    document.getElementById("page-manual").classList.add("active");
+    document.getElementById("searchArea").style.display="none";
   } else {
     document.getElementById("page-history").classList.remove("active");
+    document.getElementById("page-manual").classList.remove("active");
     document.getElementById("page-inventory").classList.add("active");
     document.getElementById("searchArea").style.display="";
     currentTab=tab; render();
