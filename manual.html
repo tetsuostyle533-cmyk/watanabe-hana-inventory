@@ -141,17 +141,29 @@ body{
 .photo-grid{
   display:grid;
   grid-template-columns:1fr 1fr;
-  gap:2px;
+  gap:3px;
   background:var(--paper3);
+}
+/* 1枚のみの場合フル幅 */
+.photo-grid.single{
+  grid-template-columns:1fr;
 }
 .photo-grid img{
   width:100%;
   aspect-ratio:4/3;
   object-fit:cover;
+  object-position:center 55%;
   display:block;
   transition:transform .3s;
 }
 .photo-grid img:hover{transform:scale(1.02);z-index:1;position:relative;}
+
+/* 各写真の個別ポジション */
+.photo-5man-1{ object-position: center 62%; }  /* 縦長・花は下半分 */
+.photo-5man-2{ object-position: center 55%; }  /* 縦長・花が中央 */
+.photo-7man-1{ object-position: center 38%; }  /* 縦長・ユリが上寄り */
+.photo-7man-2{ object-position: 60% 42%;   }  /* 横長・ユリが右寄り */
+
 .photo-caption{
   text-align:center;
   font-size:11px;
@@ -427,6 +439,10 @@ body{
     object-fit:cover;
     display:block;
   }
+  .photo-5man-1{ object-position: center 62%; }
+  .photo-5man-2{ object-position: center 55%; }
+  .photo-7man-1{ object-position: center 38%; }
+  .photo-7man-2{ object-position: 60% 42%;   }
   .photo-caption{
     font-size:8pt;
     padding:4pt 8pt;
@@ -560,8 +576,8 @@ body{
     <div class="section-body">
 
       <div class="photo-grid">
-        <img src="images/manual/kanmae-5man.jpg"  alt="棺前5万 完成写真①">
-        <img src="images/manual/kanmae-5man-2.jpg" alt="棺前5万 完成写真②">
+        <img src="images/manual/kanmae-5man.jpg"   class="photo-5man-1" alt="棺前5万 完成写真①">
+        <img src="images/manual/kanmae-5man-2.jpg" class="photo-5man-2" alt="棺前5万 完成写真②">
       </div>
       <div class="photo-caption">完成例 ― ガーベラ・マム・アルストロ・スプレーカーネーションを中心に構成</div>
 
@@ -648,8 +664,8 @@ body{
     <div class="section-body">
 
       <div class="photo-grid">
-        <img src="images/manual/kanmae-7man.jpg"  alt="棺前7万 完成写真①">
-        <img src="images/manual/kanmae-7man-2.jpg" alt="棺前7万 完成写真②">
+        <img src="images/manual/kanmae-7man.jpg"   class="photo-7man-1" alt="棺前7万 完成写真①">
+        <img src="images/manual/kanmae-7man-2.jpg" class="photo-7man-2" alt="棺前7万 完成写真②">
       </div>
       <div class="photo-caption">完成例 ― ユリ（ピンク）とラン（デンファレ）を加えた豪華版</div>
 
