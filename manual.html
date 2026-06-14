@@ -355,12 +355,173 @@ body{
 
 /* ─── 印刷スタイル ─── */
 @media print{
-  .nav-tabs,.print-btn-wrap,.back-link{display:none!important;}
-  body{background:#fff;}
-  .section{break-inside:avoid;}
-  .page-header{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
-  .section-head{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
-  .common-head{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  /* ページ設定 */
+  @page{
+    size: A4 portrait;
+    margin: 14mm 12mm 16mm;
+  }
+  @page:first{ margin-top: 8mm; }
+
+  /* 非表示にする画面専用要素 */
+  .nav-tabs,
+  .print-btn-wrap,
+  .back-link        { display:none !important; }
+
+  /* 全体リセット */
+  html,body{
+    background:#fff !important;
+    font-size: 10.5pt;
+    color: #111;
+  }
+
+  /* コンテンツ幅をページいっぱいに */
+  .content{
+    max-width:100%;
+    padding:0;
+  }
+
+  /* ─── ページヘッダー ─── */
+  .page-header{
+    -webkit-print-color-adjust:exact;
+    print-color-adjust:exact;
+    padding: 12pt 16pt 10pt;
+    border-radius:0;
+    margin-bottom: 14pt;
+  }
+  .header-title{ font-size:20pt; }
+  .header-shop { font-size:9pt; }
+  .header-sub  { font-size:9pt; }
+  .header-badge{ font-size:9pt; padding:2pt 10pt; }
+
+  /* ─── 各セクション ─── */
+  .section{
+    break-inside: avoid;
+    page-break-inside: avoid;
+    margin-top: 14pt;
+  }
+  /* 五万・七万は別ページに */
+  #sec-5man { break-before: auto; }
+  #sec-7man { break-before: page; page-break-before: always; }
+  #sec-common{ break-before: page; page-break-before: always; }
+
+  .section-head{
+    -webkit-print-color-adjust:exact;
+    print-color-adjust:exact;
+    padding: 8pt 12pt;
+    border-radius: 6pt 6pt 0 0;
+  }
+  .section-price{ font-size:10pt; padding:2pt 8pt; }
+  .section-title{ font-size:16pt; letter-spacing:2pt; }
+  .section-size { font-size:9pt; padding:2pt 7pt; }
+
+  /* ─── 写真グリッド ─── */
+  .photo-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:2pt;
+    break-inside:avoid;
+  }
+  .photo-grid img{
+    width:100%;
+    height:150pt;
+    object-fit:cover;
+    display:block;
+  }
+  .photo-caption{
+    font-size:8pt;
+    padding:4pt 8pt;
+    -webkit-print-color-adjust:exact;
+    print-color-adjust:exact;
+  }
+
+  /* ─── 差分ボックス ─── */
+  .diff-box{
+    -webkit-print-color-adjust:exact;
+    print-color-adjust:exact;
+    margin: 8pt 0 0;
+    padding:8pt 10pt;
+    border-radius:6pt;
+    break-inside:avoid;
+  }
+  .diff-box-title{ font-size:8pt; margin-bottom:5pt; }
+  .diff-item{ font-size:9.5pt; }
+  .diff-plus{
+    -webkit-print-color-adjust:exact;
+    print-color-adjust:exact;
+    width:18pt; height:18pt; font-size:12pt;
+  }
+
+  /* ─── 花材セクション ─── */
+  .mat-section{ padding:8pt 10pt 0; }
+  .mat-label  { font-size:8pt; margin-bottom:6pt; }
+  .mat-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr 1fr;
+    gap:5pt;
+    margin-bottom:8pt;
+  }
+  .mat-card{
+    -webkit-print-color-adjust:exact;
+    print-color-adjust:exact;
+    padding:5pt 7pt;
+    border-radius:5pt;
+    gap:6pt;
+  }
+  .mat-qty     { font-size:15pt; min-width:28pt; }
+  .mat-qty-unit{ font-size:8pt; }
+  .mat-name    { font-size:9pt; }
+  .mat-note    { font-size:8pt; }
+
+  /* ─── 手順セクション ─── */
+  .steps-section{ padding:0 10pt 10pt; }
+  .steps-label  { font-size:8pt; margin-bottom:6pt; }
+  .steps-list   { gap:3pt; }
+  .steps-list li{
+    -webkit-print-color-adjust:exact;
+    print-color-adjust:exact;
+    padding:5pt 8pt;
+    border-radius:5pt;
+    font-size:9.5pt;
+    gap:7pt;
+  }
+  .steps-list li::before{
+    -webkit-print-color-adjust:exact;
+    print-color-adjust:exact;
+    min-width:18pt; height:18pt;
+    font-size:10pt;
+  }
+
+  /* ─── 共通注意事項 ─── */
+  .common-section{ margin-top:0; border-radius:6pt; }
+  .common-head{
+    -webkit-print-color-adjust:exact;
+    print-color-adjust:exact;
+    padding:8pt 12pt;
+    border-radius:6pt 6pt 0 0;
+  }
+  .common-head-title{ font-size:13pt; }
+  .common-body      { padding:10pt; }
+  .common-grid      { grid-template-columns:1fr 1fr; gap:6pt; }
+  .common-item{
+    -webkit-print-color-adjust:exact;
+    print-color-adjust:exact;
+    padding:7pt 9pt;
+    border-radius:5pt;
+    break-inside:avoid;
+  }
+  .common-item-icon{ font-size:14pt; }
+  .common-item-text{ font-size:9pt; line-height:1.5; }
+
+  /* ─── フッター（印刷時のみ表示） ─── */
+  .print-footer{
+    display:block !important;
+    text-align:center;
+    font-size:8pt;
+    color:#999;
+    margin-top:12pt;
+    padding-top:6pt;
+    border-top:0.5pt solid #ddd;
+  }
 }
 
 /* ─── レスポンシブ ─── */
@@ -653,6 +814,10 @@ body{
     <button class="print-btn" onclick="window.print()">
       🖨️　印刷 / PDFで保存
     </button>
+  </div>
+
+  <div class="print-footer" style="display:none">
+    渡辺花屋　棺前飾り作業マニュアル　― 社内資料・無断転載禁止 ―
   </div>
 
 </div>
