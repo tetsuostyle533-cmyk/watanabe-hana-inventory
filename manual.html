@@ -137,21 +137,27 @@ body{
   box-shadow:0 4px 20px rgba(0,0,0,.08);
 }
 
-/* ─── 写真グリッド ─── */
+/* ─── 写真グリッド（クロップせず全体表示） ─── */
 .photo-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:3px;
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  align-items:center;
+  gap:4px;
   background:var(--paper3);
+  padding:4px;
 }
 .photo-grid img{
-  width:100%;
-  aspect-ratio:4/3;
-  object-fit:cover;
+  height:260px;
+  width:auto;
+  max-width:100%;
+  object-fit:contain;
+  background:#fff;
   display:block;
+  border-radius:2px;
   transition:transform .3s;
 }
-.photo-grid img:hover{transform:scale(1.02);z-index:1;position:relative;}
+.photo-grid img:hover{transform:scale(1.03);z-index:1;position:relative;}
 
 .photo-caption{
   text-align:center;
@@ -290,43 +296,6 @@ body{
   flex-shrink:0;
 }
 
-/* ─── 共通注意事項 ─── */
-.common-section{
-  margin-top:32px;
-  background:#fff;
-  border-radius:16px;
-  overflow:hidden;
-  box-shadow:0 4px 20px rgba(0,0,0,.08);
-}
-.common-head{
-  background:linear-gradient(135deg,var(--moss),var(--moss2));
-  padding:14px 20px;
-  display:flex;align-items:center;gap:10px;
-  color:#fff;
-}
-.common-head-icon{font-size:20px;}
-.common-head-title{
-  font-family:'Shippori Mincho B1',serif;
-  font-size:16px;font-weight:700;
-  letter-spacing:2px;
-}
-.common-body{padding:20px;}
-.common-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
-}
-.common-item{
-  display:flex;align-items:flex-start;gap:10px;
-  padding:12px;
-  background:var(--paper);
-  border-radius:10px;
-  border-left:3px solid var(--moss2);
-}
-.common-item-icon{font-size:18px;flex-shrink:0;}
-.common-item-text{font-size:12px;line-height:1.6;color:var(--ink2);}
-.common-item-text strong{color:var(--moss);display:block;margin-bottom:2px;}
-
 /* ─── 印刷ボタン ─── */
 .print-btn-wrap{
   text-align:center;
@@ -415,17 +384,20 @@ body{
   .section-title{ font-size:16pt; letter-spacing:2pt; }
   .section-size { font-size:9pt; padding:2pt 7pt; }
 
-  /* ─── 写真グリッド ─── */
+  /* ─── 写真グリッド（クロップせず全体表示） ─── */
   .photo-grid{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:2pt;
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:4pt;
+    padding:3pt;
     break-inside:avoid;
   }
   .photo-grid img{
-    width:100%;
-    height:190pt;
-    object-fit:cover;
+    height:150pt;
+    width:auto;
+    max-width:100%;
+    object-fit:contain;
     display:block;
   }
   .photo-caption{
@@ -492,27 +464,6 @@ body{
     font-size:10pt;
   }
 
-  /* ─── 共通注意事項 ─── */
-  .common-section{ margin-top:0; border-radius:6pt; }
-  .common-head{
-    -webkit-print-color-adjust:exact;
-    print-color-adjust:exact;
-    padding:8pt 12pt;
-    border-radius:6pt 6pt 0 0;
-  }
-  .common-head-title{ font-size:13pt; }
-  .common-body      { padding:10pt; }
-  .common-grid      { grid-template-columns:1fr 1fr; gap:6pt; }
-  .common-item{
-    -webkit-print-color-adjust:exact;
-    print-color-adjust:exact;
-    padding:7pt 9pt;
-    border-radius:5pt;
-    break-inside:avoid;
-  }
-  .common-item-icon{ font-size:14pt; }
-  .common-item-text{ font-size:9pt; line-height:1.5; }
-
   /* ─── フッター（印刷時のみ表示） ─── */
   .print-footer{
     display:block !important;
@@ -528,8 +479,8 @@ body{
 /* ─── レスポンシブ ─── */
 @media(max-width:480px){
   .mat-grid{grid-template-columns:1fr;}
-  .common-grid{grid-template-columns:1fr;}
   .section-title{font-size:18px;}
+  .photo-grid img{height:180px;}
 }
 </style>
 </head>
@@ -560,8 +511,8 @@ body{
     <div class="section-body">
 
       <div class="photo-grid">
-        <img src="images/manual/kanmae-5man.jpg"   alt="棺前5万 完成写真①" style="object-position:center 72%">
-        <img src="images/manual/kanmae-5man-2.jpg" alt="棺前5万 完成写真②" style="object-position:center 68%">
+        <img src="images/manual/kanmae-5man.jpg"   alt="棺前5万 完成写真①">
+        <img src="images/manual/kanmae-5man-2.jpg" alt="棺前5万 完成写真②">
       </div>
       <div class="photo-caption">完成例 ― ガーベラ・マム・アルストロ・スプレーカーネーションを中心に構成</div>
 
@@ -648,8 +599,8 @@ body{
     <div class="section-body">
 
       <div class="photo-grid">
-        <img src="images/manual/kanmae-7man.jpg"   alt="棺前7万 完成写真①" style="object-position:center 40%">
-        <img src="images/manual/kanmae-7man-2.jpg" alt="棺前7万 完成写真②" style="object-position:38% center">
+        <img src="images/manual/kanmae-7man.jpg"   alt="棺前7万 完成写真①">
+        <img src="images/manual/kanmae-7man-2.jpg" alt="棺前7万 完成写真②">
       </div>
       <div class="photo-caption">完成例 ― ユリ（ピンク）とラン（デンファレ）を加えた豪華版</div>
 
@@ -756,7 +707,6 @@ body{
     </div>
   </div>
 
-  <!-- ═══════════ 共通注意事項 ═══════════ -->
   <div class="print-btn-wrap">
     <button class="print-btn" onclick="window.print()">
       🖨️　印刷 / PDFで保存
