@@ -4,1073 +4,972 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>カラーサンド tasai | 多彩な砂のアート</title>
-<meta name="description" content="カラーサンド tasai — 天然の砂が生む繊細で美しいカラーサンドアート。インテリアに、ギフトに。">
+<meta name="description" content="カラーサンド tasai — 天然の砂が生み出す、繊細で美しいカラーサンドアート。一点一点、手作業で仕上げる唯一無二の作品。">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Noto+Sans+JP:wght@300;400;500;700&family=Noto+Serif+JP:wght@300;400&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Noto+Serif+JP:wght@200;300;400;500&family=Noto+Sans+JP:wght@200;300;400;500;700&display=swap" rel="stylesheet">
 <style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; font-size: 16px; }
-body {
-  font-family: 'Noto Sans JP', sans-serif;
-  color: #333;
-  background: #fff;
-  overflow-x: hidden;
-  line-height: 1.8;
+:root{
+  --gold:#b08d4f; --gold2:#d4b876; --gold-deep:#8a6a32;
+  --ink:#1f1a14; --ink2:#4a4038; --ink3:#8c8275;
+  --paper:#fbf8f3; --paper2:#f3ede2; --paper3:#e8ddc9;
+  --rose:#eac3c9; --lav:#cfc3e8; --sky:#bcd3ea; --mint:#bfe2d2; --sun:#ecd9a0;
 }
-img { max-width: 100%; display: block; }
-a { text-decoration: none; color: inherit; }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Noto Sans JP',sans-serif;color:var(--ink2);background:var(--paper);
+  overflow-x:hidden;line-height:1.9;font-weight:300;
+  -webkit-font-smoothing:antialiased;
+}
+img{max-width:100%;display:block}
+a{text-decoration:none;color:inherit}
+::selection{background:var(--gold2);color:#fff}
 
-/* ─────── HEADER ─────── */
-header {
-  position: fixed;
-  top: 0; left: 0; right: 0;
-  z-index: 100;
-  background: rgba(255,255,255,.95);
-  backdrop-filter: blur(8px);
-  border-bottom: 1px solid #e8e8e8;
-  height: 56px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 16px;
-}
-.header-logo {
-  display: flex;
-  align-items: baseline;
-  gap: 6px;
-}
-.logo-en {
-  font-family: 'Cormorant Garamond', serif;
-  font-style: italic;
-  font-size: 16px;
-  font-weight: 400;
-  color: #7aab6a;
-  letter-spacing: 1px;
-}
-.logo-ja {
-  font-family: 'Noto Serif JP', serif;
-  font-size: 17px;
-  font-weight: 400;
-  color: #333;
-  letter-spacing: 2px;
-}
+/* grain filter applied globally via svg */
+.grain{position:absolute;inset:0;opacity:.5;mix-blend-mode:overlay;pointer-events:none}
 
-/* ハンバーガー */
-.hamburger {
-  width: 40px; height: 40px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 6px;
-  cursor: pointer;
-  background: none;
-  border: none;
-  padding: 4px;
-}
-.hamburger span {
-  display: block;
-  width: 24px; height: 1.5px;
-  background: #555;
-  transition: .3s;
-}
-.hamburger.open span:nth-child(1) { transform: translateY(7.5px) rotate(45deg); }
-.hamburger.open span:nth-child(2) { opacity: 0; }
-.hamburger.open span:nth-child(3) { transform: translateY(-7.5px) rotate(-45deg); }
+/* ============ CURSOR-FREE PROGRESS BAR ============ */
+.progress-bar{position:fixed;top:0;left:0;height:2px;background:linear-gradient(90deg,var(--gold),var(--gold2));z-index:999;width:0%;transition:width .1s}
 
-/* ドロワーメニュー */
-.drawer {
-  position: fixed;
-  top: 56px; right: -100%;
-  width: 70%; max-width: 280px;
-  height: calc(100dvh - 56px);
-  background: #fff;
-  z-index: 99;
-  transition: right .35s cubic-bezier(.25,.8,.25,1);
-  padding: 32px 24px;
-  box-shadow: -4px 0 20px rgba(0,0,0,.08);
+/* ============ NAV ============ */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:200;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:22px 6vw;transition:.4s;
+  mix-blend-mode:normal;
 }
-.drawer.open { right: 0; }
-.drawer-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,.3);
-  z-index: 98;
-  display: none;
-}
-.drawer-overlay.open { display: block; }
-.drawer nav ul { list-style: none; }
-.drawer nav ul li { border-bottom: 1px solid #f0f0f0; }
-.drawer nav ul li a {
-  display: block;
-  padding: 14px 4px;
-  font-size: 14px;
-  font-weight: 400;
-  color: #444;
-  letter-spacing: 1px;
-}
-.drawer-logo {
-  font-family: 'Cormorant Garamond', serif;
-  font-style: italic;
-  color: #7aab6a;
-  font-size: 18px;
-  margin-bottom: 24px;
-}
+nav.scrolled{background:rgba(251,248,243,.88);backdrop-filter:blur(14px);padding:14px 6vw;box-shadow:0 1px 0 rgba(176,141,79,.15)}
+.brand{display:flex;align-items:baseline;gap:8px;font-family:'Cormorant Garamond',serif}
+.brand-mark{font-size:13px;letter-spacing:5px;text-transform:uppercase;color:var(--gold-deep);font-weight:500}
+.brand-name{font-size:22px;font-style:italic;font-weight:500;color:var(--ink)}
+nav.scrolled .brand-mark,nav.scrolled .brand-name{color:var(--ink)}
+#hero-area nav .brand-mark,#hero-area nav .brand-name{color:#fff}
+#hero-area nav.scrolled .brand-mark{color:var(--gold-deep)}
+#hero-area nav.scrolled .brand-name{color:var(--ink)}
 
-/* ─────── HERO ─────── */
-#hero {
-  margin-top: 56px;
-  position: relative;
-  height: calc(100dvh - 56px);
-  min-height: 480px;
-  overflow: hidden;
+.nav-right{display:flex;align-items:center;gap:28px}
+.nav-links{display:flex;gap:30px;list-style:none}
+.nav-links a{
+  position:relative;font-size:11.5px;letter-spacing:2.5px;font-weight:500;
+  color:#fff;padding-bottom:4px;transition:.3s;
 }
-.hero-visual {
-  width: 100%; height: 100%;
-  position: relative;
-}
-/* カラーサンドをイメージした背景 */
-.hero-bg {
-  width: 100%; height: 100%;
-  background: linear-gradient(180deg,
-    #fde8ee 0%, #f8d8e8 8%,
-    #e8d0f5 18%, #d5c8f0 26%,
-    #c8d8f8 34%, #b8d0f5 42%,
-    #c0e8d8 50%, #b5e0d0 58%,
-    #e8f0b8 66%, #f0e8a0 74%,
-    #f8d888 82%, #f5c888 90%,
-    #f0b8c0 96%, #edd0e8 100%
-  );
-  position: relative;
-}
-/* 砂粒テクスチャ風オーバーレイ */
-.hero-texture {
-  position: absolute;
-  inset: 0;
-  background-image:
-    radial-gradient(circle at 15% 20%, rgba(255,255,255,.35) 0%, transparent 30%),
-    radial-gradient(circle at 85% 15%, rgba(255,255,255,.25) 0%, transparent 25%),
-    radial-gradient(circle at 50% 50%, rgba(255,255,255,.15) 0%, transparent 50%),
-    radial-gradient(circle at 80% 80%, rgba(255,255,255,.2) 0%, transparent 30%),
-    radial-gradient(circle at 20% 75%, rgba(255,255,255,.2) 0%, transparent 25%);
-}
-/* ボトルシルエット */
-.hero-bottle {
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 120px;
-  height: 200px;
-}
-.bottle-body {
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 80px;
-  height: 160px;
-  background: rgba(255,255,255,.25);
-  border-radius: 8px 8px 16px 16px;
-  border: 2px solid rgba(255,255,255,.5);
-  overflow: hidden;
-}
-.bottle-neck {
-  position: absolute;
-  top: -28px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 28px;
-  height: 32px;
-  background: rgba(255,255,255,.2);
-  border-radius: 4px 4px 0 0;
-  border: 2px solid rgba(255,255,255,.4);
-}
-.bottle-cap {
-  position: absolute;
-  top: -42px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 34px;
-  height: 18px;
-  background: rgba(180,140,100,.6);
-  border-radius: 3px;
-}
+nav.scrolled .nav-links a{color:var(--ink2)}
+.nav-links a::after{content:'';position:absolute;left:0;bottom:0;width:0;height:1px;background:currentColor;transition:.3s}
+.nav-links a:hover::after{width:100%}
+.nav-links a:hover{color:var(--gold2)}
 
-.hero-text {
-  position: absolute;
-  top: 50%;
-  left: 0; right: 0;
-  transform: translateY(-60%);
-  text-align: center;
-  padding: 0 20px;
-}
-.hero-en-text {
-  font-family: 'Cormorant Garamond', serif;
-  font-style: italic;
-  font-size: clamp(14px, 4vw, 20px);
-  color: rgba(80,60,40,.7);
-  letter-spacing: 3px;
-  margin-bottom: 10px;
-}
-.hero-ja-text {
-  font-family: 'Noto Serif JP', serif;
-  font-size: clamp(22px, 6vw, 38px);
-  font-weight: 300;
-  color: #2a2018;
-  letter-spacing: 4px;
-  line-height: 1.5;
-  margin-bottom: 20px;
-}
-.hero-sub-text {
-  font-size: 13px;
-  font-weight: 300;
-  color: rgba(50,40,30,.65);
-  line-height: 2;
-  letter-spacing: .5px;
-}
+.menu-btn{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;width:32px;z-index:210}
+.menu-btn span{display:block;height:1.5px;background:#fff;transition:.3s}
+nav.scrolled .menu-btn span{background:var(--ink)}
+.menu-btn.open span{background:var(--ink)}
+.menu-btn.open span:nth-child(1){transform:translateY(6.5px) rotate(45deg)}
+.menu-btn.open span:nth-child(2){opacity:0}
+.menu-btn.open span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg)}
 
-/* ─────── COMMON SECTION ─────── */
-.section { padding: 64px 0; }
-.section-inner { padding: 0 20px; max-width: 560px; margin: 0 auto; }
+.mobile-drawer{
+  position:fixed;inset:0;background:var(--ink);z-index:190;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:28px;
+  opacity:0;pointer-events:none;transition:opacity .4s;
+}
+.mobile-drawer.open{opacity:.98;pointer-events:all}
+.mobile-drawer a{font-family:'Cormorant Garamond',serif;font-size:24px;color:var(--paper2);letter-spacing:2px;font-style:italic}
 
-.en-label {
-  font-family: 'Cormorant Garamond', serif;
-  font-style: italic;
-  font-size: 13px;
-  font-weight: 300;
-  color: #7aab6a;
-  letter-spacing: 2px;
-  margin-bottom: 6px;
-}
-.section-title {
-  font-size: 22px;
-  font-weight: 400;
-  letter-spacing: 2px;
-  margin-bottom: 20px;
-  line-height: 1.5;
-}
-.section-body {
-  font-size: 14px;
-  font-weight: 300;
-  color: #555;
-  line-height: 2.2;
-  margin-bottom: 20px;
-}
-.divider {
-  width: 32px;
-  height: 1px;
-  background: #c8b89a;
-  margin: 0 0 20px;
-}
+/* ============ HERO ============ */
+#hero-area{position:relative;height:100vh;min-height:620px;overflow:hidden;background:#1b150f}
 
-/* 全幅画像 */
-.full-img {
-  width: 100%;
-  aspect-ratio: 16/9;
-  object-fit: cover;
-  display: block;
-}
-/* CSS砂アートビジュアル */
-.sand-visual {
-  width: 100%;
-  position: relative;
-  overflow: hidden;
-}
-.sand-visual.aspect-wide { aspect-ratio: 16/9; }
-.sand-visual.aspect-sq   { aspect-ratio: 1; }
-.sand-visual.aspect-tall { aspect-ratio: 3/4; }
+.hero-sand-canvas{position:absolute;inset:0;}
+.hero-sand-canvas svg{width:100%;height:100%}
 
-/* ─────── FEEL THE BEAUTY ─────── */
-.feel-visual {
-  background: linear-gradient(170deg,
-    #4a8fd4 0%, #4ab8c4 15%,
-    #4ad4a0 28%, #8ac840 38%,
-    #e8c830 50%, #f09030 60%,
-    #e85080 72%, #9850d0 84%,
-    #4870e0 95%, #4ab0e8 100%
-  );
-}
-.feel-visual::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(ellipse at 50% 50%, rgba(255,255,255,.18) 0%, transparent 70%);
-}
+.hero-vignette{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 40%,transparent 30%,rgba(10,8,5,.55) 100%)}
 
-/* ─────── ABOUT ─────── */
-.about-visual {
-  background: linear-gradient(160deg,
-    #f8f0e8 0%,
-    #f0e8d8 40%,
-    #e8ddd0 70%,
-    #e0d5c8 100%
-  );
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.hero-content{
+  position:relative;z-index:5;height:100%;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;text-align:center;padding:0 6vw;color:#fff;
 }
-.about-icon {
-  font-size: 72px;
-  filter: drop-shadow(0 4px 16px rgba(0,0,0,.15));
+.hero-eyebrow{
+  font-family:'Cormorant Garamond',serif;font-style:italic;font-size:14px;letter-spacing:4px;
+  color:var(--gold2);margin-bottom:22px;opacity:0;animation:fadeUp 1.2s .3s ease forwards;
 }
+.hero-title{
+  font-family:'Noto Serif JP',serif;font-weight:200;font-size:clamp(38px,7vw,84px);
+  letter-spacing:.18em;line-height:1.45;margin-bottom:8px;
+  opacity:0;animation:fadeUp 1.2s .5s ease forwards;
+}
+.hero-title em{font-style:normal;color:var(--gold2)}
+.hero-romanized{
+  font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:300;
+  font-size:clamp(13px,1.6vw,16px);letter-spacing:6px;color:rgba(255,255,255,.55);
+  text-transform:uppercase;margin-bottom:36px;
+  opacity:0;animation:fadeUp 1.2s .7s ease forwards;
+}
+.hero-cta-row{display:flex;gap:18px;opacity:0;animation:fadeUp 1.2s .9s ease forwards}
+.btn{
+  font-family:'Cormorant Garamond',serif;font-size:14px;letter-spacing:3px;padding:15px 38px;
+  border:1px solid rgba(255,255,255,.5);color:#fff;transition:.4s;position:relative;overflow:hidden;
+}
+.btn::before{content:'';position:absolute;inset:0;background:#fff;transform:translateX(-101%);transition:transform .4s ease}
+.btn span{position:relative;z-index:1;transition:color .4s}
+.btn:hover::before{transform:translateX(0)}
+.btn:hover span{color:var(--ink)}
+.btn.solid{background:var(--gold-deep);border-color:var(--gold-deep)}
+.btn.solid::before{background:var(--gold2)}
+.btn.dark{border-color:var(--ink);color:var(--ink)}
+.btn.dark::before{background:var(--ink)}
+.btn.dark:hover span{color:#fff}
 
-/* ─────── SAND ART SECTION ─────── */
-.sand-art-visual {
-  background: linear-gradient(180deg,
-    #f9c5cf 0%,  #f9c5cf 14%,
-    #e8d0f0 15%, #e8d0f0 28%,
-    #c5d8f0 29%, #c5d8f0 42%,
-    #c5e8d8 43%, #c5e8d8 56%,
-    #f0e8b0 57%, #f0e8b0 70%,
-    #f8d888 71%, #f8d888 84%,
-    #f0b0c0 85%, #f0b0c0 100%
-  );
-}
-.sand-art-visual::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background:
-    linear-gradient(90deg, rgba(255,255,255,.08) 0%, transparent 50%, rgba(255,255,255,.08) 100%),
-    repeating-linear-gradient(0deg, transparent 0px, transparent 13.9%, rgba(255,255,255,.12) 14%, rgba(255,255,255,.12) 14.2%);
-}
+@keyframes fadeUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
 
-/* カラーバリエーション */
-.color-section { padding: 40px 20px; background: #f8f6f2; }
-.color-title { font-size: 14px; font-weight: 500; letter-spacing: 2px; margin-bottom: 16px; color: #444; }
-.color-swatches { display: flex; gap: 12px; flex-wrap: wrap; }
-.swatch {
-  width: 40px; height: 40px;
-  border-radius: 50%;
-  box-shadow: 0 2px 8px rgba(0,0,0,.15);
-  flex-shrink: 0;
+.scroll-cue{
+  position:absolute;bottom:34px;left:50%;transform:translateX(-50%);z-index:5;
+  display:flex;flex-direction:column;align-items:center;gap:10px;color:rgba(255,255,255,.6);
 }
-.sw-rose    { background: #f9c5cf; }
-.sw-yellow  { background: #f5e060; }
-.sw-red     { background: #e85060; }
-.sw-pink    { background: #f080b0; }
-.sw-blue    { background: #5090e0; }
-.sw-lavender{ background: #c0a8e8; }
-.sw-mint    { background: #80d8b8; }
-.sw-sand    { background: #e0c898; }
-.sw-white   { background: #f5f0e8; border: 1px solid #ddd; }
+.scroll-cue span{font-size:9px;letter-spacing:3px}
+.scroll-line{width:1px;height:42px;background:linear-gradient(to bottom,rgba(255,255,255,.7),transparent);position:relative;overflow:hidden}
+.scroll-line::after{content:'';position:absolute;top:-100%;left:0;width:100%;height:50%;background:#fff;animation:scrollDown 2.2s infinite}
+@keyframes scrollDown{0%{top:-50%}100%{top:100%}}
 
-/* ─────── CUSTOM ORDER ─────── */
-.custom-visual {
-  background: linear-gradient(135deg,
-    #fde8f0 0%, #f8d0e8 25%,
-    #e8d0f8 50%, #d0e0f8 75%,
-    #c8f0e8 100%
-  );
+/* marquee strip */
+.marquee-strip{
+  background:var(--ink);overflow:hidden;white-space:nowrap;padding:14px 0;border-top:1px solid rgba(255,255,255,.08);border-bottom:1px solid rgba(255,255,255,.08);
 }
-.custom-visual::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image:
-    radial-gradient(circle at 20% 30%, rgba(255,255,255,.4) 0%, transparent 20%),
-    radial-gradient(circle at 80% 70%, rgba(255,255,255,.35) 0%, transparent 20%),
-    radial-gradient(circle at 50% 50%, rgba(255,255,255,.2) 0%, transparent 40%);
+.marquee-track{display:inline-block;animation:marquee 32s linear infinite}
+.marquee-track span{
+  font-family:'Cormorant Garamond',serif;font-style:italic;font-size:15px;color:var(--gold2);
+  letter-spacing:2px;padding:0 28px;display:inline-block;
 }
+.marquee-track span::after{content:'◆';color:rgba(255,255,255,.25);margin-left:28px;font-size:8px;vertical-align:middle}
+@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 
-/* ─────── GIFT ─────── */
-.gift-visual {
-  background: linear-gradient(160deg,
-    #f0e8d0 0%, #e8d8c0 30%,
-    #d8c8b0 60%, #c8b8a0 100%
-  );
-  display: flex;
-  align-items: center;
-  justify-content: center;
+/* ============ SECTION SCAFFOLD ============ */
+.section{padding:140px 6vw;position:relative}
+.section.tight{padding:90px 6vw}
+.container{max-width:1180px;margin:0 auto}
+.eyebrow{
+  font-family:'Cormorant Garamond',serif;font-style:italic;font-size:14px;letter-spacing:3px;
+  color:var(--gold-deep);margin-bottom:14px;display:flex;align-items:center;gap:12px;
 }
-.gift-bottles {
-  display: flex;
-  align-items: flex-end;
-  gap: 12px;
+.eyebrow::before{content:'';width:26px;height:1px;background:var(--gold)}
+.h2{
+  font-family:'Noto Serif JP',serif;font-weight:200;font-size:clamp(28px,3.6vw,46px);
+  letter-spacing:.06em;line-height:1.5;color:var(--ink);margin-bottom:26px;
 }
-.mini-bottle {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-.mini-bottle-body {
-  width: 36px;
-  border-radius: 4px 4px 8px 8px;
-  border: 1.5px solid rgba(255,255,255,.6);
-}
-.mb1 { height: 80px; background: linear-gradient(180deg, #f9c5cf 0%, #e8d0f0 50%, #c5d8f0 100%); }
-.mb2 { height: 100px; background: linear-gradient(180deg, #c5d8f0 0%, #c5e8d8 33%, #f0e8b0 66%, #f8d888 100%); }
-.mb3 { height: 72px; background: linear-gradient(180deg, #e8d0f0 0%, #f9c5cf 50%, #f0b8c0 100%); }
-.mini-bottle-neck {
-  width: 14px; height: 14px;
-  background: rgba(255,255,255,.25);
-  border: 1.5px solid rgba(255,255,255,.5);
-  border-bottom: none;
-  border-radius: 2px 2px 0 0;
-}
-.mini-bottle-cap {
-  width: 18px; height: 8px;
-  background: rgba(150,100,60,.5);
-  border-radius: 2px;
-  margin-bottom: 2px;
-}
+.lead{font-size:15px;line-height:2.3;color:var(--ink2);max-width:520px}
 
-/* ─────── STAFF / CONSULTATION ─────── */
-.staff-visual {
-  background: linear-gradient(160deg,
-    #e8f0e0 0%,
-    #d8e8d0 40%,
-    #c8e0c0 100%
-  );
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.staff-icon { font-size: 64px; }
+.reveal{opacity:0;transform:translateY(36px);transition:opacity 1s cubic-bezier(.16,1,.3,1),transform 1s cubic-bezier(.16,1,.3,1)}
+.reveal.in{opacity:1;transform:translateY(0)}
+.reveal-scale{opacity:0;transform:scale(.94);transition:opacity 1.1s ease,transform 1.1s cubic-bezier(.16,1,.3,1)}
+.reveal-scale.in{opacity:1;transform:scale(1)}
+.delay-1{transition-delay:.12s}.delay-2{transition-delay:.24s}.delay-3{transition-delay:.36s}
 
-/* ─────── PRICE TABLE ─────── */
-.price-section { background: #f8f6f2; padding: 56px 20px; }
-.price-table { width: 100%; max-width: 520px; margin: 0 auto; border-collapse: collapse; }
-.price-table th, .price-table td {
-  padding: 14px 8px;
-  border-bottom: 1px solid #e8e4de;
-  font-size: 14px;
-  text-align: left;
+/* ============ INTRO / PHILOSOPHY ============ */
+#intro .grid2{display:grid;grid-template-columns:1.05fr .95fr;gap:90px;align-items:center}
+.intro-visual{position:relative;aspect-ratio:4/5;border-radius:2px;overflow:hidden;box-shadow:0 40px 80px -30px rgba(31,26,20,.35)}
+.intro-visual svg{width:100%;height:100%}
+.intro-num{
+  position:absolute;top:-30px;left:-20px;font-family:'Cormorant Garamond',serif;font-size:140px;
+  color:var(--paper3);font-weight:300;z-index:-1;line-height:1;user-select:none;
 }
-.price-table th {
-  font-weight: 500;
-  background: #f0ece6;
-  color: #444;
-  font-size: 12px;
-  letter-spacing: 1px;
-}
-.price-table td.price {
-  text-align: right;
-  color: #8a6a3a;
-  font-weight: 500;
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 16px;
-}
-.price-note {
-  font-size: 12px;
-  color: #888;
-  margin-top: 16px;
-  line-height: 2;
-  max-width: 520px;
-  margin-left: auto;
-  margin-right: auto;
-}
+.signature{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:22px;color:var(--gold-deep);margin-top:28px}
 
-/* ─────── INSTAGRAM ─────── */
-.insta-section {
-  padding: 56px 20px;
-  text-align: center;
-  background: #fff;
-}
-.insta-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 3px;
-  margin: 32px 0;
-  max-width: 560px;
-  margin-left: auto;
-  margin-right: auto;
-}
-.insta-item {
-  aspect-ratio: 1;
-  position: relative;
-  overflow: hidden;
-}
-.insta-thumb {
-  width: 100%; height: 100%;
-}
-.it1 { background: linear-gradient(135deg, #f9c5cf, #e8d0f0); }
-.it2 { background: linear-gradient(135deg, #c5d8f0, #c5e8d8); }
-.it3 { background: linear-gradient(135deg, #f0e8b0, #f8d888); }
-.it4 { background: linear-gradient(135deg, #e8d0f0, #f9c5cf); }
-.it5 { background: linear-gradient(135deg, #c5e8d8, #c5d8f0); }
-.it6 { background: linear-gradient(135deg, #f8d888, #f0b0c0); }
-.insta-item::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.35) 0%, transparent 60%);
-}
-.insta-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 13px 32px;
-  border: 1.5px solid #333;
-  font-size: 13px;
-  letter-spacing: 2px;
-  transition: all .25s;
-}
-.insta-btn:hover { background: #333; color: #fff; }
+/* ============ PROCESS STRIP ============ */
+#process{background:var(--ink);color:var(--paper2)}
+#process .eyebrow{color:var(--gold2)}
+#process .h2{color:#fff}
+.process-row{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;margin-top:60px;background:rgba(255,255,255,.08)}
+.process-step{background:var(--ink);padding:44px 30px;position:relative;transition:.4s}
+.process-step:hover{background:#26201a}
+.process-no{font-family:'Cormorant Garamond',serif;font-size:38px;color:var(--gold2);margin-bottom:18px;font-style:italic}
+.process-step h3{font-family:'Noto Serif JP',serif;font-weight:300;font-size:17px;letter-spacing:.05em;margin-bottom:12px;color:#fff}
+.process-step p{font-size:12.5px;color:rgba(255,255,255,.5);line-height:2}
 
-/* ─────── CONTACT FORM ─────── */
-.contact-section { padding: 64px 20px; background: #f8f6f2; }
-.contact-form { max-width: 520px; margin: 32px auto 0; }
-.form-row { margin-bottom: 24px; }
-.form-label {
-  display: block;
-  font-size: 12px;
-  font-weight: 500;
-  letter-spacing: 2px;
-  color: #666;
-  margin-bottom: 8px;
+/* ============ COLLECTION GALLERY ============ */
+#collection{background:var(--paper2)}
+.col-head{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:24px;margin-bottom:56px}
+.gallery-masonry{display:grid;grid-template-columns:repeat(4,1fr);grid-auto-rows:130px;gap:14px}
+.g-tile{position:relative;overflow:hidden;border-radius:2px;cursor:pointer}
+.g-tile svg{width:100%;height:100%;transition:transform .8s cubic-bezier(.16,1,.3,1)}
+.g-tile:hover svg{transform:scale(1.08)}
+.g-tile .tag{
+  position:absolute;left:18px;bottom:18px;color:#fff;font-family:'Cormorant Garamond',serif;
+  font-style:italic;font-size:14px;letter-spacing:1px;opacity:0;transform:translateY(8px);transition:.4s;
+  text-shadow:0 2px 10px rgba(0,0,0,.5);
 }
-.form-label .req {
-  color: #e06070;
-  font-size: 10px;
-  margin-left: 6px;
-}
-.form-control {
-  width: 100%;
-  padding: 12px 0;
-  border: none;
-  border-bottom: 1.5px solid #ddd;
-  background: transparent;
-  font-family: 'Noto Sans JP', sans-serif;
-  font-size: 14px;
-  font-weight: 300;
-  color: #333;
-  outline: none;
-  transition: border-color .2s;
-  border-radius: 0;
-  -webkit-appearance: none;
-}
-.form-control:focus { border-bottom-color: #7aab6a; }
-.form-control::placeholder { color: #bbb; }
-textarea.form-control { resize: vertical; min-height: 100px; line-height: 1.8; }
-select.form-control { cursor: pointer; }
-.form-submit {
-  display: block;
-  width: 100%;
-  padding: 16px;
-  background: #444;
-  color: #fff;
-  border: none;
-  font-family: 'Noto Sans JP', sans-serif;
-  font-size: 14px;
-  letter-spacing: 3px;
-  cursor: pointer;
-  transition: background .25s;
-  margin-top: 36px;
-}
-.form-submit:hover { background: #7aab6a; }
+.g-tile::after{content:'';position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.45),transparent 55%);opacity:0;transition:.4s}
+.g-tile:hover::after,.g-tile:hover .tag{opacity:1;transform:translateY(0)}
+.g-tile.s1{grid-column:span 2;grid-row:span 2}
+.g-tile.s2{grid-column:span 1;grid-row:span 1}
+.g-tile.s3{grid-column:span 1;grid-row:span 2}
+.g-tile.s4{grid-column:span 2;grid-row:span 1}
 
-/* ─────── ACCESS ─────── */
-.access-section { padding: 64px 20px; }
-.access-inner { max-width: 520px; margin: 32px auto 0; }
-.access-map {
-  width: 100%;
-  aspect-ratio: 16/10;
-  background: linear-gradient(145deg, #d8e8c8 0%, #c8d8b8 50%, #b8c8a8 100%);
-  border-radius: 4px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 32px;
-  position: relative;
-  overflow: hidden;
-}
-.map-icon-wrap { text-align: center; }
-.map-icon-wrap .icon { font-size: 40px; margin-bottom: 8px; }
-.map-icon-wrap p { font-size: 13px; color: #666; letter-spacing: 1px; }
-.map-link {
-  display: inline-block;
-  margin-top: 10px;
-  padding: 8px 20px;
-  border: 1px solid #666;
-  font-size: 11px;
-  letter-spacing: 2px;
-  color: #555;
-  transition: all .2s;
-}
-.map-link:hover { background: #444; color: #fff; border-color: #444; }
-.access-dl dt {
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 2px;
-  color: #7aab6a;
-  margin-top: 20px;
-  margin-bottom: 4px;
-}
-.access-dl dt:first-child { margin-top: 0; }
-.access-dl dd {
-  font-size: 14px;
-  font-weight: 300;
-  color: #555;
-  line-height: 2;
-}
+.swatch-row{display:flex;gap:14px;flex-wrap:wrap;margin-top:50px;align-items:center}
+.swatch-row .label{font-size:11px;letter-spacing:2px;color:var(--ink3);margin-right:6px}
+.sw{width:34px;height:34px;border-radius:50%;box-shadow:inset 0 2px 4px rgba(0,0,0,.15),0 2px 6px rgba(0,0,0,.1);transition:.3s;cursor:default}
+.sw:hover{transform:translateY(-4px)}
 
-/* ─────── FOOTER ─────── */
-footer {
-  background: #2a2a2a;
-  color: rgba(255,255,255,.6);
-  padding: 48px 20px 32px;
-  text-align: center;
-}
-.footer-logo-wrap {
-  margin-bottom: 24px;
-}
-.footer-logo-en {
-  font-family: 'Cormorant Garamond', serif;
-  font-style: italic;
-  font-size: 20px;
-  color: #9acd8a;
-  letter-spacing: 2px;
-  display: block;
-}
-.footer-logo-ja {
-  font-family: 'Noto Serif JP', serif;
-  font-size: 16px;
-  color: rgba(255,255,255,.85);
-  letter-spacing: 3px;
-}
-.footer-links {
-  list-style: none;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 8px 20px;
-  margin-bottom: 32px;
-}
-.footer-links a {
-  font-size: 12px;
-  color: rgba(255,255,255,.5);
-  letter-spacing: 1px;
-  transition: color .2s;
-}
-.footer-links a:hover { color: #9acd8a; }
-.footer-address {
-  font-size: 12px;
-  line-height: 2;
-  color: rgba(255,255,255,.4);
-  margin-bottom: 24px;
-}
-.footer-copy {
-  font-size: 10px;
-  letter-spacing: 1px;
-  color: rgba(255,255,255,.2);
-}
+/* ============ FEATURED PRODUCT BAND ============ */
+#feature{background:var(--paper)}
+.feature-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--paper3)}
+.feature-visual{aspect-ratio:1;position:relative;overflow:hidden}
+.feature-visual svg{width:100%;height:100%}
+.feature-copy{padding:70px 64px;display:flex;flex-direction:column;justify-content:center}
+.feature-copy .price{font-family:'Cormorant Garamond',serif;font-size:30px;color:var(--gold-deep);margin:20px 0 28px}
+.feature-copy .price sup{font-size:13px;color:var(--ink3);font-style:normal;margin-left:6px}
+.feature-list{list-style:none;margin-bottom:32px}
+.feature-list li{font-size:13px;color:var(--ink2);padding:9px 0;border-bottom:1px solid var(--paper3);display:flex;justify-content:space-between}
+.feature-list li span:last-child{color:var(--ink3)}
 
-/* ─────── TOAST ─────── */
-.toast {
-  position: fixed;
-  bottom: 24px;
-  left: 50%;
-  transform: translateX(-50%) translateY(8px);
-  background: #333;
-  color: #fff;
-  padding: 12px 24px;
-  font-size: 13px;
-  letter-spacing: .5px;
-  opacity: 0;
-  pointer-events: none;
-  transition: all .3s;
-  z-index: 500;
-  white-space: nowrap;
-  border-radius: 2px;
+/* ============ PRODUCT GRID ============ */
+#products{background:var(--paper2)}
+.product-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:46px;margin-top:60px}
+.product-card{background:var(--paper);transition:.5s}
+.product-thumb{aspect-ratio:3/4;position:relative;overflow:hidden}
+.product-thumb svg{width:100%;height:100%;transition:transform .7s cubic-bezier(.16,1,.3,1)}
+.product-card:hover .product-thumb svg{transform:scale(1.07)}
+.product-info{padding:26px 8px 6px}
+.product-name{font-family:'Noto Serif JP',serif;font-weight:300;font-size:16px;letter-spacing:.04em;margin-bottom:8px;color:var(--ink)}
+.product-desc{font-size:12.5px;color:var(--ink3);line-height:1.9;margin-bottom:16px;min-height:38px}
+.product-bottom{display:flex;justify-content:space-between;align-items:center}
+.product-price{font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--gold-deep)}
+.order-link{font-size:11px;letter-spacing:1.5px;color:var(--ink2);border-bottom:1px solid var(--ink2);padding-bottom:2px;cursor:pointer;transition:.3s;background:none;border-top:none;border-left:none;border-right:none}
+.order-link:hover{color:var(--gold-deep);border-color:var(--gold-deep)}
+
+/* ============ ATELIER / STORY split ============ */
+#atelier .grid2{display:grid;grid-template-columns:.9fr 1.1fr;gap:90px;align-items:center}
+.atelier-visual{position:relative;aspect-ratio:4/5;overflow:hidden}
+.atelier-visual svg{width:100%;height:100%}
+.quote-mark{font-family:'Cormorant Garamond',serif;font-size:90px;color:var(--paper3);line-height:0;margin-bottom:-10px;font-style:italic}
+.quote-text{font-family:'Noto Serif JP',serif;font-weight:300;font-size:clamp(18px,2.3vw,25px);line-height:1.9;color:var(--ink);margin-bottom:30px;letter-spacing:.03em}
+
+/* ============ PRICE TABLE ============ */
+#price-table{background:var(--ink);color:var(--paper2)}
+#price-table .eyebrow{color:var(--gold2)}
+#price-table .h2{color:#fff}
+.ptable{width:100%;margin-top:50px;border-collapse:collapse}
+.ptable th{text-align:left;font-size:10.5px;letter-spacing:2px;color:var(--gold2);padding:0 0 18px;border-bottom:1px solid rgba(255,255,255,.18);font-weight:500}
+.ptable td{padding:20px 0;border-bottom:1px solid rgba(255,255,255,.08);font-size:14px;color:rgba(255,255,255,.85)}
+.ptable td.r{text-align:right;font-family:'Cormorant Garamond',serif;font-size:17px;color:var(--gold2)}
+.ptable tr:hover td{color:#fff}
+.ptable .sub{display:block;font-size:11.5px;color:rgba(255,255,255,.4);margin-top:3px}
+.price-foot{font-size:11.5px;color:rgba(255,255,255,.4);line-height:2.2;margin-top:30px;max-width:560px}
+
+/* ============ INSTAGRAM ============ */
+#insta{text-align:center;background:var(--paper)}
+.insta-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:3px;margin:50px 0 40px}
+.insta-tile{aspect-ratio:1;position:relative;overflow:hidden}
+.insta-tile svg{width:100%;height:100%;transition:transform .6s}
+.insta-tile:hover svg{transform:scale(1.1)}
+.insta-tile::after{content:'';position:absolute;inset:0;background:rgba(0,0,0,0);transition:.3s}
+.insta-tile:hover::after{background:rgba(0,0,0,.12)}
+
+/* ============ ACCESS ============ */
+#access{background:var(--paper2)}
+.access-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;margin-top:50px;align-items:start}
+.access-map{aspect-ratio:1.1;position:relative;overflow:hidden}
+.access-map svg{width:100%;height:100%}
+.access-map-pin{position:absolute;top:50%;left:50%;transform:translate(-50%,-100%);text-align:center}
+.dl-row{display:flex;gap:24px;padding:18px 0;border-bottom:1px solid var(--paper3)}
+.dl-row dt{flex:0 0 110px;font-size:11px;letter-spacing:2px;color:var(--gold-deep)}
+.dl-row dd{font-size:13.5px;color:var(--ink2);line-height:1.9}
+
+/* ============ CONTACT ============ */
+#contact{background:var(--paper)}
+.contact-wrap{max-width:640px;margin:50px auto 0}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:30px}
+.field{margin-bottom:30px}
+.field.full{grid-column:1/-1}
+.field label{display:block;font-size:10.5px;letter-spacing:2.5px;color:var(--ink3);margin-bottom:10px}
+.field label .req{color:var(--rose);margin-left:5px}
+.field input,.field select,.field textarea{
+  width:100%;border:none;border-bottom:1px solid var(--paper3);background:transparent;
+  font-family:'Noto Sans JP',sans-serif;font-size:14px;color:var(--ink);padding:10px 2px;
+  outline:none;transition:.3s;font-weight:300;
 }
-.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-
-/* ─────── ANIMATE ─────── */
-.fade-up {
-  opacity: 0;
-  transform: translateY(20px);
-  transition: opacity .7s ease, transform .7s ease;
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--gold-deep)}
+.field textarea{resize:vertical;min-height:110px;line-height:1.9}
+.field input::placeholder,.field textarea::placeholder{color:var(--ink3);opacity:.6}
+.submit-btn{
+  width:100%;padding:18px;background:var(--ink);color:#fff;border:none;
+  font-family:'Cormorant Garamond',serif;font-size:15px;letter-spacing:4px;cursor:pointer;
+  transition:.4s;margin-top:14px;
 }
-.fade-up.in { opacity: 1; transform: translateY(0); }
+.submit-btn:hover{background:var(--gold-deep)}
 
-/* ─────── PC ─────── */
-@media (min-width: 640px) {
-  .section-inner { padding: 0 40px; }
-  header { padding: 0 40px; }
-  .header-logo { gap: 10px; }
-  .logo-en { font-size: 18px; }
-  .logo-ja { font-size: 19px; }
-  .hero-ja-text { font-size: 36px; }
-  .section-title { font-size: 26px; }
+/* ============ FOOTER ============ */
+footer{background:#15110c;color:rgba(255,255,255,.5);padding:80px 6vw 36px;text-align:center}
+.footer-brand{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:26px;color:#fff;letter-spacing:2px;margin-bottom:8px}
+.footer-tag{font-size:11px;letter-spacing:3px;color:rgba(255,255,255,.35);margin-bottom:46px}
+.footer-cols{display:flex;justify-content:center;gap:64px;margin-bottom:46px;flex-wrap:wrap}
+.footer-col h4{font-size:11px;letter-spacing:2px;color:var(--gold2);margin-bottom:16px}
+.footer-col a{display:block;font-size:12.5px;color:rgba(255,255,255,.5);margin-bottom:10px;transition:.2s}
+.footer-col a:hover{color:#fff}
+.footer-rule{width:60px;height:1px;background:rgba(255,255,255,.15);margin:0 auto 28px}
+.footer-copy{font-size:10px;letter-spacing:1px;color:rgba(255,255,255,.25)}
 
-  .two-col {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    align-items: center;
-  }
-  .two-col.reverse { direction: rtl; }
-  .two-col.reverse > * { direction: ltr; }
-  .two-col .sand-visual { aspect-ratio: 1; }
+/* ============ MODAL & TOAST ============ */
+.modal-overlay{position:fixed;inset:0;background:rgba(20,16,11,.78);z-index:500;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:.4s}
+.modal-overlay.open{opacity:1;pointer-events:all}
+.modal-box{background:var(--paper);max-width:460px;width:100%;padding:54px 44px;text-align:center;transform:translateY(16px);transition:.4s}
+.modal-overlay.open .modal-box{transform:translateY(0)}
+.modal-box .eyebrow{justify-content:center}
+.modal-box h3{font-family:'Noto Serif JP',serif;font-weight:300;font-size:21px;margin:8px 0 18px;letter-spacing:.04em}
+.modal-box p{font-size:13.5px;color:var(--ink2);line-height:2.1;margin-bottom:32px;white-space:pre-line}
+.toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(12px);background:var(--ink);color:#fff;padding:14px 30px;font-size:13px;letter-spacing:.5px;opacity:0;pointer-events:none;transition:.35s;z-index:600;max-width:90vw;text-align:center}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
-  .insta-grid { grid-template-columns: repeat(6, 1fr); }
+/* ============ RESPONSIVE ============ */
+@media (max-width:980px){
+  .nav-links{display:none}
+  .menu-btn{display:flex}
+  #intro .grid2,#atelier .grid2{grid-template-columns:1fr;gap:50px}
+  .process-row{grid-template-columns:repeat(2,1fr)}
+  .gallery-masonry{grid-template-columns:repeat(2,1fr);grid-auto-rows:160px}
+  .feature-grid{grid-template-columns:1fr}
+  .feature-copy{padding:48px 32px}
+  .product-grid{grid-template-columns:repeat(2,1fr);gap:28px}
+  .access-grid{grid-template-columns:1fr;gap:40px}
+  .insta-grid{grid-template-columns:repeat(3,1fr)}
+  .form-grid{grid-template-columns:1fr}
+  .footer-cols{gap:40px}
+  .section{padding:90px 6vw}
+}
+@media (max-width:560px){
+  .product-grid{grid-template-columns:1fr 1fr;gap:16px}
+  .hero-cta-row{flex-direction:column;width:100%;max-width:280px}
 }
 </style>
 </head>
 <body>
 
+<!-- SVG filters (grain / glass) -->
+<svg width="0" height="0" style="position:absolute">
+  <filter id="grainy"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" result="noise"/><feColorMatrix in="noise" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.06 0"/></filter>
+</svg>
+
+<div class="progress-bar" id="progressBar"></div>
 <div class="toast" id="toast"></div>
-<div class="drawer-overlay" id="drawerOverlay"></div>
 
-<!-- ─── HEADER ─── -->
-<header>
-  <a href="#hero" class="header-logo">
-    <span class="logo-en">Color Sand</span>
-    <span class="logo-ja">tasai</span>
+<!-- ============ NAV ============ -->
+<nav id="nav">
+  <a href="#hero-area" class="brand">
+    <span class="brand-mark">tasai</span>
+    <span class="brand-name">Color Sand</span>
   </a>
-  <button class="hamburger" id="hamburger" aria-label="メニュー">
-    <span></span><span></span><span></span>
-  </button>
-</header>
-
-<!-- ─── DRAWER ─── -->
-<div class="drawer" id="drawer">
-  <div class="drawer-logo">Color Sand tasai</div>
-  <nav>
-    <ul>
-      <li><a href="#feel" onclick="closeDrawer()">砂の美しさを感じて</a></li>
-      <li><a href="#sandart" onclick="closeDrawer()">サンドアート</a></li>
-      <li><a href="#custom" onclick="closeDrawer()">カスタムオーダー</a></li>
-      <li><a href="#gift" onclick="closeDrawer()">ギフトセット</a></li>
-      <li><a href="#price" onclick="closeDrawer()">価格一覧</a></li>
-      <li><a href="#insta" onclick="closeDrawer()">Instagram</a></li>
-      <li><a href="#access" onclick="closeDrawer()">アクセス</a></li>
-      <li><a href="#contact" onclick="closeDrawer()">お問い合わせ</a></li>
+  <div class="nav-right">
+    <ul class="nav-links">
+      <li><a href="#intro">フィロソフィー</a></li>
+      <li><a href="#collection">コレクション</a></li>
+      <li><a href="#products">作品一覧</a></li>
+      <li><a href="#atelier">アトリエ</a></li>
+      <li><a href="#price-table">価格</a></li>
+      <li><a href="#contact">お問い合わせ</a></li>
     </ul>
-  </nav>
+    <button class="menu-btn" id="menuBtn" aria-label="メニュー"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<div class="mobile-drawer" id="drawer">
+  <a href="#intro">フィロソフィー</a>
+  <a href="#collection">コレクション</a>
+  <a href="#products">作品一覧</a>
+  <a href="#atelier">アトリエ</a>
+  <a href="#price-table">価格</a>
+  <a href="#access">アクセス</a>
+  <a href="#contact">お問い合わせ</a>
 </div>
 
-<!-- ─── HERO ─── -->
-<section id="hero">
-  <div class="hero-visual">
-    <div class="hero-bg">
-      <div class="hero-texture"></div>
-    </div>
-    <div class="hero-text">
-      <div class="hero-en-text">Feel the beauty of Color Sand.</div>
-      <div class="hero-ja-text">砂の美しさを<br>感じてください。</div>
-      <p class="hero-sub-text">
-        ひと粒ひと粒、丁寧に重ねた天然の砂。<br>
-        繊細な色彩が、あなたの暮らしに彩りを添えます。
-      </p>
+<!-- ============ HERO ============ -->
+<section id="hero-area">
+  <div class="hero-sand-canvas">
+    <svg viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice">
+      <defs>
+        <linearGradient id="heroBg" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#1c160f"/>
+          <stop offset="100%" stop-color="#0e0b07"/>
+        </linearGradient>
+        <radialGradient id="heroGlow" cx="50%" cy="38%" r="55%">
+          <stop offset="0%" stop-color="#3a2c1a" stop-opacity=".9"/>
+          <stop offset="100%" stop-color="#1c160f" stop-opacity="0"/>
+        </radialGradient>
+        <linearGradient id="sandFill1" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#e8b8c4"/><stop offset="100%" stop-color="#d99aa8"/>
+        </linearGradient>
+        <linearGradient id="sandFill2" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#cdbbe8"/><stop offset="100%" stop-color="#a98fd6"/>
+        </linearGradient>
+        <linearGradient id="sandFill3" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#9fc4e3"/><stop offset="100%" stop-color="#7aa8d1"/>
+        </linearGradient>
+        <linearGradient id="sandFill4" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#a9dec4"/><stop offset="100%" stop-color="#7fc1a3"/>
+        </linearGradient>
+        <linearGradient id="sandFill5" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#ecd596"/><stop offset="100%" stop-color="#dcb968"/>
+        </linearGradient>
+        <clipPath id="bottleClip"><path d="M700 760 Q700 800 740 800 L860 800 Q900 800 900 760 L900 360 Q900 320 870 300 L860 200 L740 200 L730 300 Q700 320 700 360 Z"/></clipPath>
+      </defs>
+      <rect width="1600" height="900" fill="url(#heroBg)"/>
+      <rect width="1600" height="900" fill="url(#heroGlow)"/>
+      <!-- floating sand particles -->
+      <g opacity=".55">
+        <circle cx="220" cy="180" r="2" fill="#d4b876"/><circle cx="340" cy="610" r="1.6" fill="#e8b8c4"/>
+        <circle cx="1180" cy="220" r="2.2" fill="#9fc4e3"/><circle cx="1380" cy="520" r="1.8" fill="#dcb968"/>
+        <circle cx="150" cy="430" r="1.4" fill="#a9dec4"/><circle cx="1450" cy="700" r="2" fill="#cdbbe8"/>
+        <circle cx="980" cy="120" r="1.6" fill="#fff" opacity=".4"/><circle cx="480" cy="780" r="1.8" fill="#fff" opacity=".3"/>
+      </g>
+      <!-- bottle glass body -->
+      <g>
+        <path d="M700 760 Q700 800 740 800 L860 800 Q900 800 900 760 L900 360 Q900 320 870 300 L860 200 L740 200 L730 300 Q700 320 700 360 Z"
+          fill="rgba(255,255,255,.05)" stroke="rgba(255,255,255,.35)" stroke-width="2"/>
+        <g clip-path="url(#bottleClip)">
+          <rect x="690" y="660" width="220" height="150" fill="url(#sandFill1)"/>
+          <rect x="690" y="610" width="220" height="55" fill="url(#sandFill2)"/>
+          <rect x="690" y="555" width="220" height="60" fill="url(#sandFill3)"/>
+          <rect x="690" y="500" width="220" height="60" fill="url(#sandFill4)"/>
+          <rect x="690" y="440" width="220" height="65" fill="url(#sandFill5)"/>
+          <rect x="690" y="395" width="220" height="50" fill="url(#sandFill1)"/>
+          <path d="M690 665 Q750 655 800 668 Q850 678 910 660 L910 675 Q850 693 800 683 Q750 670 690 680 Z" fill="rgba(0,0,0,.07)"/>
+          <path d="M690 615 Q750 605 800 618 Q850 628 910 610 L910 622 Q850 638 800 628 Q750 615 690 627 Z" fill="rgba(0,0,0,.07)"/>
+          <path d="M690 558 Q750 548 800 561 Q850 571 910 553 L910 565 Q850 581 800 571 Q750 558 690 570 Z" fill="rgba(0,0,0,.06)"/>
+          <path d="M690 503 Q750 493 800 506 Q850 516 910 498 L910 510 Q850 526 800 516 Q750 503 690 515 Z" fill="rgba(0,0,0,.06)"/>
+          <path d="M690 443 Q750 433 800 446 Q850 456 910 438 L910 450 Q850 466 800 456 Q750 443 690 455 Z" fill="rgba(0,0,0,.06)"/>
+        </g>
+        <path d="M700 760 Q700 800 740 800 L860 800 Q900 800 900 760 L900 360 Q900 320 870 300 L860 200 L740 200 L730 300 Q700 320 700 360 Z"
+          fill="none" stroke="rgba(255,255,255,.45)" stroke-width="2"/>
+        <ellipse cx="745" cy="340" rx="14" ry="200" fill="rgba(255,255,255,.18)"/>
+        <rect x="745" y="170" width="110" height="36" rx="4" fill="#6b5230"/>
+        <rect x="745" y="170" width="110" height="10" rx="4" fill="#7d6038"/>
+      </g>
+    </svg>
+  </div>
+  <div class="hero-vignette"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">Color Sand Art Atelier</div>
+    <h1 class="hero-title">砂が紡ぐ<br><em>色彩</em>の物語</h1>
+    <p class="hero-romanized">tasai — the art of layered color sand</p>
+    <div class="hero-cta-row">
+      <a href="#collection" class="btn solid"><span>コレクションを見る</span></a>
+      <a href="#contact" class="btn"><span>オーダーの相談</span></a>
     </div>
   </div>
+  <div class="scroll-cue"><span>SCROLL</span><div class="scroll-line"></div></div>
 </section>
 
-<!-- ─── FEEL ─── -->
-<section class="section" id="feel">
-  <div class="two-col">
-    <div class="sand-visual aspect-wide fade-up">
-      <div class="feel-visual" style="width:100%;height:100%;position:relative;"></div>
-    </div>
-    <div class="section-inner fade-up" style="padding-top:40px;padding-bottom:40px;">
-      <div class="en-label">Color Sand Art</div>
-      <h2 class="section-title">色とりどりの砂が<br>物語を紡ぐ</h2>
-      <div class="divider"></div>
-      <p class="section-body">
-        日常の中で、自然の砂が持つ豊かな色彩と向き合うと、
-        思わず心が動く瞬間があります。<br>
-        「こんな色の砂があるんだ」「こんなグラデーションも作れる」
-        ——そんな驚きをお届けできれば幸いです。<br><br>
-        当店では天然のカラーサンドを使い、
-        ひとつひとつ手作りで仕上げた作品をご提供しています。
-      </p>
-    </div>
+<!-- marquee -->
+<div class="marquee-strip">
+  <div class="marquee-track">
+    <span>Handcrafted in Japan</span><span>One of a kind</span><span>天然砂を使用</span><span>Custom Order 承ります</span>
+    <span>Handcrafted in Japan</span><span>One of a kind</span><span>天然砂を使用</span><span>Custom Order 承ります</span>
   </div>
-</section>
-
-<!-- ─── STAFF ─── -->
-<section class="section" style="background:#f8f6f2; padding:56px 0;" id="staff">
-  <div class="two-col reverse">
-    <div class="sand-visual aspect-wide fade-up">
-      <div class="staff-visual" style="width:100%;height:100%;position:relative;"></div>
-    </div>
-    <div class="section-inner fade-up" style="padding-top:40px;padding-bottom:40px;">
-      <div class="en-label">About</div>
-      <h2 class="section-title">tasaiについて</h2>
-      <div class="divider"></div>
-      <p class="section-body">
-        カラーサンドアートが好きな方はもちろん、
-        最近ではインテリアのアクセントや大切な方へのギフトとして
-        お求めになる方も増えてきました。<br><br>
-        色合い・サイズ・ご用途に合わせてご相談承りますので、
-        お気軽にお声がけください。<br>
-        世界にひとつだけの作品をお作りします。
-      </p>
-    </div>
-  </div>
-</section>
-
-<!-- ─── SAND ART ─── -->
-<section class="section" id="sandart" style="padding-bottom:0;">
-  <div class="section-inner fade-up" style="margin-bottom:24px;">
-    <div class="en-label">Sand art</div>
-    <h2 class="section-title">サンドアート</h2>
-    <div class="divider"></div>
-    <p class="section-body">
-      ユニークなインテリアとして飾りたい方へ。お部屋に彩りと
-      遊び心をプラスするアイテムで、個性的な空間づくりにぴったりです。
-    </p>
-  </div>
-  <div class="sand-visual aspect-wide fade-up" style="max-height:360px;">
-    <div class="sand-art-visual" style="width:100%;height:100%;position:relative;"></div>
-  </div>
-</section>
-
-<!-- カラーバリエーション -->
-<div class="color-section fade-up">
-  <p class="color-title">カラーバリエーション</p>
-  <div class="color-swatches">
-    <div class="swatch sw-rose"     title="ローズピンク"></div>
-    <div class="swatch sw-yellow"   title="レモンイエロー"></div>
-    <div class="swatch sw-red"      title="レッド"></div>
-    <div class="swatch sw-pink"     title="ピンク"></div>
-    <div class="swatch sw-blue"     title="ブルー"></div>
-    <div class="swatch sw-lavender" title="ラベンダー"></div>
-    <div class="swatch sw-mint"     title="ミント"></div>
-    <div class="swatch sw-sand"     title="サンド"></div>
-    <div class="swatch sw-white"    title="ホワイト"></div>
-  </div>
-  <p style="font-size:12px;color:#888;margin-top:12px;line-height:2;">
-    上記以外のカラーもご相談ください。組み合わせは無限大です。
-  </p>
 </div>
 
-<!-- ─── CUSTOM ORDER ─── -->
-<section class="section" style="background:#fff;" id="custom">
-  <div class="two-col">
-    <div class="sand-visual aspect-wide fade-up">
-      <div class="custom-visual" style="width:100%;height:100%;position:relative;"></div>
+<!-- ============ INTRO / PHILOSOPHY ============ -->
+<section id="intro" class="section">
+  <div class="container grid2">
+    <div class="intro-visual reveal-scale">
+      <svg viewBox="0 0 600 750" preserveAspectRatio="xMidYMid slice">
+        <defs>
+          <linearGradient id="ig1" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f3e0c8"/><stop offset="100%" stop-color="#e9c79a"/></linearGradient>
+        </defs>
+        <rect width="600" height="750" fill="url(#ig1)"/>
+        <g opacity=".9">
+          <rect x="0" y="60" width="600" height="58" fill="#e8b8c4"/>
+          <rect x="0" y="118" width="600" height="46" fill="#d6a4c2"/>
+          <rect x="0" y="164" width="600" height="62" fill="#cdbbe8"/>
+          <rect x="0" y="226" width="600" height="40" fill="#b6a6dc"/>
+          <rect x="0" y="266" width="600" height="58" fill="#9fc4e3"/>
+          <rect x="0" y="324" width="600" height="44" fill="#86b3d8"/>
+          <rect x="0" y="368" width="600" height="60" fill="#a9dec4"/>
+          <rect x="0" y="428" width="600" height="42" fill="#8fcbab"/>
+          <rect x="0" y="470" width="600" height="56" fill="#ecd596"/>
+          <rect x="0" y="526" width="600" height="46" fill="#e0bd6e"/>
+          <rect x="0" y="572" width="600" height="60" fill="#e8b8c4"/>
+          <rect x="0" y="632" width="600" height="50" fill="#d6a4c2"/>
+        </g>
+        <g opacity=".07">
+          <circle cx="80" cy="100" r="200" fill="#fff"/>
+          <circle cx="520" cy="600" r="240" fill="#000"/>
+        </g>
+        <rect width="600" height="750" fill="transparent" filter="url(#grainy)"/>
+      </svg>
     </div>
-    <div class="section-inner fade-up" style="padding-top:40px;padding-bottom:40px;">
-      <div class="en-label">Custom Order</div>
-      <h2 class="section-title">カスタム<br>オーダー</h2>
-      <div class="divider"></div>
-      <p class="section-body">
-        色・サイズ・デザインをご希望に合わせてお作りします。
-        ウェディングのウェルカムボードや、記念日のギフト、
-        お名前・メッセージ入りなど、特別な一点をご提案します。<br><br>
-        ご予算やご希望をお気軽にご相談ください。
+    <div class="reveal delay-1">
+      <p class="intro-num">01</p>
+      <div class="eyebrow">Philosophy</div>
+      <h2 class="h2">ひと粒の砂に、<br>幾千の色を見る</h2>
+      <p class="lead">
+        「tasai（多彩）」という名前には、ひとつの素材が見せる無限の表情への敬意を込めています。
+        砂漠の砂、火山の鉱物、海辺の貝殻——地球が幾千年をかけて育んだ粒子は、
+        光のあたり方ひとつで全く異なる色を見せてくれます。<br><br>
+        私たちは、その繊細な色の重なりをガラスの中に閉じ込め、
+        暮らしの中に静かな美しさを届けることを使命としています。
+        機械では出せない、手作業だからこそ生まれるグラデーションを、
+        ぜひ手に取ってご覧ください。
       </p>
-      <a href="#contact" style="display:inline-block;padding:12px 28px;border:1px solid #444;font-size:12px;letter-spacing:2px;color:#444;transition:all .25s;" onmouseover="this.style.background='#444';this.style.color='#fff'" onmouseout="this.style.background='transparent';this.style.color='#444'">
-        ご相談はこちら
-      </a>
+      <p class="signature">tasai 主宰</p>
     </div>
   </div>
 </section>
 
-<!-- ─── GIFT ─── -->
-<section class="section" style="background:#f8f6f2;" id="gift">
-  <div class="two-col reverse">
-    <div class="sand-visual aspect-wide fade-up">
-      <div class="gift-visual" style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;">
-        <div class="gift-bottles">
-          <div class="mini-bottle">
-            <div class="mini-bottle-cap"></div>
-            <div class="mini-bottle-neck"></div>
-            <div class="mini-bottle-body mb1"></div>
-          </div>
-          <div class="mini-bottle">
-            <div class="mini-bottle-cap"></div>
-            <div class="mini-bottle-neck"></div>
-            <div class="mini-bottle-body mb2"></div>
-          </div>
-          <div class="mini-bottle">
-            <div class="mini-bottle-cap"></div>
-            <div class="mini-bottle-neck"></div>
-            <div class="mini-bottle-body mb3"></div>
-          </div>
+<!-- ============ PROCESS ============ -->
+<section id="process" class="section tight">
+  <div class="container">
+    <div class="reveal">
+      <div class="eyebrow">Craftsmanship</div>
+      <h2 class="h2">制作の工程</h2>
+    </div>
+    <div class="process-row">
+      <div class="process-step reveal delay-1"><div class="process-no">01</div><h3>砂の選定</h3><p>国内外から仕入れた天然砂の中から、色味と粒の質感を吟味して厳選します。</p></div>
+      <div class="process-step reveal delay-2"><div class="process-no">02</div><h3>配色の設計</h3><p>グラデーションの順序と量を緻密に計算し、世界に一つの配色を組み立てます。</p></div>
+      <div class="process-step reveal delay-3"><div class="process-no">03</div><h3>手作業で充填</h3><p>専用の道具を使い、ひと層ひと層、手作業で丁寧に重ねていきます。</p></div>
+      <div class="process-step reveal"><div class="process-no">04</div><h3>仕上げ・検品</h3><p>密封・ラベリングのあと、最終検品を行いお客様のもとへお届けします。</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ COLLECTION GALLERY ============ -->
+<section id="collection" class="section">
+  <div class="container">
+    <div class="col-head reveal">
+      <div>
+        <div class="eyebrow">Collection</div>
+        <h2 class="h2" style="margin-bottom:0">作品コレクション</h2>
+      </div>
+      <p class="lead" style="margin:0">季節や思い出をテーマにした、限定カラーパレットの数々。</p>
+    </div>
+
+    <div class="gallery-masonry">
+      <div class="g-tile s1 reveal-scale">
+        <svg viewBox="0 0 400 400" preserveAspectRatio="xMidYMid slice">
+          <rect width="400" height="400" fill="#1c160f"/>
+          <g>
+            <rect y="40" width="400" height="50" fill="#e8b8c4"/><rect y="90" width="400" height="40" fill="#d6a4c2"/>
+            <rect y="130" width="400" height="55" fill="#cdbbe8"/><rect y="185" width="400" height="35" fill="#9fc4e3"/>
+            <rect y="220" width="400" height="50" fill="#a9dec4"/><rect y="270" width="400" height="40" fill="#ecd596"/>
+            <rect y="310" width="400" height="60" fill="#e0bd6e"/>
+          </g>
+          <rect width="400" height="400" filter="url(#grainy)"/>
+        </svg>
+        <div class="tag">Rose Garden Sunset</div>
+      </div>
+      <div class="g-tile s2 reveal-scale delay-1">
+        <svg viewBox="0 0 200 130" preserveAspectRatio="xMidYMid slice">
+          <rect width="200" height="130" fill="#1c160f"/>
+          <rect y="10" width="200" height="30" fill="#9fc4e3"/><rect y="40" width="200" height="25" fill="#86b3d8"/>
+          <rect y="65" width="200" height="30" fill="#a9dec4"/><rect y="95" width="200" height="25" fill="#8fcbab"/>
+          <rect width="200" height="130" filter="url(#grainy)"/>
+        </svg>
+        <div class="tag">Ocean Mist</div>
+      </div>
+      <div class="g-tile s3 reveal-scale delay-2">
+        <svg viewBox="0 0 200 270" preserveAspectRatio="xMidYMid slice">
+          <rect width="200" height="270" fill="#1c160f"/>
+          <rect y="20" width="200" height="40" fill="#ecd596"/><rect y="60" width="200" height="35" fill="#e0bd6e"/>
+          <rect y="95" width="200" height="40" fill="#e8b8c4"/><rect y="135" width="200" height="35" fill="#d6a4c2"/>
+          <rect y="170" width="200" height="40" fill="#cdbbe8"/><rect y="210" width="200" height="40" fill="#b6a6dc"/>
+          <rect width="200" height="270" filter="url(#grainy)"/>
+        </svg>
+        <div class="tag">Golden Hour</div>
+      </div>
+      <div class="g-tile s4 reveal-scale delay-3">
+        <svg viewBox="0 0 400 200" preserveAspectRatio="xMidYMid slice">
+          <rect width="400" height="200" fill="#1c160f"/>
+          <rect y="15" width="400" height="32" fill="#a9dec4"/><rect y="47" width="400" height="28" fill="#8fcbab"/>
+          <rect y="75" width="400" height="32" fill="#9fc4e3"/><rect y="107" width="400" height="28" fill="#cdbbe8"/>
+          <rect y="135" width="400" height="32" fill="#e8b8c4"/><rect y="167" width="400" height="33" fill="#ecd596"/>
+          <rect width="400" height="200" filter="url(#grainy)"/>
+        </svg>
+        <div class="tag">Forest Whisper</div>
+      </div>
+      <div class="g-tile s2 reveal-scale">
+        <svg viewBox="0 0 200 130" preserveAspectRatio="xMidYMid slice">
+          <rect width="200" height="130" fill="#1c160f"/>
+          <rect y="10" width="200" height="28" fill="#e8b8c4"/><rect y="38" width="200" height="24" fill="#cdbbe8"/>
+          <rect y="62" width="200" height="28" fill="#9fc4e3"/><rect y="90" width="200" height="30" fill="#ecd596"/>
+          <rect width="200" height="130" filter="url(#grainy)"/>
+        </svg>
+        <div class="tag">Aurora</div>
+      </div>
+      <div class="g-tile s2 reveal-scale delay-1">
+        <svg viewBox="0 0 200 130" preserveAspectRatio="xMidYMid slice">
+          <rect width="200" height="130" fill="#1c160f"/>
+          <rect y="10" width="200" height="30" fill="#d6a4c2"/><rect y="40" width="200" height="26" fill="#b6a6dc"/>
+          <rect y="66" width="200" height="28" fill="#86b3d8"/><rect y="94" width="200" height="26" fill="#8fcbab"/>
+          <rect width="200" height="130" filter="url(#grainy)"/>
+        </svg>
+        <div class="tag">Twilight Bloom</div>
+      </div>
+    </div>
+
+    <div class="swatch-row reveal">
+      <span class="label">PALETTE</span>
+      <div class="sw" style="background:#e8b8c4" title="ローズ"></div>
+      <div class="sw" style="background:#cdbbe8" title="ラベンダー"></div>
+      <div class="sw" style="background:#9fc4e3" title="スカイ"></div>
+      <div class="sw" style="background:#a9dec4" title="ミント"></div>
+      <div class="sw" style="background:#ecd596" title="サン"></div>
+      <div class="sw" style="background:#dcb968" title="ゴールド"></div>
+      <div class="sw" style="background:#d6a4c2" title="モーブ"></div>
+      <div class="sw" style="background:#f3ede2;border:1px solid #e0d8c8" title="アイボリー"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FEATURED PRODUCT ============ -->
+<section id="feature" class="section tight">
+  <div class="container">
+    <div class="feature-grid reveal-scale">
+      <div class="feature-visual">
+        <svg viewBox="0 0 500 500" preserveAspectRatio="xMidYMid slice">
+          <rect width="500" height="500" fill="#f3ede2"/>
+          <defs><clipPath id="fb"><path d="M210 460 Q210 480 230 480 L270 480 Q290 480 290 460 L290 220 Q290 200 275 190 L270 130 L230 130 L225 190 Q210 200 210 220 Z"/></clipPath></defs>
+          <path d="M210 460 Q210 480 230 480 L270 480 Q290 480 290 460 L290 220 Q290 200 275 190 L270 130 L230 130 L225 190 Q210 200 210 220 Z" fill="rgba(0,0,0,.03)" stroke="#cdbfa6" stroke-width="2"/>
+          <g clip-path="url(#fb)">
+            <rect x="200" y="400" width="100" height="80" fill="#e8b8c4"/>
+            <rect x="200" y="370" width="100" height="32" fill="#d6a4c2"/>
+            <rect x="200" y="340" width="100" height="32" fill="#cdbbe8"/>
+            <rect x="200" y="305" width="100" height="37" fill="#9fc4e3"/>
+            <rect x="200" y="270" width="100" height="37" fill="#a9dec4"/>
+            <rect x="200" y="235" width="100" height="37" fill="#ecd596"/>
+            <rect x="200" y="195" width="100" height="42" fill="#e0bd6e"/>
+          </g>
+          <path d="M210 460 Q210 480 230 480 L270 480 Q290 480 290 460 L290 220 Q290 200 275 190 L270 130 L230 130 L225 190 Q210 200 210 220 Z" fill="none" stroke="#b08d4f" stroke-width="1.5"/>
+          <rect x="228" y="105" width="44" height="26" rx="3" fill="#8a6a32"/>
+        </svg>
+      </div>
+      <div class="feature-copy">
+        <div class="eyebrow">This Season's Signature</div>
+        <h2 class="h2" style="margin-bottom:0">サンセット・ボトル</h2>
+        <p class="price">¥6,800<sup>税込</sup></p>
+        <ul class="feature-list">
+          <li><span>サイズ</span><span>H18cm / 容量180ml</span></li>
+          <li><span>カラー</span><span>ローズ・ラベンダー・ゴールド系</span></li>
+          <li><span>仕上げ</span><span>手作業による7層グラデーション</span></li>
+          <li><span>お届け</span><span>ご注文から約2週間</span></li>
+        </ul>
+        <a href="#contact" class="btn dark" style="align-self:flex-start"><span>このボトルを注文する</span></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PRODUCT GRID ============ -->
+<section id="products" class="section">
+  <div class="container">
+    <div class="reveal" style="text-align:center;margin-bottom:10px">
+      <div class="eyebrow" style="justify-content:center">Catalogue</div>
+      <h2 class="h2">作品一覧</h2>
+      <p class="lead" style="margin:0 auto">サイズ・ご用途に合わせてお選びいただけます。</p>
+    </div>
+
+    <div class="product-grid">
+      <div class="product-card reveal delay-1">
+        <div class="product-thumb">
+          <svg viewBox="0 0 300 400" preserveAspectRatio="xMidYMid slice">
+            <rect width="300" height="400" fill="#e9ddc9"/>
+            <rect y="80" width="300" height="320" fill="#e8b8c4"/><rect y="80" width="300" height="55" fill="#d6a4c2"/>
+            <rect y="135" width="300" height="50" fill="#cdbbe8"/><rect y="185" width="300" height="55" fill="#9fc4e3"/>
+            <rect y="240" width="300" height="50" fill="#a9dec4"/><rect y="290" width="300" height="55" fill="#ecd596"/>
+            <rect width="300" height="400" filter="url(#grainy)"/>
+          </svg>
+        </div>
+        <div class="product-info">
+          <div class="product-name">ミニボトル</div>
+          <div class="product-desc">デスクや棚に映える、はじめての一本に最適なサイズ。</div>
+          <div class="product-bottom"><span class="product-price">¥2,200〜</span><button class="order-link" onclick="openModal('ミニボトル','¥2,200〜')">ORDER</button></div>
+        </div>
+      </div>
+
+      <div class="product-card reveal delay-2">
+        <div class="product-thumb">
+          <svg viewBox="0 0 300 400" preserveAspectRatio="xMidYMid slice">
+            <rect width="300" height="400" fill="#e9ddc9"/>
+            <rect y="60" width="300" height="340" fill="#9fc4e3"/><rect y="60" width="300" height="50" fill="#86b3d8"/>
+            <rect y="110" width="300" height="45" fill="#a9dec4"/><rect y="155" width="300" height="50" fill="#ecd596"/>
+            <rect y="205" width="300" height="45" fill="#e0bd6e"/><rect y="250" width="300" height="50" fill="#e8b8c4"/>
+            <rect width="300" height="400" filter="url(#grainy)"/>
+          </svg>
+        </div>
+        <div class="product-info">
+          <div class="product-name">スタンダードボトル</div>
+          <div class="product-desc">豊かなグラデーションを楽しめる定番サイズ。ギフトに人気です。</div>
+          <div class="product-bottom"><span class="product-price">¥3,800〜</span><button class="order-link" onclick="openModal('スタンダードボトル','¥3,800〜')">ORDER</button></div>
+        </div>
+      </div>
+
+      <div class="product-card reveal delay-3">
+        <div class="product-thumb">
+          <svg viewBox="0 0 300 400" preserveAspectRatio="xMidYMid slice">
+            <rect width="300" height="400" fill="#e9ddc9"/>
+            <rect y="40" width="300" height="360" fill="#cdbbe8"/><rect y="40" width="300" height="50" fill="#b6a6dc"/>
+            <rect y="90" width="300" height="45" fill="#e8b8c4"/><rect y="135" width="300" height="50" fill="#d6a4c2"/>
+            <rect y="185" width="300" height="45" fill="#9fc4e3"/><rect y="230" width="300" height="50" fill="#a9dec4"/>
+            <rect y="280" width="300" height="45" fill="#ecd596"/>
+            <rect width="300" height="400" filter="url(#grainy)"/>
+          </svg>
+        </div>
+        <div class="product-info">
+          <div class="product-name">ラージボトル</div>
+          <div class="product-desc">存在感のあるインテリアピースとして。お部屋の主役に。</div>
+          <div class="product-bottom"><span class="product-price">¥5,500〜</span><button class="order-link" onclick="openModal('ラージボトル','¥5,500〜')">ORDER</button></div>
+        </div>
+      </div>
+
+      <div class="product-card reveal delay-1">
+        <div class="product-thumb">
+          <svg viewBox="0 0 300 400" preserveAspectRatio="xMidYMid slice">
+            <rect width="300" height="400" fill="#e9ddc9"/>
+            <rect x="40" y="40" width="220" height="320" fill="#fff" stroke="#cdbfa6" stroke-width="2"/>
+            <rect x="55" y="180" width="190" height="22" fill="#e8b8c4"/><rect x="55" y="202" width="190" height="20" fill="#d6a4c2"/>
+            <rect x="55" y="222" width="190" height="22" fill="#cdbbe8"/><rect x="55" y="244" width="190" height="20" fill="#9fc4e3"/>
+            <rect x="55" y="264" width="190" height="22" fill="#a9dec4"/>
+            <rect width="300" height="400" filter="url(#grainy)"/>
+          </svg>
+        </div>
+        <div class="product-info">
+          <div class="product-name">フォトフレーム</div>
+          <div class="product-desc">カラーサンドを背景にした特製フレーム。お写真と一緒に飾れます。</div>
+          <div class="product-bottom"><span class="product-price">¥5,500〜</span><button class="order-link" onclick="openModal('フォトフレーム','¥5,500〜')">ORDER</button></div>
+        </div>
+      </div>
+
+      <div class="product-card reveal delay-2">
+        <div class="product-thumb">
+          <svg viewBox="0 0 300 400" preserveAspectRatio="xMidYMid slice">
+            <rect width="300" height="400" fill="#e9ddc9"/>
+            <rect x="30" y="50" width="240" height="300" fill="#fff" stroke="#cdbfa6" stroke-width="2"/>
+            <rect x="45" y="220" width="210" height="20" fill="#ecd596"/><rect x="45" y="240" width="210" height="18" fill="#e0bd6e"/>
+            <rect x="45" y="258" width="210" height="20" fill="#e8b8c4"/><rect x="45" y="278" width="210" height="18" fill="#cdbbe8"/>
+            <text x="150" y="160" text-anchor="middle" font-family="serif" font-size="22" fill="#8a6a32" font-style="italic">Welcome</text>
+            <rect width="300" height="400" filter="url(#grainy)"/>
+          </svg>
+        </div>
+        <div class="product-info">
+          <div class="product-name">ウェルカムボード</div>
+          <div class="product-desc">結婚式やパーティーの入口を彩る一点物。文字入れ対応。</div>
+          <div class="product-bottom"><span class="product-price">¥12,000〜</span><button class="order-link" onclick="openModal('ウェルカムボード','¥12,000〜')">ORDER</button></div>
+        </div>
+      </div>
+
+      <div class="product-card reveal delay-3">
+        <div class="product-thumb">
+          <svg viewBox="0 0 300 400" preserveAspectRatio="xMidYMid slice">
+            <rect width="300" height="400" fill="#e9ddc9"/>
+            <rect x="40" y="60" width="55" height="280" fill="#e8b8c4"/><rect x="40" y="60" width="55" height="40" fill="#d6a4c2"/>
+            <rect x="40" y="160" width="55" height="40" fill="#cdbbe8"/><rect x="40" y="260" width="55" height="40" fill="#9fc4e3"/>
+            <rect x="122" y="40" width="55" height="300" fill="#a9dec4"/><rect x="122" y="40" width="55" height="45" fill="#ecd596"/>
+            <rect x="122" y="150" width="55" height="45" fill="#e0bd6e"/><rect x="122" y="260" width="55" height="45" fill="#e8b8c4"/>
+            <rect x="204" y="80" width="55" height="260" fill="#cdbbe8"/><rect x="204" y="80" width="55" height="40" fill="#9fc4e3"/>
+            <rect x="204" y="180" width="55" height="40" fill="#a9dec4"/>
+            <rect width="300" height="400" filter="url(#grainy)"/>
+          </svg>
+        </div>
+        <div class="product-info">
+          <div class="product-name">ギフトセット（3本）</div>
+          <div class="product-desc">化粧箱入り。誕生日や記念日の贈り物にぴったりです。</div>
+          <div class="product-bottom"><span class="product-price">¥7,500</span><button class="order-link" onclick="openModal('ギフトセット（3本）','¥7,500')">ORDER</button></div>
         </div>
       </div>
     </div>
-    <div class="section-inner fade-up" style="padding-top:40px;padding-bottom:40px;">
-      <div class="en-label">Gift Set</div>
-      <h2 class="section-title">ギフトセット</h2>
-      <div class="divider"></div>
-      <p class="section-body">
-        誕生日・結婚祝い・出産祝い・引越し祝いなど、
-        大切な方への贈り物に。<br>
-        ミニボトルのセットやオリジナルボックスをご用意しています。
-        ラッピング・メッセージカードも承ります。
+  </div>
+</section>
+
+<!-- ============ ATELIER / STORY ============ -->
+<section id="atelier" class="section">
+  <div class="container grid2">
+    <div class="reveal">
+      <div class="quote-mark">“</div>
+      <p class="quote-text">砂の色に、<br>こころが動く瞬間がある。</p>
+      <div class="eyebrow">About the Atelier</div>
+      <h2 class="h2">tasaiのアトリエ</h2>
+      <p class="lead" style="max-width:560px">
+        絵画・陶芸を経て、カラーサンドアートの世界へ。
+        日本各地の天然砂と世界の鉱物砂を組み合わせ、
+        一本一本丁寧に仕上げた作品は国内外の展示会でも高い評価を受けています。<br><br>
+        2015年にブランド「tasai（多彩）」を設立。
+        見るたびに違う表情を見せてくれる砂の奥深さに、今もなお夢中です。
+        暮らしの中に溶け込む、静かで豊かなアートを追い求めています。
       </p>
+      <p class="signature">— tasai 主宰</p>
+    </div>
+    <div class="atelier-visual reveal-scale delay-1">
+      <svg viewBox="0 0 600 750" preserveAspectRatio="xMidYMid slice">
+        <rect width="600" height="750" fill="#e9ddc9"/>
+        <circle cx="300" cy="280" r="220" fill="#f3ede2"/>
+        <g opacity=".85">
+          <rect x="160" y="380" width="280" height="30" fill="#e8b8c4"/><rect x="160" y="410" width="280" height="26" fill="#d6a4c2"/>
+          <rect x="160" y="436" width="280" height="30" fill="#cdbbe8"/><rect x="160" y="466" width="280" height="26" fill="#9fc4e3"/>
+          <rect x="160" y="492" width="280" height="30" fill="#a9dec4"/>
+        </g>
+        <text x="300" y="240" text-anchor="middle" font-family="Georgia,serif" font-size="64" fill="#cdbfa6" font-style="italic">t</text>
+        <rect width="600" height="750" filter="url(#grainy)"/>
+      </svg>
     </div>
   </div>
 </section>
 
-<!-- ─── PRICE ─── -->
-<section id="price" style="padding:0;">
-  <div class="price-section">
-    <div style="max-width:520px;margin:0 auto;" class="fade-up">
-      <div class="en-label">Price</div>
-      <h2 class="section-title" style="margin-bottom:32px;">価格一覧</h2>
+<!-- ============ PRICE TABLE ============ -->
+<section id="price-table" class="section">
+  <div class="container">
+    <div class="reveal">
+      <div class="eyebrow">Price List</div>
+      <h2 class="h2">価格一覧</h2>
     </div>
-    <table class="price-table fade-up">
-      <thead>
-        <tr>
-          <th>商品</th>
-          <th>サイズ</th>
-          <th style="text-align:right;">価格（税込）</th>
-        </tr>
-      </thead>
+    <table class="ptable reveal delay-1">
+      <thead><tr><th>商品名</th><th>仕様</th><th style="text-align:right">価格（税込）</th></tr></thead>
       <tbody>
-        <tr><td>ミニボトル</td><td>H8cm</td><td class="price">¥2,200〜</td></tr>
-        <tr><td>スタンダードボトル</td><td>H15cm</td><td class="price">¥3,800〜</td></tr>
-        <tr><td>ラージボトル</td><td>H22cm</td><td class="price">¥5,500〜</td></tr>
-        <tr><td>フォトフレーム</td><td>A4サイズ</td><td class="price">¥5,500〜</td></tr>
-        <tr><td>ウェルカムボード</td><td>A3サイズ</td><td class="price">¥12,000〜</td></tr>
-        <tr><td>ギフトセット（3本）</td><td>化粧箱入り</td><td class="price">¥7,500</td></tr>
-        <tr><td>カスタムオーダー</td><td>ご相談</td><td class="price">¥6,000〜</td></tr>
+        <tr><td>ミニボトル<span class="sub">H8cm / 60ml</span></td><td>全カラー対応</td><td class="r">¥2,200〜</td></tr>
+        <tr><td>スタンダードボトル<span class="sub">H15cm / 100ml</span></td><td>全カラー対応</td><td class="r">¥3,800〜</td></tr>
+        <tr><td>ラージボトル<span class="sub">H22cm / 180ml</span></td><td>全カラー対応</td><td class="r">¥5,500〜</td></tr>
+        <tr><td>フォトフレーム<span class="sub">A4サイズ</span></td><td>写真持込可</td><td class="r">¥5,500〜</td></tr>
+        <tr><td>ウェルカムボード<span class="sub">A3サイズ</span></td><td>文字入れ対応</td><td class="r">¥12,000〜</td></tr>
+        <tr><td>ギフトセット<span class="sub">ミニボトル×3</span></td><td>化粧箱・ラッピング付</td><td class="r">¥7,500</td></tr>
+        <tr><td>カスタムオーダー<span class="sub">サイズ・色 自由設計</span></td><td>要相談</td><td class="r">¥6,000〜</td></tr>
       </tbody>
     </table>
-    <p class="price-note fade-up">
-      ※ 価格はすべて税込です。<br>
-      ※ オーダー品はご入金確認後、約2〜3週間でお届けします。<br>
-      ※ 送料は全国一律 ¥700（一部地域を除く）。<br>
-      ※ カラーや仕様によって価格が異なる場合があります。お気軽にご相談ください。
+    <p class="price-foot reveal delay-2">
+      ※ 価格はすべて税込です。オーダー品はご入金確認後、約2〜3週間でお届けします。<br>
+      ※ 送料は全国一律 ¥700（一部地域を除く）。カラーや仕様により価格が変動する場合があります。
     </p>
   </div>
 </section>
 
-<!-- ─── INSTAGRAM ─── -->
-<section id="insta" class="insta-section">
-  <div class="fade-up">
-    <div class="en-label" style="text-align:center;margin-bottom:4px;">Instagram</div>
-    <h2 class="section-title" style="text-align:center;margin-bottom:4px;">最新作品はInstagramで</h2>
-    <p style="font-size:13px;color:#888;margin-bottom:0;">@tasai_colorsand</p>
+<!-- ============ INSTAGRAM ============ -->
+<section id="insta" class="section tight">
+  <div class="container">
+    <div class="reveal">
+      <div class="eyebrow" style="justify-content:center">Instagram</div>
+      <h2 class="h2">最新作品はInstagramで</h2>
+      <p class="lead" style="margin:0 auto 0">@tasai_colorsand</p>
+    </div>
+    <div class="insta-grid reveal delay-1">
+      <div class="insta-tile"><svg viewBox="0 0 100 100"><rect width="100" height="100" fill="#e8b8c4"/><rect y="30" width="100" height="40" fill="#d6a4c2"/></svg></div>
+      <div class="insta-tile"><svg viewBox="0 0 100 100"><rect width="100" height="100" fill="#9fc4e3"/><rect y="40" width="100" height="35" fill="#86b3d8"/></svg></div>
+      <div class="insta-tile"><svg viewBox="0 0 100 100"><rect width="100" height="100" fill="#ecd596"/><rect y="25" width="100" height="40" fill="#e0bd6e"/></svg></div>
+      <div class="insta-tile"><svg viewBox="0 0 100 100"><rect width="100" height="100" fill="#a9dec4"/><rect y="35" width="100" height="38" fill="#8fcbab"/></svg></div>
+      <div class="insta-tile"><svg viewBox="0 0 100 100"><rect width="100" height="100" fill="#cdbbe8"/><rect y="30" width="100" height="42" fill="#b6a6dc"/></svg></div>
+      <div class="insta-tile"><svg viewBox="0 0 100 100"><rect width="100" height="100" fill="#d6a4c2"/><rect y="28" width="100" height="40" fill="#e8b8c4"/></svg></div>
+    </div>
+    <div style="text-align:center" class="reveal delay-2">
+      <a href="https://www.instagram.com/" target="_blank" rel="noopener" class="btn dark"><span>Instagram をフォローする</span></a>
+    </div>
   </div>
-  <div class="insta-grid fade-up">
-    <div class="insta-item"><div class="insta-thumb it1"></div></div>
-    <div class="insta-item"><div class="insta-thumb it2"></div></div>
-    <div class="insta-item"><div class="insta-thumb it3"></div></div>
-    <div class="insta-item"><div class="insta-thumb it4"></div></div>
-    <div class="insta-item"><div class="insta-thumb it5"></div></div>
-    <div class="insta-item"><div class="insta-thumb it6"></div></div>
-  </div>
-  <a href="https://www.instagram.com/" target="_blank" rel="noopener" class="insta-btn fade-up">
-    📷 &nbsp;Instagram をフォローする
-  </a>
 </section>
 
-<!-- ─── ACCESS ─── -->
-<section id="access" class="access-section">
-  <div style="max-width:520px;margin:0 auto;" class="fade-up">
-    <div class="en-label">Access</div>
-    <h2 class="section-title">店舗情報・アクセス</h2>
-  </div>
-  <div class="access-inner fade-up">
-    <div class="access-map">
-      <div class="map-icon-wrap">
-        <div class="icon">🗺</div>
-        <p>カラーサンド tasai</p>
-        <a href="https://maps.google.com/" target="_blank" rel="noopener" class="map-link">Google Map で開く</a>
+<!-- ============ ACCESS ============ -->
+<section id="access" class="section">
+  <div class="container">
+    <div class="reveal"><div class="eyebrow">Access</div><h2 class="h2">店舗情報・アクセス</h2></div>
+    <div class="access-grid">
+      <div class="access-map reveal-scale">
+        <svg viewBox="0 0 500 450" preserveAspectRatio="xMidYMid slice">
+          <rect width="500" height="450" fill="#d8e0c4"/>
+          <path d="M0 320 Q150 280 300 330 T500 300" stroke="#c2cdac" stroke-width="26" fill="none"/>
+          <path d="M0 380 Q200 420 500 370" stroke="#c2cdac" stroke-width="18" fill="none"/>
+          <circle cx="250" cy="200" r="10" fill="#b08d4f"/>
+          <path d="M250 200 q0 -38 0 -38 a18 18 0 1 1 0.1 0 z" fill="#b08d4f"/>
+        </svg>
+        <div class="access-map-pin"></div>
+      </div>
+      <div>
+        <dl>
+          <div class="dl-row"><dt>店舗名</dt><dd>カラーサンド tasai（多彩）</dd></div>
+          <div class="dl-row"><dt>住所</dt><dd>〒000-0000<br>※ご注文・お問い合わせ後にご案内いたします</dd></div>
+          <div class="dl-row"><dt>営業時間</dt><dd>火・木・土　10:00〜18:00<br>日・祝　　　11:00〜17:00<br>月・水・金　定休日</dd></div>
+          <div class="dl-row"><dt>オンライン</dt><dd>ご注文・お問い合わせは24時間受付中<br>（返信は2営業日以内）</dd></div>
+          <div class="dl-row"><dt>SNS</dt><dd>Instagram：@tasai_colorsand</dd></div>
+        </dl>
+        <a href="https://maps.google.com/" target="_blank" rel="noopener" class="btn dark" style="margin-top:24px;display:inline-block"><span>Google Mapで開く</span></a>
       </div>
     </div>
-    <dl class="access-dl">
-      <dt>店舗名</dt>
-      <dd>カラーサンド tasai（多彩）</dd>
-
-      <dt>住所</dt>
-      <dd>〒000-0000<br>※ご注文・お問い合わせ後にご案内いたします</dd>
-
-      <dt>営業時間</dt>
-      <dd>
-        火・木・土　10:00 〜 18:00<br>
-        日・祝　　　11:00 〜 17:00<br>
-        月・水・金　定休日<br>
-        ※季節行事により変更あり
-      </dd>
-
-      <dt>電話番号</dt>
-      <dd>お問い合わせフォームよりご連絡ください</dd>
-
-      <dt>オンライン注文</dt>
-      <dd>24時間受付中（返信は2営業日以内）</dd>
-    </dl>
   </div>
 </section>
 
-<!-- ─── CONTACT ─── -->
-<section id="contact" class="contact-section">
-  <div style="max-width:520px;margin:0 auto;" class="fade-up">
-    <div class="en-label">Contact</div>
-    <h2 class="section-title">お問い合わせ</h2>
-    <div class="divider"></div>
-    <p style="font-size:14px;color:#666;line-height:2.2;">
-      ご注文・カスタムオーダー・ギフトのご相談など、<br>
-      お気軽にお問い合わせください。
-    </p>
+<!-- ============ CONTACT ============ -->
+<section id="contact" class="section">
+  <div class="container">
+    <div class="reveal" style="text-align:center">
+      <div class="eyebrow" style="justify-content:center">Contact</div>
+      <h2 class="h2">お問い合わせ</h2>
+      <p class="lead" style="margin:0 auto">ご注文・カスタムオーダー・ギフトのご相談など、お気軽にお問い合わせください。</p>
+    </div>
+    <form class="contact-wrap reveal delay-1" id="contactForm" novalidate>
+      <div class="form-grid">
+        <div class="field"><label>お名前<span class="req">必須</span></label><input type="text" id="c-name" placeholder="山田 花子" required></div>
+        <div class="field"><label>メールアドレス<span class="req">必須</span></label><input type="email" id="c-email" placeholder="example@mail.com" required></div>
+        <div class="field full"><label>お問い合わせ種別</label>
+          <select id="c-subject">
+            <option value="">選択してください</option>
+            <option>作品のご注文</option><option>カスタムオーダーのご相談</option>
+            <option>ギフト・プレゼント相談</option><option>ウェルカムボードについて</option><option>その他</option>
+          </select>
+        </div>
+        <div class="field full"><label>メッセージ<span class="req">必須</span></label><textarea id="c-msg" placeholder="ご希望のカラー・サイズ・ご用途など、お気軽にお書きください。" required></textarea></div>
+      </div>
+      <button type="submit" class="submit-btn">送　信</button>
+    </form>
   </div>
-  <form class="contact-form fade-up" id="contactForm" novalidate>
-    <div class="form-row">
-      <label class="form-label" for="c-name">お名前<span class="req">必須</span></label>
-      <input class="form-control" type="text" id="c-name" placeholder="山田 花子" required>
-    </div>
-    <div class="form-row">
-      <label class="form-label" for="c-email">メールアドレス<span class="req">必須</span></label>
-      <input class="form-control" type="email" id="c-email" placeholder="example@mail.com" required>
-    </div>
-    <div class="form-row">
-      <label class="form-label" for="c-subject">お問い合わせ種別</label>
-      <select class="form-control" id="c-subject">
-        <option value="">選択してください</option>
-        <option>作品のご注文</option>
-        <option>カスタムオーダーのご相談</option>
-        <option>ギフト・プレゼント相談</option>
-        <option>ウェルカムボードについて</option>
-        <option>その他</option>
-      </select>
-    </div>
-    <div class="form-row">
-      <label class="form-label" for="c-msg">メッセージ<span class="req">必須</span></label>
-      <textarea class="form-control" id="c-msg" placeholder="ご希望のカラー・サイズ・ご用途など、お気軽にお書きください。" required></textarea>
-    </div>
-    <button type="submit" class="form-submit">送　信</button>
-  </form>
 </section>
 
-<!-- ─── FOOTER ─── -->
+<!-- ============ FOOTER ============ -->
 <footer>
-  <div class="footer-logo-wrap">
-    <span class="footer-logo-en">Color Sand</span>
-    <span class="footer-logo-ja">tasai</span>
+  <div class="footer-brand">tasai</div>
+  <div class="footer-tag">COLOR SAND ART ATELIER</div>
+  <div class="footer-cols">
+    <div class="footer-col">
+      <h4>EXPLORE</h4>
+      <a href="#collection">コレクション</a><a href="#products">作品一覧</a><a href="#atelier">アトリエ</a>
+    </div>
+    <div class="footer-col">
+      <h4>SUPPORT</h4>
+      <a href="#price-table">価格一覧</a><a href="#access">アクセス</a><a href="#contact">お問い合わせ</a>
+    </div>
+    <div class="footer-col">
+      <h4>SOCIAL</h4>
+      <a href="https://www.instagram.com/" target="_blank" rel="noopener">Instagram</a>
+    </div>
   </div>
-  <ul class="footer-links">
-    <li><a href="#sandart">サンドアート</a></li>
-    <li><a href="#custom">カスタムオーダー</a></li>
-    <li><a href="#gift">ギフト</a></li>
-    <li><a href="#price">価格一覧</a></li>
-    <li><a href="#access">アクセス</a></li>
-    <li><a href="#contact">お問い合わせ</a></li>
-  </ul>
-  <p class="footer-address">
-    カラーサンド tasai<br>
-    Instagram：@tasai_colorsand
-  </p>
-  <p class="footer-copy">© 2025 カラーサンド tasai. All rights reserved.</p>
+  <div class="footer-rule"></div>
+  <p class="footer-copy">© 2025 tasai Color Sand Art. All rights reserved.</p>
 </footer>
 
+<!-- ============ ORDER MODAL ============ -->
+<div class="modal-overlay" id="orderModal">
+  <div class="modal-box">
+    <div class="eyebrow">Order</div>
+    <h3 id="modalTitle">ご注文について</h3>
+    <p id="modalBody"></p>
+    <button class="btn dark" onclick="closeModal()" style="display:inline-block"><span>CLOSE</span></button>
+  </div>
+</div>
+
 <script>
-// Hamburger / Drawer
-const hamburger = document.getElementById('hamburger');
-const drawer    = document.getElementById('drawer');
-const overlay   = document.getElementById('drawerOverlay');
+// progress bar
+const bar = document.getElementById('progressBar');
+window.addEventListener('scroll', () => {
+  const h = document.documentElement;
+  const pct = (h.scrollTop) / (h.scrollHeight - h.clientHeight) * 100;
+  bar.style.width = pct + '%';
+});
 
-function openDrawer()  { hamburger.classList.add('open'); drawer.classList.add('open'); overlay.classList.add('open'); }
-function closeDrawer() { hamburger.classList.remove('open'); drawer.classList.remove('open'); overlay.classList.remove('open'); }
+// nav scrolled state
+const navEl = document.getElementById('nav');
+window.addEventListener('scroll', () => navEl.classList.toggle('scrolled', window.scrollY > 60));
 
-hamburger.addEventListener('click', () => drawer.classList.contains('open') ? closeDrawer() : openDrawer());
-overlay.addEventListener('click', closeDrawer);
+// mobile drawer
+const menuBtn = document.getElementById('menuBtn');
+const drawer = document.getElementById('drawer');
+menuBtn.addEventListener('click', () => { menuBtn.classList.toggle('open'); drawer.classList.toggle('open'); });
+drawer.querySelectorAll('a').forEach(a => a.addEventListener('click', () => { menuBtn.classList.remove('open'); drawer.classList.remove('open'); }));
 
-// Fade-up on scroll
-const fadeEls = document.querySelectorAll('.fade-up');
+// reveal on scroll
+const revealEls = document.querySelectorAll('.reveal, .reveal-scale');
 const obs = new IntersectionObserver(entries => {
   entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); obs.unobserve(e.target); } });
-}, { threshold: 0.1 });
-fadeEls.forEach(el => obs.observe(el));
+}, { threshold: .12 });
+revealEls.forEach(el => obs.observe(el));
 
-// Toast
+// toast
 let toastT;
 function showToast(msg) {
   const t = document.getElementById('toast');
@@ -1078,12 +977,21 @@ function showToast(msg) {
   clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('show'), 3500);
 }
 
-// Contact form
+// modal
+function openModal(name, price) {
+  document.getElementById('modalTitle').textContent = name;
+  document.getElementById('modalBody').textContent = name + '（' + price + '）のご注文を承ります。\nお問い合わせフォームよりご希望のカラーや数量をお知らせください。\n担当者より2営業日以内にご連絡いたします。';
+  document.getElementById('orderModal').classList.add('open');
+}
+function closeModal() { document.getElementById('orderModal').classList.remove('open'); }
+document.getElementById('orderModal').addEventListener('click', e => { if (e.target === e.currentTarget) closeModal(); });
+
+// contact form
 document.getElementById('contactForm').addEventListener('submit', e => {
   e.preventDefault();
-  const name  = document.getElementById('c-name').value.trim();
+  const name = document.getElementById('c-name').value.trim();
   const email = document.getElementById('c-email').value.trim();
-  const msg   = document.getElementById('c-msg').value.trim();
+  const msg = document.getElementById('c-msg').value.trim();
   if (!name || !email || !msg) { showToast('必須項目を入力してください'); return; }
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showToast('メールアドレスの形式が正しくありません'); return; }
   showToast('お問い合わせを受け付けました。2営業日以内にご連絡いたします。');
