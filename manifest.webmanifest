@@ -1,0 +1,18 @@
+{
+  "name": "渡辺花屋 在庫管理",
+  "short_name": "渡辺花屋 在庫",
+  "description": "渡辺花屋の共有在庫管理アプリ",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#faf7f2",
+  "theme_color": "#3d5a3e",
+  "icons": [
+    {
+      "src": "icons/app-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
