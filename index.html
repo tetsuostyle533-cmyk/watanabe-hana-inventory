@@ -1505,12 +1505,13 @@ function buildShareText(){
   const now=new Date().toLocaleString("ja-JP",{month:"numeric",day:"numeric",hour:"2-digit",minute:"2-digit"});
   let lines=[`🌸 渡辺花屋 在庫レポート（${now}）\n`];
   getAllFlowers().forEach(([cat,flowers])=>{
-    if(!flowers.length) return;
+    // 在庫がある花だけをLINEに載せる（ゼロ在庫は省略）
+    const inStockFlowers = flowers.filter(f => (stocks[f.id] || 0) > 0);
+    if(!inStockFlowers.length) return;
     lines.push(`【${cat}】`);
-    flowers.forEach(f=>{
+    inStockFlowers.forEach(f=>{
       const q=stocks[f.id]||0;
-      const mk=q===0?"❌ ":"";
-      lines.push(`${mk}${f.name}：${q}${unitStocks[f.id]||f.unit}`);
+      lines.push(`${f.name}：${q}${unitStocks[f.id]||f.unit}`);
     });
     lines.push("");
   });
