@@ -4,7 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#3d5a3e">
 <title>渡辺花屋 在庫</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/app-icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/app-icon.svg">
 <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@600;700;800&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -1956,6 +1961,11 @@ roomRef.onSnapshot(doc=>{
 });
 
 } // ← Firebaseガードの終わり
+</script>
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js'));
+  }
 </script>
 </body>
 </html>
